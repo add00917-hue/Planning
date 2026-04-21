@@ -1,2 +1,0 @@
-# Planning
-planning ระบบตารางแผนงานทีม
