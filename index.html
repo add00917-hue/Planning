@@ -72,6 +72,22 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enter-btn svg{width:22px;height:22px;stroke-width:2.6}
 .l-foot{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.34);font-family:var(--mono);z-index:2;padding:0 16px}
 
+/* ============ CONSOLE LOGIN ============ */
+.clogin{position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(140% 120% at 50% -10%,#1A3F7A 0%,#0C2750 42%,#07182E 100%);overflow:hidden}
+.clogin-card{position:relative;z-index:2;width:min(400px,100%);background:rgba(255,255,255,.06);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:34px 30px;text-align:center;color:#fff;box-shadow:var(--shadow-lg);animation:pop .35s cubic-bezier(.16,1,.3,1)}
+.clogin-mark{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--yellow-bright),var(--yellow-dark));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:20px;color:var(--navy-deep);margin:0 auto 18px;box-shadow:0 10px 26px rgba(255,180,20,.4)}
+.clogin-card h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.clogin-card .cl-p{font-size:12.5px;color:rgba(255,255,255,.6);margin-bottom:22px}
+.clf{text-align:left;margin-bottom:14px}
+.clf label{display:block;font-size:12px;color:rgba(255,255,255,.65);margin-bottom:7px;font-weight:500}
+.clf input{width:100%;padding:13px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#fff;font-size:14.5px;outline:none;font-family:inherit}
+.clf input:focus{border-color:var(--yellow);background:rgba(255,255,255,.12)}
+.clogin-btn{width:100%;margin-top:6px;padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--yellow-bright),var(--yellow-dark));color:var(--navy-deep);font-weight:700;font-size:15px;box-shadow:0 8px 22px rgba(255,180,20,.35)}
+.clogin-btn:active{transform:scale(.99)}
+.clogin-status{font-size:12.5px;margin-top:12px;min-height:16px;font-weight:600}
+.clogin-status.err{color:#FCA5A5}.clogin-status.wait{color:#FCD34D}
+.clogin-hint{font-size:11.5px;color:rgba(255,255,255,.45);margin-top:14px;line-height:1.6}
+.clogin-back{margin-top:14px;font-size:12.5px;color:rgba(255,255,255,.6)}
 /* ============ APP SHELL ============ */
 .app{display:grid;grid-template-columns:var(--sb) 1fr;height:100vh;background:var(--canvas)}
 .sidebar{background:linear-gradient(185deg,var(--navy-dark) 0%,var(--navy-deep) 100%);color:#fff;display:flex;flex-direction:column;
@@ -429,12 +445,28 @@ table.t tbody tr:hover{background:#F8FAFD}
     </div>
     <div class="enter-wrap">
       <div class="enter-hint">Enter System</div>
-      <button class="enter-btn" onclick="enterApp()">เข้าสู่หน้าหลัก
+      <button class="enter-btn" onclick="showLogin()">เข้าสู่หน้าหลัก
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
   </div>
   <div class="l-foot">Plans and activities of the GNR3 team. • OPS-BSCS • © 2026</div>
+</div>
+
+<!-- ============ CONSOLE LOGIN ============ -->
+<div class="clogin hidden" id="clogin">
+  <div class="landing-grid"></div><div class="glow y"></div><div class="glow b"></div>
+  <div class="clogin-card">
+    <div class="clogin-mark">G3</div>
+    <h2>เข้าสู่ระบบ</h2>
+    <div class="cl-p">Plans and activities of the GNR3 team • OPS-BSCS</div>
+    <div class="clf"><label>ชื่อผู้ใช้งาน (Username)</label><input id="cl-user" placeholder="กรอกชื่อผู้ใช้งาน" autocomplete="off" onkeydown="if(event.key==='Enter')clogin()"></div>
+    <div class="clf"><label>รหัสผ่าน (Password)</label><input id="cl-pass" type="password" placeholder="กรอกรหัสผ่าน" onkeydown="if(event.key==='Enter')clogin()"></div>
+    <button class="clogin-btn" onclick="clogin()">เข้าสู่ระบบ</button>
+    <div class="clogin-status" id="cl-status"></div>
+    <div class="clogin-hint">ตัวอย่างผู้ดูแล: <b>admin</b> / gnr3@admin<br>ผู้อนุมัติ: <b>somchai</b> / gnr3@123</div>
+    <button class="clogin-back" onclick="document.getElementById('clogin').classList.add('hidden')">← กลับ</button>
+  </div>
 </div>
 
 <!-- ============ APP ============ -->
@@ -451,7 +483,7 @@ table.t tbody tr:hover{background:#F8FAFD}
     <div class="sb-section">ระบบ</div>
     <button class="nav-link" data-view="admin" onclick="go('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Admin Panel</button>
     <div class="sb-spacer"></div>
-    <div class="sb-user"><div class="sb-ava">ก</div><div><div class="u-name">กนกพร ส.</div><div class="u-role">ผู้ดูแลระบบ</div></div>
+    <div class="sb-user"><div class="sb-ava" id="sb-ava">?</div><div><div class="u-name" id="sb-uname">ยังไม่เข้าสู่ระบบ</div><div class="u-role" id="sb-urole">-</div></div>
       <button class="u-out" title="ออกจากระบบ" onclick="exitApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
     </div>
   </aside>
@@ -590,17 +622,48 @@ function holiName(ds){const h=holidays.find(x=>x.date===ds);return h?h.name:'';}
 /* ---- helpers ---- */
 const AC=['#15396E','#2C5BA0','#0B7A55','#C0392B','#4F46E5','#D6418B','#B47400','#3D6BB0','#0E9488','#7C3AED'];
 const emp=id=>employees.find(e=>e.id===id)||{name:'-',dept:'-',id:id,pos:''};
-const initial=n=>(n||'?').trim().charAt(0);
-function avaColor(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
+const initial=n=>{n=String(n==null?'':n).trim();return n?n.charAt(0):'?';};
+function avaColor(id){id=String(id==null?'x':id)||'x';let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
 function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${e.photo?`<img src="${e.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">`:initial(e.name)}</div>`;}
 function pickPhoto(cb){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=function(){const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=function(){const img=new Image();img.onload=function(){const S=200,sc=Math.min(S/img.width,S/img.height,1),w=Math.round(img.width*sc),h=Math.round(img.height*sc);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',0.72));};img.src=rd.result;};rd.readAsDataURL(f);};inp.click();}
-function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function recOnDate(isoStr){return records.filter(r=>r.start<=isoStr&&isoStr<=r.end);}
 function catTag(cat){return `<span class="tag" style="background:${CAT[cat].c}"><span class="d"></span>${CAT[cat].th}</span>`;}
 
 /* ---- navigation ---- */
 function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');updateBadges();go('dashboard');syncDB();}
 function exitApp(){document.getElementById('app').classList.add('hidden');document.getElementById('landing').classList.remove('hidden');}
+let CURUSER={id:'',name:'ผู้ใช้งาน',role:'user',pos:'',photo:''};
+function showLogin(){document.getElementById('clogin').classList.remove('hidden');setTimeout(function(){var u=document.getElementById('cl-user');if(u)u.focus();},60);}
+function clStatus(m,k){const el=document.getElementById('cl-status');if(el){el.textContent=m||'';el.className='clogin-status '+(k||'');}}
+async function clogin(){
+  const u=(document.getElementById('cl-user').value||'').trim();
+  const p=document.getElementById('cl-pass').value||'';
+  if(!u||!p){clStatus('กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน','err');return;}
+  clStatus('กำลังเชื่อมต่อฐานข้อมูล...','wait');
+  if(CONFIG.SHEETS_API_URL){
+    try{
+      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'login',username:u,password:p})});
+      const j=await res.json();
+      if(j&&j.ok&&j.data&&j.data.emp_id){CURUSER={id:String(j.data.emp_id),name:String(j.data.full_name||''),role:String(j.data.role||'user'),pos:String(j.data.position||''),photo:String(j.data.photo||'')};doEnter();return;}
+      if(j&&j.ok===false){clStatus(j.error||'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง','err');return;}
+    }catch(e){}
+  }
+  const fnd=employees.find(e=>e.user===u&&e.pass===p);
+  if(!fnd){clStatus('เชื่อมต่อฐานข้อมูลไม่ได้ และข้อมูลเข้าสู่ระบบไม่ถูกต้อง','err');return;}
+  CURUSER={id:fnd.id,name:fnd.name,role:fnd.role,pos:fnd.pos,photo:fnd.photo||''};doEnter();
+}
+function refreshSidebar(){
+  const av=document.getElementById('sb-ava'); if(av){av.style.background=avaColor(CURUSER.id);av.innerHTML=CURUSER.photo?`<img src="${CURUSER.photo}" style="width:100%;height:100%;object-fit:cover;display:block">`:initial(CURUSER.name);}
+  const nm=document.getElementById('sb-uname'); if(nm)nm.textContent=CURUSER.name;
+  const rl=document.getElementById('sb-urole'); if(rl)rl.textContent=({user:'ผู้ใช้ทั่วไป',approver:'ผู้อนุมัติ',admin:'ผู้ดูแลระบบ'})[CURUSER.role]||'ผู้ใช้งาน';
+}
+function doEnter(){
+  document.getElementById('clogin').classList.add('hidden');
+  clStatus('');
+  enterApp();
+  refreshSidebar();
+}
 function openNav(){document.getElementById('app').classList.add('nav-open');}
 function closeNav(){document.getElementById('app').classList.remove('nav-open');}
 const TITLES={
@@ -649,9 +712,11 @@ async function syncDB(){
     const j=await res.json();
     if(j&&j.ok&&j.data){
       const d=j.data, D=v=>(''+(v==null?'':v)).slice(0,10);
-      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:e.emp_id,name:e.full_name,dept:e.dept,pos:e.position,role:e.role||'user',user:e.username,pass:e.password_hash,line:!!e.line_user_id,status:e.status||'active',photo:e.photo||''}));
-      if(Array.isArray(d.records)) records=d.records.map(r=>({id:r.record_id,emp:r.emp_id,cat:r.category,start:D(r.start_date),end:D(r.end_date||r.start_date),title:r.title,location:r.location||'',st:r.start_time||'',et:r.end_time||'',status:r.status||'none',overnight:r.overnight===true||r.overnight==='TRUE'||r.overnight==='true',cost:(r.cost===''||r.cost==null)?null:Number(r.cost),note:r.note||''})).filter(r=>CAT[r.cat]);
-      if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
+      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:String(e.emp_id==null?'':e.emp_id),name:String(e.full_name==null?'':e.full_name),dept:String(e.dept==null?'':e.dept),pos:String(e.position==null?'':e.position),role:(['user','approver','admin'].indexOf(String(e.role))>=0?String(e.role):'user'),user:String(e.username==null?'':e.username),pass:String(e.password_hash==null?'':e.password_hash),line:!!e.line_user_id,status:String(e.status||'active'),photo:String(e.photo||'')})).filter(e=>e.id);
+      if(Array.isArray(d.records)) records=d.records.map(r=>({id:String(r.record_id==null?'':r.record_id),emp:String(r.emp_id==null?'':r.emp_id),cat:String(r.category||''),start:D(r.start_date),end:D(r.end_date||r.start_date),title:String(r.title==null?'':r.title),location:String(r.location||''),st:String(r.start_time||''),et:String(r.end_time||''),status:String(r.status||'none'),overnight:r.overnight===true||r.overnight==='TRUE'||r.overnight==='true',cost:(r.cost===''||r.cost==null)?null:Number(r.cost),note:String(r.note||'')})).filter(r=>CAT[r.cat]);
+      if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:String(h.name==null?'':h.name),type:String(h.type||'public')})).filter(h=>/^\d{4}-\d{2}-\d{2}$/.test(h.date));
+      const meRec=employees.find(x=>String(x.id)===String(CURUSER.id));
+      if(meRec){CURUSER.name=meRec.name;CURUSER.role=meRec.role;CURUSER.pos=meRec.pos;CURUSER.photo=meRec.photo||CURUSER.photo;refreshSidebar();}
       setDB('online'); updateBadges(); go(currentView);
       toast('โหลดข้อมูลจากฐานข้อมูลแล้ว • '+employees.length+' สมาชิก, '+records.length+' รายการ','ok');
     } else setDB('offline');
@@ -913,7 +978,7 @@ function notifRow(n){
 /* ===================== DECIDE / RECORD DETAIL ===================== */
 function decide(id,status){
   const r=records.find(x=>x.id===id); if(!r)return; r.status=status;
-  const n=notifs.find(x=>x.ref===id); if(n){n.kind=status;n.unread=false;n.by='กนกพร ส.';}
+  const n=notifs.find(x=>x.ref===id); if(n){n.kind=status;n.unread=false;n.by=CURUSER.name;}
   updateBadges(); go(currentView);
   toast(`${status==='approved'?'อนุมัติ':'ไม่อนุมัติ'} ${id} แล้ว`,status==='approved'?'ok':'warn');
 }
@@ -1054,6 +1119,7 @@ function setAdmin(tab){
   if(tab==='mobile')injectQR();
 }
 const ROLE={admin:['role-admin','ผู้ดูแลระบบ'],approver:['role-approver','ผู้อนุมัติ'],user:['role-user','ผู้ใช้ทั่วไป']};
+function roleInfo(r){return ROLE[r]||['role-user',(r&&String(r))||'ผู้ใช้ทั่วไป'];}
 
 function adminEmployees(){
   return `<div class="card"><div class="card-h"><div><h3>สมาชิกทีม &amp; สิทธิ์</h3><div class="sub">${employees.length} คน • ใช้เป็นแถวใน Gantt Tracker</div></div>
@@ -1195,7 +1261,7 @@ function adminUsers(){
       <td><div class="person">${avaHTML(e.id)}<div><div class="nm">${esc(e.name)}</div><div class="meta">${e.id}</div></div></div></td>
       <td class="mono">${esc(e.user)}</td>
       <td><span class="mono" style="letter-spacing:2px">••••••••</span> <button class="icon-btn" style="display:inline-flex" onclick="toast('รหัส: ${esc(e.pass)}','ok')">${I.eye}</button></td>
-      <td><span class="role ${ROLE[e.role][0]}">${ROLE[e.role][1]}</span></td>
+      <td><span class="role ${roleInfo(e.role)[0]}">${roleInfo(e.role)[1]}</span></td>
       <td><div class="row-act" style="justify-content:flex-end"><button class="icon-btn" onclick="openEmpForm('${e.id}')">${I.pen}</button><button class="icon-btn" onclick="toast('ส่งลิงก์รีเซ็ตรหัสผ่านแล้ว','ok')">${I.lock}</button></div></td>
     </tr>`).join('')}</tbody></table></div>
     <div class="card-b" style="border-top:1px solid var(--line)"><div class="sd">ℹ️ รหัสผ่านควรเก็บแบบเข้ารหัส (hash) ในชีต Employees คอลัมน์ password_hash — ระบบจริงไม่ควรเก็บรหัสเป็นข้อความธรรมดา</div></div>
