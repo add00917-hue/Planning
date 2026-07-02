@@ -115,6 +115,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .tb-btn .bdot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid #fff}
 .tb-line{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:var(--pill);background:var(--success-bg);color:#0B7A55;font-size:12px;font-weight:600}
 .tb-line .dot{width:7px;height:7px;border-radius:50%;background:var(--success)}
+.tb-line.wait{background:var(--warning-bg);color:#B47400}.tb-line.wait .dot{background:var(--warning)}
+.tb-line.off{background:var(--danger-bg);color:#C0392B}.tb-line.off .dot{background:var(--danger)}
 
 .content{flex:1;overflow-y:auto;padding:clamp(18px,2.2vw,28px)}
 .wrap{max-width:2560px;margin:0 auto}
@@ -459,6 +461,7 @@ table.t tbody tr:hover{background:#F8FAFD}
       <button class="hamb" onclick="openNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="tb-title" id="tb-title">แดชบอร์ด<small id="tb-sub">ภาพรวมแผนงานและกิจกรรมของทีม</small></div>
       <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="ค้นหาสมาชิก, กิจกรรม..."></div>
+      <div class="tb-line wait" id="db-status"><span class="dot"></span><span>เชื่อมต่อฐานข้อมูล...</span></div>
       <div class="tb-line"><span class="dot"></span><span>LINE เชื่อมต่อ</span></div>
       <button class="tb-btn" onclick="go('notify')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="bdot"></span></button>
     </header>
@@ -471,7 +474,7 @@ table.t tbody tr:hover{background:#F8FAFD}
 
 <script>
 /* ===================== Plans & Activities of the GNR3 team ===================== */
-const CONFIG = { SHEETS_API_URL:'', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://gnr3.app/team' };
+const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://gnr3.app/team' };
 
 /* ---- categories (drive calendar dots, gantt bars, sections) ---- */
 const CAT = {
@@ -589,13 +592,14 @@ const AC=['#15396E','#2C5BA0','#0B7A55','#C0392B','#4F46E5','#D6418B','#B47400',
 const emp=id=>employees.find(e=>e.id===id)||{name:'-',dept:'-',id:id,pos:''};
 const initial=n=>(n||'?').trim().charAt(0);
 function avaColor(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
-function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${initial(e.name)}</div>`;}
+function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${e.photo?`<img src="${e.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">`:initial(e.name)}</div>`;}
+function pickPhoto(cb){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=function(){const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=function(){const img=new Image();img.onload=function(){const S=200,sc=Math.min(S/img.width,S/img.height,1),w=Math.round(img.width*sc),h=Math.round(img.height*sc);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',0.72));};img.src=rd.result;};rd.readAsDataURL(f);};inp.click();}
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function recOnDate(isoStr){return records.filter(r=>r.start<=isoStr&&isoStr<=r.end);}
 function catTag(cat){return `<span class="tag" style="background:${CAT[cat].c}"><span class="d"></span>${CAT[cat].th}</span>`;}
 
 /* ---- navigation ---- */
-function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');updateBadges();go('dashboard');}
+function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');updateBadges();go('dashboard');syncDB();}
 function exitApp(){document.getElementById('app').classList.add('hidden');document.getElementById('landing').classList.remove('hidden');}
 function openNav(){document.getElementById('app').classList.add('nav-open');}
 function closeNav(){document.getElementById('app').classList.remove('nav-open');}
@@ -627,6 +631,31 @@ function updateBadges(){
   const ab=records.filter(r=>r.status==='pending'&&CAT[r.cat].g==='leave').length;
   const el=document.getElementById('nb-absence'); if(el){el.textContent=ab;el.style.display=ab?'flex':'none';}
   const bdot=document.querySelector('.tb-btn .bdot'); if(bdot)bdot.style.display=notifs.some(n=>n.unread)?'block':'none';
+}
+
+/* ---- database connection ---- */
+let DBS='connecting';
+function setDB(st){DBS=st;
+  const el=document.getElementById('db-status');
+  const m={connecting:['wait','เชื่อมต่อฐานข้อมูล...'],online:['','ฐานข้อมูลเชื่อมต่อ'],offline:['off','ออฟไลน์ • ข้อมูลตัวอย่าง']};
+  if(el){el.className='tb-line '+m[st][0];el.querySelector('span:last-child').textContent=m[st][1];}
+  if(currentView==='admin'){const a=document.getElementById('ap-sheets'); if(a&&a.classList.contains('on')){a.innerHTML=adminSheets();}}
+}
+async function syncDB(){
+  if(!CONFIG.SHEETS_API_URL){setDB('offline');return;}
+  setDB('connecting');
+  try{
+    const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bootstrap'})});
+    const j=await res.json();
+    if(j&&j.ok&&j.data){
+      const d=j.data, D=v=>(''+(v==null?'':v)).slice(0,10);
+      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:e.emp_id,name:e.full_name,dept:e.dept,pos:e.position,role:e.role||'user',user:e.username,pass:e.password_hash,line:!!e.line_user_id,status:e.status||'active',photo:e.photo||''}));
+      if(Array.isArray(d.records)) records=d.records.map(r=>({id:r.record_id,emp:r.emp_id,cat:r.category,start:D(r.start_date),end:D(r.end_date||r.start_date),title:r.title,location:r.location||'',st:r.start_time||'',et:r.end_time||'',status:r.status||'none',overnight:r.overnight===true||r.overnight==='TRUE'||r.overnight==='true',cost:(r.cost===''||r.cost==null)?null:Number(r.cost),note:r.note||''})).filter(r=>CAT[r.cat]);
+      if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
+      setDB('online'); updateBadges(); go(currentView);
+      toast('โหลดข้อมูลจากฐานข้อมูลแล้ว • '+employees.length+' สมาชิก, '+records.length+' รายการ','ok');
+    } else setDB('offline');
+  }catch(e){ setDB('offline'); }
 }
 
 /* ===================== DASHBOARD + CALENDAR ===================== */
@@ -1040,9 +1069,17 @@ function adminEmployees(){
       <td><div class="row-act" style="justify-content:flex-end"><button class="icon-btn" onclick="openEmpForm('${e.id}')">${I.pen}</button></div></td>
     </tr>`).join('')}</tbody></table></div></div>`;
 }
-function openEmpForm(id){const e=id?emp(id):null;
+let _empPhoto='';
+function empPhotoBox(){const src=_empPhoto;return `<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
+    <div id="emp-ava-prev" style="width:72px;height:72px;border-radius:20px;background:${src?'#0000':'var(--canvas-2)'};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid var(--line)">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:`<span style="color:var(--ink-soft)">${I.users}</span>`}</div>
+    <div><button type="button" class="btn btn-ghost" onclick="pickPhoto(function(d){_empPhoto=d;document.getElementById('emp-ava-prev').innerHTML='<img src=\''+d+'\' style=\'width:100%;height:100%;object-fit:cover\'>';})">${I.dl} อัปโหลดรูป</button>
+    ${src?`<button type="button" class="btn btn-ghost" style="margin-left:8px" onclick="_empPhoto='';document.getElementById('emp-ava-prev').innerHTML='<span style=\'color:var(--ink-soft)\'>${''}</span>'">ลบรูป</button>`:''}
+    <div class="hint" style="margin-top:8px">แนะนำรูปสี่เหลี่ยมจัตุรัส • ระบบย่อขนาดอัตโนมัติ</div></div>
+  </div>`;}
+function openEmpForm(id){const e=id?emp(id):null; _empPhoto=e&&e.photo?e.photo:'';
   openModal(`<div class="mh"><h3>${e?'แก้ไขสมาชิก':'เพิ่มสมาชิก'}</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
+    ${empPhotoBox()}
     <div class="set-grid"><div class="field"><label>ชื่อ-นามสกุล</label><input id="e-name" value="${e?esc(e.name):''}"></div>
       <div class="field"><label>รหัสสมาชิก</label><input id="e-id" class="mono" value="${e?e.id:''}" placeholder="EMP0xx"></div></div>
     <div class="set-grid"><div class="field"><label>แผนก</label><input id="e-dept" value="${e?esc(e.dept):''}"></div>
@@ -1055,7 +1092,7 @@ function openEmpForm(id){const e=id?emp(id):null;
   <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitEmp(${e?`'${e.id}'`:'null'})">${I.check2} บันทึก</button></div>`);
 }
 function submitEmp(id){
-  const data={name:fval('e-name'),id:fval('e-id'),dept:fval('e-dept'),pos:fval('e-pos'),user:fval('e-user'),pass:fval('e-pass'),role:fval('e-role'),status:fval('e-status')};
+  const data={name:fval('e-name'),id:fval('e-id'),dept:fval('e-dept'),pos:fval('e-pos'),user:fval('e-user'),pass:fval('e-pass'),role:fval('e-role'),status:fval('e-status'),photo:_empPhoto};
   if(id){Object.assign(emp(id),data);}else{employees.push(Object.assign({line:false},data));}
   closeModal();go(currentView==='gantt'?'gantt':'admin');if(currentView!=='gantt')setTimeout(()=>setAdmin('employees'),0);toast(id?'บันทึกข้อมูลแล้ว':'เพิ่มสมาชิกแล้ว','ok');
 }
@@ -1120,11 +1157,11 @@ const SHEETS=[
 ];
 function adminSheets(){
   return `<div class="card"><div class="card-h"><div><h3>การเชื่อมต่อ Google Sheets</h3><div class="sub">ฐานข้อมูลกลาง ใช้ร่วมกับเว็บและแอปมือถือ</div></div>
-    <span class="conn-status"><span class="dot"></span>ซิงค์ล่าสุด 2 นาทีที่แล้ว</span></div>
+    ${DBS==='online'?'<span class="conn-status"><span class="dot"></span>เชื่อมต่อแล้ว</span>':DBS==='offline'?'<span class="conn-status" style="background:var(--danger-bg);color:#C0392B"><span class="dot" style="background:var(--danger);animation:none"></span>ออฟไลน์</span>':'<span class="conn-status" style="background:var(--warning-bg);color:#B47400"><span class="dot" style="background:var(--warning)"></span>กำลังเชื่อมต่อ</span>'}</div>
   <div class="card-b">
     <div class="set-grid"><div class="field"><label>Spreadsheet ID</label><input class="mono" value="${CONFIG.SPREADSHEET_ID}"></div>
       <div class="field"><label>Apps Script Web App URL</label><input class="mono" placeholder="https://script.google.com/macros/s/…/exec" value="${CONFIG.SHEETS_API_URL}"></div></div>
-    <div style="display:flex;gap:10px;margin:4px 0 22px"><button class="btn btn-navy" onclick="toast('เชื่อมต่อสำเร็จ — พบ 8 ชีต','ok')">${I.sync} ทดสอบการเชื่อมต่อ</button><button class="btn btn-ghost" onclick="toast('กำลังซิงค์...','ok')">${I.db} ซิงค์ตอนนี้</button></div>
+    <div style="display:flex;gap:10px;margin:4px 0 22px"><button class="btn btn-navy" onclick="syncDB();toast('กำลังทดสอบการเชื่อมต่อ...','ok')">${I.sync} ทดสอบการเชื่อมต่อ</button><button class="btn btn-ghost" onclick="toast('กำลังซิงค์...','ok')">${I.db} ซิงค์ตอนนี้</button></div>
     <div class="si" style="margin-bottom:6px">โครงสร้างชีต (8 แท็บ)</div><div class="sd" style="margin-bottom:14px">🔑 = คอลัมน์คีย์ • โครงสร้างนี้รองรับทุกประเภทกิจกรรมในระบบเดียว</div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">
       ${SHEETS.map(s=>`<div class="sheet-card"><div class="sh">${I.db}<span class="tabname">${s.n}</span><span class="cnt">${s.c.length} คอลัมน์</span></div>
