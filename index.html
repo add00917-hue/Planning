@@ -1014,7 +1014,11 @@ function showRec(id){
 /* ===================== FORMS (insert real records) ===================== */
 function empOptions(sel){return employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(e.name)} (${e.id})</option>`).join('');}
 function fval(id){const el=document.getElementById(id);return el?el.value:'';}
-function addRecord(rec){records.unshift(rec);}
+async function saveRecordDB(rec){
+  if(!CONFIG.SHEETS_API_URL)return;
+  try{await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'createRecord',emp_id:rec.emp,category:rec.cat,start_date:rec.start,end_date:rec.end,start_time:rec.st,end_time:rec.et,title:rec.title,location:rec.location,overnight:rec.overnight,cost:rec.cost,note:rec.note})});}catch(e){}
+}
+function addRecord(rec){records.unshift(rec);saveRecordDB(rec);}
 
 function openLeaveForm(){
   openModal(`<div class="mh"><h3>แจ้งลา</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
@@ -1173,10 +1177,20 @@ function openEmpForm(id){const e=id?emp(id):null; _empPhoto=e&&e.photo?e.photo:'
   </div>
   <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitEmp(${e?`'${e.id}'`:'null'})">${I.check2} บันทึก</button></div>`);
 }
-function submitEmp(id){
+async function submitEmp(id){
   const data={name:fval('e-name'),id:fval('e-id'),dept:fval('e-dept'),pos:fval('e-pos'),user:fval('e-user'),pass:fval('e-pass'),role:fval('e-role'),status:fval('e-status'),photo:_empPhoto};
+  if(!data.id){toast('กรุณาระบุรหัสสมาชิก','warn');return;}
   if(id){Object.assign(emp(id),data);}else{employees.push(Object.assign({line:false},data));}
-  closeModal();go(currentView==='gantt'?'gantt':'admin');if(currentView!=='gantt')setTimeout(()=>setAdmin('employees'),0);toast(id?'บันทึกข้อมูลแล้ว':'เพิ่มสมาชิกแล้ว','ok');
+  closeModal();go(currentView==='gantt'?'gantt':'admin');if(currentView!=='gantt')setTimeout(()=>setAdmin('employees'),0);
+  // บันทึกลงฐานข้อมูลจริง
+  if(CONFIG.SHEETS_API_URL){
+    try{
+      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,dept:data.dept,position:data.pos,role:data.role,username:data.user,password:data.pass,status:data.status,photo:data.photo,actor:CURUSER.id})});
+      const j=await res.json();
+      if(j&&j.ok){toast('บันทึกลงฐานข้อมูลแล้ว','ok');}
+      else{toast('บันทึกในเครื่องแล้ว แต่ฐานข้อมูลตอบกลับผิดพลาด','warn');}
+    }catch(e){toast('บันทึกในเครื่องแล้ว • เชื่อมฐานข้อมูลไม่ได้ (ยังไม่ขึ้นชีต)','warn');}
+  } else { toast(id?'บันทึกข้อมูลแล้ว':'เพิ่มสมาชิกแล้ว','ok'); }
 }
 
 function adminActivities(){
