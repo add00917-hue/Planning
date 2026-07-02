@@ -114,6 +114,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .sb-user .u-role{font-size:11px;color:rgba(255,255,255,.5)}
 .sb-user .u-out{margin-left:auto;color:rgba(255,255,255,.5);padding:6px;border-radius:8px}
 .sb-user .u-out:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-login-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border-radius:14px;background:linear-gradient(135deg,var(--yellow-bright),var(--yellow-dark));color:var(--navy-deep);font-weight:700;font-size:14px;box-shadow:0 6px 16px rgba(255,180,20,.3)}
+.sb-login-btn svg{width:18px;height:18px;stroke-width:2.2}
+.admin-gate{display:flex;align-items:center;gap:14px;background:linear-gradient(100deg,var(--yellow-pale),#fff);border:1px solid #F2DDA4;border-radius:var(--r);padding:16px 20px;margin-bottom:18px}
+.admin-gate .ag-ic{width:44px;height:44px;border-radius:12px;background:var(--yellow-pale);color:var(--yellow-dark);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.admin-gate .ag-ic svg{width:22px;height:22px}
+.admin-gate .ag-t{flex:1}.admin-gate .ag-t b{font-size:14.5px;color:var(--ink)}.admin-gate .ag-t p{font-size:12.5px;color:var(--ink-mid);margin-top:2px}
 
 .main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
 .topbar{height:66px;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
@@ -445,7 +451,7 @@ table.t tbody tr:hover{background:#F8FAFD}
     </div>
     <div class="enter-wrap">
       <div class="enter-hint">Enter System</div>
-      <button class="enter-btn" onclick="showLogin()">เข้าสู่หน้าหลัก
+      <button class="enter-btn" onclick="enterApp()">เข้าสู่หน้าหลัก
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
@@ -483,9 +489,7 @@ table.t tbody tr:hover{background:#F8FAFD}
     <div class="sb-section">ระบบ</div>
     <button class="nav-link" data-view="admin" onclick="go('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Admin Panel</button>
     <div class="sb-spacer"></div>
-    <div class="sb-user"><div class="sb-ava" id="sb-ava">?</div><div><div class="u-name" id="sb-uname">ยังไม่เข้าสู่ระบบ</div><div class="u-role" id="sb-urole">-</div></div>
-      <button class="u-out" title="ออกจากระบบ" onclick="exitApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
-    </div>
+    <div class="sb-user" id="sb-user"></div>
   </aside>
 
   <div class="main">
@@ -506,7 +510,7 @@ table.t tbody tr:hover{background:#F8FAFD}
 
 <script>
 /* ===================== Plans & Activities of the GNR3 team ===================== */
-const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://gnr3.app/team' };
+const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://add00917-hue.github.io/leave/' };
 
 /* ---- categories (drive calendar dots, gantt bars, sections) ---- */
 const CAT = {
@@ -631,9 +635,9 @@ function recOnDate(isoStr){return records.filter(r=>r.start<=isoStr&&isoStr<=r.e
 function catTag(cat){return `<span class="tag" style="background:${CAT[cat].c}"><span class="d"></span>${CAT[cat].th}</span>`;}
 
 /* ---- navigation ---- */
-function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');updateBadges();go('dashboard');syncDB();}
+function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');renderSidebarUser();updateBadges();go('dashboard');syncDB();}
 function exitApp(){document.getElementById('app').classList.add('hidden');document.getElementById('landing').classList.remove('hidden');}
-let CURUSER={id:'',name:'ผู้ใช้งาน',role:'user',pos:'',photo:''};
+let CURUSER={id:'',name:'ผู้เยี่ยมชม',role:'guest',pos:'',photo:''};
 function showLogin(){document.getElementById('clogin').classList.remove('hidden');setTimeout(function(){var u=document.getElementById('cl-user');if(u)u.focus();},60);}
 function clStatus(m,k){const el=document.getElementById('cl-status');if(el){el.textContent=m||'';el.className='clogin-status '+(k||'');}}
 async function clogin(){
@@ -653,16 +657,25 @@ async function clogin(){
   if(!fnd){clStatus('เชื่อมต่อฐานข้อมูลไม่ได้ และข้อมูลเข้าสู่ระบบไม่ถูกต้อง','err');return;}
   CURUSER={id:fnd.id,name:fnd.name,role:fnd.role,pos:fnd.pos,photo:fnd.photo||''};doEnter();
 }
-function refreshSidebar(){
-  const av=document.getElementById('sb-ava'); if(av){av.style.background=avaColor(CURUSER.id);av.innerHTML=CURUSER.photo?`<img src="${CURUSER.photo}" style="width:100%;height:100%;object-fit:cover;display:block">`:initial(CURUSER.name);}
-  const nm=document.getElementById('sb-uname'); if(nm)nm.textContent=CURUSER.name;
-  const rl=document.getElementById('sb-urole'); if(rl)rl.textContent=({user:'ผู้ใช้ทั่วไป',approver:'ผู้อนุมัติ',admin:'ผู้ดูแลระบบ'})[CURUSER.role]||'ผู้ใช้งาน';
+function renderSidebarUser(){
+  const box=document.getElementById('sb-user'); if(!box)return;
+  if(!CURUSER.id||CURUSER.role==='guest'){
+    box.innerHTML=`<button class="sb-login-btn" onclick="showLogin()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> เข้าสู่ระบบ</button>`;
+    return;
+  }
+  const ava=CURUSER.photo?`<img src="${CURUSER.photo}" style="width:100%;height:100%;object-fit:cover;display:block">`:initial(CURUSER.name);
+  box.innerHTML=`<div class="sb-ava" style="background:${avaColor(CURUSER.id)}">${ava}</div>
+    <div style="min-width:0"><div class="u-name">${esc(CURUSER.name)}</div><div class="u-role">${({user:'ผู้ใช้ทั่วไป',approver:'ผู้อนุมัติ',admin:'ผู้ดูแลระบบ'})[CURUSER.role]||'ผู้ใช้งาน'}</div></div>
+    <button class="u-out" title="ออกจากระบบ" onclick="logoutUser()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>`;
 }
+function refreshSidebar(){renderSidebarUser();}
+function logoutUser(){CURUSER={id:'',name:'ผู้เยี่ยมชม',role:'guest',pos:'',photo:''};renderSidebarUser();go(currentView);toast('ออกจากระบบแล้ว','ok');}
 function doEnter(){
   document.getElementById('clogin').classList.add('hidden');
   clStatus('');
-  enterApp();
-  refreshSidebar();
+  renderSidebarUser();
+  go(currentView);
+  toast('เข้าสู่ระบบ: '+CURUSER.name,'ok');
 }
 function openNav(){document.getElementById('app').classList.add('nav-open');}
 function closeNav(){document.getElementById('app').classList.remove('nav-open');}
@@ -730,7 +743,7 @@ function viewDashboard(){
   const todayN=recOnDate(TODAY_ISO).length;
   const monthN=records.filter(r=>r.start.slice(0,7)===TODAY_ISO.slice(0,7)).length;
   return `
-  <div class="page-head"><div><h1>ภาพรวมองค์กร</h1><p>ข้อมูลล่าสุด • อัปเดตจาก Google Sheets</p></div>
+  <div class="page-head"><div><h1>ภาพรวมทีม GNR3</h1><p>ข้อมูลล่าสุด • อัปเดตฐานข้อมูล</p></div>
     <div class="head-actions"><button class="btn btn-ghost" onclick="toast('กำลังสร้างรายงาน...','ok')">${I.dl} ส่งออกรายงาน</button>
     <button class="btn btn-primary" onclick="openRecordPicker()">${I.plus} เพิ่มรายการ</button></div></div>
   <div class="kpi-rail">
@@ -1090,6 +1103,7 @@ function toast(msg,kind){kind=kind||'ok';
 /* ===================== ADMIN ===================== */
 function viewAdmin(){
   return `<div class="page-head"><div><h1>Admin Panel</h1><p>ตั้งค่าระบบ สมาชิก และผู้ใช้งาน</p></div></div>
+  ${(!CURUSER.id||CURUSER.role==='guest')?`<div class="admin-gate"><div class="ag-ic">${I.lock}</div><div class="ag-t"><b>โหมดผู้เยี่ยมชม</b><p>เข้าสู่ระบบเพื่อจัดการสมาชิก สิทธิ์ และการตั้งค่า (ดูข้อมูลได้ แต่การบันทึกต้องเข้าสู่ระบบ)</p></div><button class="btn btn-primary" onclick="showLogin()">${I.lock} เข้าสู่ระบบ</button></div>`:''}
   <div class="admin-layout">
     <nav class="admin-nav">
       <button class="on" data-a="employees" onclick="setAdmin('employees')">${I.users} สมาชิก &amp; สิทธิ์</button>
@@ -1137,11 +1151,13 @@ function adminEmployees(){
 }
 let _empPhoto='';
 function empPhotoBox(){const src=_empPhoto;return `<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
-    <div id="emp-ava-prev" style="width:72px;height:72px;border-radius:20px;background:${src?'#0000':'var(--canvas-2)'};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid var(--line)">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:`<span style="color:var(--ink-soft)">${I.users}</span>`}</div>
-    <div><button type="button" class="btn btn-ghost" onclick="pickPhoto(function(d){_empPhoto=d;document.getElementById('emp-ava-prev').innerHTML='<img src=\''+d+'\' style=\'width:100%;height:100%;object-fit:cover\'>';})">${I.dl} อัปโหลดรูป</button>
-    ${src?`<button type="button" class="btn btn-ghost" style="margin-left:8px" onclick="_empPhoto='';document.getElementById('emp-ava-prev').innerHTML='<span style=\'color:var(--ink-soft)\'>${''}</span>'">ลบรูป</button>`:''}
+    <div id="emp-ava-prev" style="width:72px;height:72px;border-radius:20px;background:${src?'#EEF2F8':'var(--canvas-2)'};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid var(--line)">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:`<span style="color:var(--ink-soft)">${I.users}</span>`}</div>
+    <div><button type="button" class="btn btn-ghost" onclick="pickEmpPhoto()">${I.dl} อัปโหลดรูป</button>
+    <button type="button" class="btn btn-ghost" style="margin-left:8px" onclick="clearEmpPhoto()">ลบรูป</button>
     <div class="hint" style="margin-top:8px">แนะนำรูปสี่เหลี่ยมจัตุรัส • ระบบย่อขนาดอัตโนมัติ</div></div>
   </div>`;}
+function pickEmpPhoto(){pickPhoto(function(d){_empPhoto=d;const el=document.getElementById('emp-ava-prev');if(el)el.innerHTML='<img src="'+d+'" style="width:100%;height:100%;object-fit:cover">';});}
+function clearEmpPhoto(){_empPhoto='';const el=document.getElementById('emp-ava-prev');if(el)el.innerHTML='<span style="color:var(--ink-soft)">'+I.users+'</span>';}
 function openEmpForm(id){const e=id?emp(id):null; _empPhoto=e&&e.photo?e.photo:'';
   openModal(`<div class="mh"><h3>${e?'แก้ไขสมาชิก':'เพิ่มสมาชิก'}</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
@@ -1295,7 +1311,7 @@ function submitHoliday(){const d=fval('h-date'); if(!d){toast('กรุณา�
 function delHoliday(date){holidays=holidays.filter(h=>h.date!==date);go('admin');setAdmin('holidays');toast('ลบวันหยุดแล้ว','ok');}
 
 /* ===================== QR ===================== */
-const QR_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" shape-rendering="crispEdges" fill="#0A2342"><rect x="0" y="0" width="7" height="1"/><rect x="12" y="0" width="1" height="1"/><rect x="14" y="0" width="1" height="1"/><rect x="18" y="0" width="7" height="1"/><rect x="0" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="8" y="1" width="3" height="1"/><rect x="14" y="1" width="1" height="1"/><rect x="16" y="1" width="1" height="1"/><rect x="18" y="1" width="1" height="1"/><rect x="24" y="1" width="1" height="1"/><rect x="0" y="2" width="1" height="1"/><rect x="2" y="2" width="3" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="8" y="2" width="3" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="18" y="2" width="1" height="1"/><rect x="20" y="2" width="3" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="2" y="3" width="3" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="12" y="3" width="2" height="1"/><rect x="15" y="3" width="2" height="1"/><rect x="18" y="3" width="1" height="1"/><rect x="20" y="3" width="3" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="0" y="4" width="1" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="3" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="18" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="0" y="6" width="7" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="6" width="7" height="1"/><rect x="8" y="7" width="4" height="1"/><rect x="14" y="7" width="1" height="1"/><rect x="0" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="12" y="8" width="7" height="1"/><rect x="21" y="8" width="3" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="5" y="9" width="1" height="1"/><rect x="7" y="9" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="14" y="9" width="2" height="1"/><rect x="19" y="9" width="5" height="1"/><rect x="0" y="10" width="5" height="1"/><rect x="6" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="11" y="10" width="1" height="1"/><rect x="15" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="3" height="1"/><rect x="23" y="10" width="2" height="1"/><rect x="1" y="11" width="2" height="1"/><rect x="7" y="11" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="14" y="11" width="1" height="1"/><rect x="19" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="24" y="11" width="1" height="1"/><rect x="0" y="12" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="5" y="12" width="2" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="15" y="12" width="1" height="1"/><rect x="18" y="12" width="2" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="0" y="13" width="1" height="1"/><rect x="2" y="13" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="7" y="13" width="2" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="14" y="13" width="4" height="1"/><rect x="19" y="13" width="1" height="1"/><rect x="23" y="13" width="1" height="1"/><rect x="0" y="14" width="1" height="1"/><rect x="4" y="14" width="3" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="10" y="14" width="7" height="1"/><rect x="18" y="14" width="4" height="1"/><rect x="23" y="14" width="2" height="1"/><rect x="0" y="15" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="7" y="15" width="5" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="19" y="15" width="1" height="1"/><rect x="21" y="15" width="2" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="0" y="16" width="1" height="1"/><rect x="3" y="16" width="4" height="1"/><rect x="8" y="16" width="2" height="1"/><rect x="11" y="16" width="1" height="1"/><rect x="13" y="16" width="8" height="1"/><rect x="22" y="16" width="1" height="1"/><rect x="8" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="20" y="17" width="1" height="1"/><rect x="0" y="18" width="7" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="18" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="24" y="18" width="1" height="1"/><rect x="0" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="14" y="19" width="3" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="0" y="20" width="1" height="1"/><rect x="2" y="20" width="3" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="9" y="20" width="2" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="6" height="1"/><rect x="22" y="20" width="3" height="1"/><rect x="0" y="21" width="1" height="1"/><rect x="2" y="21" width="3" height="1"/><rect x="6" y="21" width="1" height="1"/><rect x="10" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="23" y="21" width="2" height="1"/><rect x="0" y="22" width="1" height="1"/><rect x="2" y="22" width="3" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="10" y="22" width="3" height="1"/><rect x="16" y="22" width="2" height="1"/><rect x="21" y="22" width="2" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="0" y="23" width="1" height="1"/><rect x="6" y="23" width="1" height="1"/><rect x="10" y="23" width="2" height="1"/><rect x="16" y="23" width="1" height="1"/><rect x="18" y="23" width="3" height="1"/><rect x="24" y="23" width="1" height="1"/><rect x="0" y="24" width="7" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="10" y="24" width="1" height="1"/><rect x="12" y="24" width="5" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/></svg>`;
+const QR_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges"><path class="qrline" stroke="#0a2342" d="M2 2.5h7m2 0h1m5 0h2m1 0h2m3 0h4m1 0h1m1 0h7m-37 1h1m5 0h1m3 0h1m1 0h4m2 0h1m1 0h2m4 0h1m3 0h1m5 0h1m-37 1h1m1 0h3m1 0h1m2 0h3m1 0h2m2 0h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m2 0h1m2 0h2m1 0h2m1 0h3m2 0h4m3 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h1m1 0h1m3 0h4m1 0h3m2 0h1m1 0h3m1 0h1m-37 1h1m5 0h1m2 0h1m2 0h2m1 0h1m1 0h1m1 0h1m6 0h1m3 0h1m5 0h1m-37 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-29 1h4m2 0h1m1 0h1m2 0h10m-27 1h2m2 0h4m1 0h5m2 0h1m1 0h1m2 0h5m1 0h2m1 0h1m-31 1h2m1 0h1m1 0h6m1 0h1m1 0h8m1 0h1m1 0h1m2 0h1m2 0h1m-34 1h1m2 0h2m1 0h1m7 0h1m4 0h2m2 0h3m2 0h2m1 0h1m1 0h1m-34 1h1m2 0h3m4 0h2m2 0h4m1 0h1m2 0h2m1 0h2m1 0h1m3 0h5m-37 1h1m2 0h1m2 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m2 0h4m1 0h4m1 0h3m-37 1h2m1 0h1m5 0h1m1 0h4m1 0h1m2 0h1m1 0h2m1 0h1m1 0h3m1 0h3m1 0h1m1 0h1m-37 1h3m3 0h1m1 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h2m2 0h2m1 0h1m2 0h1m2 0h1m-32 1h3m4 0h1m2 0h1m3 0h2m2 0h1m4 0h1m1 0h3m1 0h1m3 0h1m-37 1h1m3 0h1m1 0h2m3 0h4m1 0h4m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h2m-35 1h3m2 0h1m8 0h4m2 0h3m4 0h1m1 0h3m2 0h1m1 0h1m-33 1h1m1 0h3m2 0h1m1 0h1m3 0h3m1 0h2m2 0h7m1 0h1m1 0h2m-37 1h2m3 0h1m1 0h3m2 0h1m2 0h2m1 0h1m1 0h1m2 0h2m3 0h1m-27 1h1m3 0h2m1 0h1m1 0h1m2 0h1m2 0h3m2 0h2m3 0h3m2 0h2m1 0h1m-36 1h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1m4 0h4m1 0h1m9 0h1m1 0h2m-35 1h1m1 0h2m2 0h2m1 0h1m1 0h1m4 0h1m1 0h1m2 0h3m2 0h1m2 0h1m2 0h2m-34 1h2m2 0h1m6 0h5m1 0h1m3 0h2m1 0h5m4 0h3m-36 1h1m1 0h5m3 0h1m2 0h2m1 0h1m1 0h2m1 0h3m6 0h1m1 0h1m1 0h3m-34 1h2m2 0h1m3 0h1m2 0h5m2 0h3m4 0h2m2 0h2m1 0h2m-36 1h1m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m2 0h4m4 0h2m1 0h2m6 0h1m-36 1h1m1 0h3m3 0h1m1 0h1m1 0h2m1 0h3m2 0h3m1 0h1m1 0h1m1 0h2m1 0h1m-29 1h1m2 0h1m1 0h1m1 0h1m3 0h2m2 0h2m1 0h3m1 0h1m1 0h6m1 0h1m1 0h1m-29 1h1m2 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m3 0h3m1 0h1m-37 1h7m1 0h1m2 0h5m1 0h2m1 0h2m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m-37 1h1m5 0h1m4 0h2m2 0h1m1 0h2m4 0h2m3 0h1m3 0h2m1 0h1m-36 1h1m1 0h3m1 0h1m4 0h9m1 0h1m1 0h1m4 0h6m1 0h1m-36 1h1m1 0h3m1 0h1m1 0h7m1 0h1m8 0h1m1 0h2m1 0h1m1 0h2m-34 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h2m2 0h1m4 0h3m2 0h1m-36 1h1m5 0h1m3 0h3m1 0h2m2 0h1m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m-35 1h7m4 0h2m1 0h3m2 0h2m1 0h6m1 0h1m1 0h1m2 0h3"/></svg>`;
 function injectQR(){const el=document.getElementById('qr-svg'); if(el)el.innerHTML=QR_SVG;}
 function downloadQR(){const blob=new Blob([QR_SVG],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gnr3-team-qr.svg';a.click();toast('ดาวน์โหลด QR แล้ว','ok');}
 function copyLink(){navigator.clipboard&&navigator.clipboard.writeText(CONFIG.MOBILE_APP_URL);toast('คัดลอกลิงก์แล้ว','ok');}
