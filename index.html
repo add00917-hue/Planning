@@ -629,7 +629,20 @@ const emp=id=>employees.find(e=>e.id===id)||{name:'-',dept:'-',id:id,pos:''};
 const initial=n=>{n=String(n==null?'':n).trim();return n?n.charAt(0):'?';};
 function avaColor(id){id=String(id==null?'x':id)||'x';let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
 function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${e.photo?`<img src="${e.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">`:initial(e.name)}</div>`;}
-function pickPhoto(cb){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=function(){const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=function(){const img=new Image();img.onload=function(){const S=200,sc=Math.min(S/img.width,S/img.height,1),w=Math.round(img.width*sc),h=Math.round(img.height*sc);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',0.72));};img.src=rd.result;};rd.readAsDataURL(f);};inp.click();}
+function pickPhoto(cb){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
+  function cleanup(){try{if(inp.parentNode)inp.parentNode.removeChild(inp);}catch(e){}}
+  inp.onchange=function(){const f=inp.files&&inp.files[0];if(!f){cleanup();return;}
+    const rd=new FileReader();rd.onload=function(){const img=new Image();img.onload=function(){
+      const S=150,sc=Math.min(S/img.width,S/img.height,1),w=Math.round(img.width*sc),h=Math.round(img.height*sc);
+      const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+      try{cb(c.toDataURL('image/jpeg',0.62));}finally{cleanup();}
+    };img.onerror=cleanup;img.src=rd.result;};rd.onerror=cleanup;rd.readAsDataURL(f);};
+  document.body.appendChild(inp);inp.click();
+  const rm=function(){setTimeout(cleanup,400);window.removeEventListener('focus',rm);};
+  window.addEventListener('focus',rm);
+}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function recOnDate(isoStr){return records.filter(r=>r.start<=isoStr&&isoStr<=r.end);}
 function catTag(cat){return `<span class="tag" style="background:${CAT[cat].c}"><span class="d"></span>${CAT[cat].th}</span>`;}
@@ -716,6 +729,20 @@ function setDB(st){DBS=st;
   const m={connecting:['wait','เชื่อมต่อฐานข้อมูล...'],online:['','ฐานข้อมูลเชื่อมต่อ'],offline:['off','ออฟไลน์ • ข้อมูลตัวอย่าง']};
   if(el){el.className='tb-line '+m[st][0];el.querySelector('span:last-child').textContent=m[st][1];}
   if(currentView==='admin'){const a=document.getElementById('ap-sheets'); if(a&&a.classList.contains('on')){a.innerHTML=adminSheets();}}
+}
+async function testConnection(){
+  if(!CONFIG.SHEETS_API_URL){toast('ยังไม่ได้ตั้งค่า URL ฐานข้อมูล','warn');return;}
+  toast('กำลังทดสอบการเชื่อมต่อ...','ok');
+  try{
+    const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'ping'})});
+    let j=null; try{ j=await r.json(); }catch(e){ j=null; }
+    if(j&&j.ok){
+      const build=(j.data&&j.data.build)||null;
+      if(build){ toast('✓ เชื่อมต่อสำเร็จ • โค้ดเวอร์ชัน '+build+' (รองรับบันทึกรูป) — กำลังโหลดข้อมูล','ok'); syncDB(); }
+      else { toast('⚠ เชื่อมต่อได้ แต่โค้ดที่ Deploy เป็นเวอร์ชันเก่า (จะบันทึกรูปไม่ได้) — โปรด Deploy > Manage deployments > New version','warn'); syncDB(); }
+    }
+    else { toast('✗ เซิร์ฟเวอร์ไม่ตอบเป็น JSON — มักเกิดจากยังไม่ได้ตั้ง Deploy = Anyone หรือยังไม่อนุญาตสิทธิ์ (Authorize)','warn'); }
+  }catch(e){ toast('✗ เชื่อมต่อไม่ได้ — ตรวจ 3 ข้อ: (1) Deploy = Anyone (2) อนุญาตสิทธิ์แล้ว (3) เปิดเว็บผ่าน https ไม่ใช่ file://','warn'); }
 }
 async function syncDB(){
   if(!CONFIG.SHEETS_API_URL){setDB('offline');return;}
@@ -1184,12 +1211,21 @@ async function submitEmp(id){
   closeModal();go(currentView==='gantt'?'gantt':'admin');if(currentView!=='gantt')setTimeout(()=>setAdmin('employees'),0);
   // บันทึกลงฐานข้อมูลจริง
   if(CONFIG.SHEETS_API_URL){
+    const AP=CONFIG.SHEETS_API_URL, HD={'Content-Type':'text/plain;charset=utf-8'};
     try{
-      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,dept:data.dept,position:data.pos,role:data.role,username:data.user,password:data.pass,status:data.status,photo:data.photo,actor:CURUSER.id})});
+      const res=await fetch(AP,{method:'POST',headers:HD,body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,dept:data.dept,position:data.pos,role:data.role,username:data.user,password:data.pass,status:data.status,photo:data.photo,actor:CURUSER.id})});
       const j=await res.json();
-      if(j&&j.ok){toast('บันทึกลงฐานข้อมูลแล้ว','ok');}
+      if(j&&j.ok){
+        // อ่านข้อมูลกลับจากชีตเพื่อยืนยันว่าถูกเก็บจริง
+        let confirmed=false,hasPhoto=false;
+        try{const c=await fetch(AP,{method:'POST',headers:HD,body:JSON.stringify({action:'photoStatus',emp_id:data.id})});const cj=await c.json();if(cj&&cj.ok&&cj.data){confirmed=true;hasPhoto=!!cj.data.hasPhoto;}}catch(e){}
+        if(confirmed){
+          if(!data.photo||hasPhoto) toast('✓ ยืนยันแล้ว: บันทึกลงฐานข้อมูล'+(data.photo?' พร้อมรูปโปรไฟล์':'')+' • เปิดจากเครื่องอื่นเห็นได้','ok');
+          else toast('บันทึกข้อมูลแล้ว แต่ยังไม่พบรูปในฐานข้อมูล — โปรด Deploy Apps Script เวอร์ชันใหม่','warn');
+        } else toast('⚠ บันทึกข้อมูลแล้ว แต่ยืนยันรูปไม่ได้ — โค้ดที่ Deploy เป็นเวอร์ชันเก่า (ยังไม่มีระบบเก็บรูป) โปรด Deploy > Manage deployments > New version','warn');
+      }
       else{toast('บันทึกในเครื่องแล้ว แต่ฐานข้อมูลตอบกลับผิดพลาด','warn');}
-    }catch(e){toast('บันทึกในเครื่องแล้ว • เชื่อมฐานข้อมูลไม่ได้ (ยังไม่ขึ้นชีต)','warn');}
+    }catch(e){toast('บันทึกในเครื่องเท่านั้น • เชื่อมฐานข้อมูลไม่ได้ (เครื่องอื่นจะยังไม่เห็น)','warn');}
   } else { toast(id?'บันทึกข้อมูลแล้ว':'เพิ่มสมาชิกแล้ว','ok'); }
 }
 
@@ -1257,7 +1293,7 @@ function adminSheets(){
   <div class="card-b">
     <div class="set-grid"><div class="field"><label>Spreadsheet ID</label><input class="mono" value="${CONFIG.SPREADSHEET_ID}"></div>
       <div class="field"><label>Apps Script Web App URL</label><input class="mono" placeholder="https://script.google.com/macros/s/…/exec" value="${CONFIG.SHEETS_API_URL}"></div></div>
-    <div style="display:flex;gap:10px;margin:4px 0 22px"><button class="btn btn-navy" onclick="syncDB();toast('กำลังทดสอบการเชื่อมต่อ...','ok')">${I.sync} ทดสอบการเชื่อมต่อ</button><button class="btn btn-ghost" onclick="toast('กำลังซิงค์...','ok')">${I.db} ซิงค์ตอนนี้</button></div>
+    <div style="display:flex;gap:10px;margin:4px 0 22px"><button class="btn btn-navy" onclick="testConnection()">${I.sync} ทดสอบการเชื่อมต่อ</button><button class="btn btn-ghost" onclick="toast('กำลังซิงค์...','ok')">${I.db} ซิงค์ตอนนี้</button></div>
     <div class="si" style="margin-bottom:6px">โครงสร้างชีต (8 แท็บ)</div><div class="sd" style="margin-bottom:14px">🔑 = คอลัมน์คีย์ • โครงสร้างนี้รองรับทุกประเภทกิจกรรมในระบบเดียว</div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">
       ${SHEETS.map(s=>`<div class="sheet-card"><div class="sh">${I.db}<span class="tabname">${s.n}</span><span class="cnt">${s.c.length} คอลัมน์</span></div>
