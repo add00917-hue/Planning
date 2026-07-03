@@ -72,22 +72,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enter-btn svg{width:22px;height:22px;stroke-width:2.6}
 .l-foot{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.34);font-family:var(--mono);z-index:2;padding:0 16px}
 
-/* ============ CONSOLE LOGIN ============ */
-.clogin{position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(140% 120% at 50% -10%,#1A3F7A 0%,#0C2750 42%,#07182E 100%);overflow:hidden}
-.clogin-card{position:relative;z-index:2;width:min(400px,100%);background:rgba(255,255,255,.06);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:34px 30px;text-align:center;color:#fff;box-shadow:var(--shadow-lg);animation:pop .35s cubic-bezier(.16,1,.3,1)}
-.clogin-mark{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--yellow-bright),var(--yellow-dark));display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:20px;color:var(--navy-deep);margin:0 auto 18px;box-shadow:0 10px 26px rgba(255,180,20,.4)}
-.clogin-card h2{font-size:22px;font-weight:700;margin-bottom:4px}
-.clogin-card .cl-p{font-size:12.5px;color:rgba(255,255,255,.6);margin-bottom:22px}
-.clf{text-align:left;margin-bottom:14px}
-.clf label{display:block;font-size:12px;color:rgba(255,255,255,.65);margin-bottom:7px;font-weight:500}
-.clf input{width:100%;padding:13px 15px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#fff;font-size:14.5px;outline:none;font-family:inherit}
-.clf input:focus{border-color:var(--yellow);background:rgba(255,255,255,.12)}
-.clogin-btn{width:100%;margin-top:6px;padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--yellow-bright),var(--yellow-dark));color:var(--navy-deep);font-weight:700;font-size:15px;box-shadow:0 8px 22px rgba(255,180,20,.35)}
-.clogin-btn:active{transform:scale(.99)}
-.clogin-status{font-size:12.5px;margin-top:12px;min-height:16px;font-weight:600}
-.clogin-status.err{color:#FCA5A5}.clogin-status.wait{color:#FCD34D}
-.clogin-hint{font-size:11.5px;color:rgba(255,255,255,.45);margin-top:14px;line-height:1.6}
-.clogin-back{margin-top:14px;font-size:12.5px;color:rgba(255,255,255,.6)}
 /* ============ APP SHELL ============ */
 .app{display:grid;grid-template-columns:var(--sb) 1fr;height:100vh;background:var(--canvas)}
 .sidebar{background:linear-gradient(185deg,var(--navy-dark) 0%,var(--navy-deep) 100%);color:#fff;display:flex;flex-direction:column;
@@ -114,12 +98,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .sb-user .u-role{font-size:11px;color:rgba(255,255,255,.5)}
 .sb-user .u-out{margin-left:auto;color:rgba(255,255,255,.5);padding:6px;border-radius:8px}
 .sb-user .u-out:hover{background:rgba(255,255,255,.08);color:#fff}
-.sb-login-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border-radius:14px;background:linear-gradient(135deg,var(--yellow-bright),var(--yellow-dark));color:var(--navy-deep);font-weight:700;font-size:14px;box-shadow:0 6px 16px rgba(255,180,20,.3)}
-.sb-login-btn svg{width:18px;height:18px;stroke-width:2.2}
-.admin-gate{display:flex;align-items:center;gap:14px;background:linear-gradient(100deg,var(--yellow-pale),#fff);border:1px solid #F2DDA4;border-radius:var(--r);padding:16px 20px;margin-bottom:18px}
-.admin-gate .ag-ic{width:44px;height:44px;border-radius:12px;background:var(--yellow-pale);color:var(--yellow-dark);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.admin-gate .ag-ic svg{width:22px;height:22px}
-.admin-gate .ag-t{flex:1}.admin-gate .ag-t b{font-size:14.5px;color:var(--ink)}.admin-gate .ag-t p{font-size:12.5px;color:var(--ink-mid);margin-top:2px}
 
 .main{display:flex;flex-direction:column;min-width:0;overflow:hidden}
 .topbar{height:66px;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
@@ -459,22 +437,6 @@ table.t tbody tr:hover{background:#F8FAFD}
   <div class="l-foot">Plans and activities of the GNR3 team. • OPS-BSCS • © 2026</div>
 </div>
 
-<!-- ============ CONSOLE LOGIN ============ -->
-<div class="clogin hidden" id="clogin">
-  <div class="landing-grid"></div><div class="glow y"></div><div class="glow b"></div>
-  <div class="clogin-card">
-    <div class="clogin-mark">G3</div>
-    <h2>เข้าสู่ระบบ</h2>
-    <div class="cl-p">Plans and activities of the GNR3 team • OPS-BSCS</div>
-    <div class="clf"><label>ชื่อผู้ใช้งาน (Username)</label><input id="cl-user" placeholder="กรอกชื่อผู้ใช้งาน" autocomplete="off" onkeydown="if(event.key==='Enter')clogin()"></div>
-    <div class="clf"><label>รหัสผ่าน (Password)</label><input id="cl-pass" type="password" placeholder="กรอกรหัสผ่าน" onkeydown="if(event.key==='Enter')clogin()"></div>
-    <button class="clogin-btn" onclick="clogin()">เข้าสู่ระบบ</button>
-    <div class="clogin-status" id="cl-status"></div>
-    <div class="clogin-hint">ตัวอย่างผู้ดูแล: <b>admin</b> / gnr3@admin<br>ผู้อนุมัติ: <b>somchai</b> / gnr3@123</div>
-    <button class="clogin-back" onclick="document.getElementById('clogin').classList.add('hidden')">← กลับ</button>
-  </div>
-</div>
-
 <!-- ============ APP ============ -->
 <div class="app hidden" id="app">
   <div class="scrim" onclick="closeNav()"></div>
@@ -489,7 +451,9 @@ table.t tbody tr:hover{background:#F8FAFD}
     <div class="sb-section">ระบบ</div>
     <button class="nav-link" data-view="admin" onclick="go('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Admin Panel</button>
     <div class="sb-spacer"></div>
-    <div class="sb-user" id="sb-user"></div>
+    <div class="sb-user"><div class="sb-ava">ก</div><div><div class="u-name">กนกพร ส.</div><div class="u-role">ผู้ดูแลระบบ</div></div>
+      <button class="u-out" title="ออกจากระบบ" onclick="exitApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
   </aside>
 
   <div class="main">
@@ -510,7 +474,7 @@ table.t tbody tr:hover{background:#F8FAFD}
 
 <script>
 /* ===================== Plans & Activities of the GNR3 team ===================== */
-const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://add00917-hue.github.io/leave/' };
+const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://gnr3.app/team' };
 
 /* ---- categories (drive calendar dots, gantt bars, sections) ---- */
 const CAT = {
@@ -626,70 +590,17 @@ function holiName(ds){const h=holidays.find(x=>x.date===ds);return h?h.name:'';}
 /* ---- helpers ---- */
 const AC=['#15396E','#2C5BA0','#0B7A55','#C0392B','#4F46E5','#D6418B','#B47400','#3D6BB0','#0E9488','#7C3AED'];
 const emp=id=>employees.find(e=>e.id===id)||{name:'-',dept:'-',id:id,pos:''};
-const initial=n=>{n=String(n==null?'':n).trim();return n?n.charAt(0):'?';};
-function avaColor(id){id=String(id==null?'x':id)||'x';let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
+const initial=n=>(n||'?').trim().charAt(0);
+function avaColor(id){let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
 function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${e.photo?`<img src="${e.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">`:initial(e.name)}</div>`;}
-function pickPhoto(cb){
-  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
-  inp.style.cssText='position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0';
-  function cleanup(){try{if(inp.parentNode)inp.parentNode.removeChild(inp);}catch(e){}}
-  inp.onchange=function(){const f=inp.files&&inp.files[0];if(!f){cleanup();return;}
-    const rd=new FileReader();rd.onload=function(){const img=new Image();img.onload=function(){
-      const S=150,sc=Math.min(S/img.width,S/img.height,1),w=Math.round(img.width*sc),h=Math.round(img.height*sc);
-      const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
-      try{cb(c.toDataURL('image/jpeg',0.62));}finally{cleanup();}
-    };img.onerror=cleanup;img.src=rd.result;};rd.onerror=cleanup;rd.readAsDataURL(f);};
-  document.body.appendChild(inp);inp.click();
-  const rm=function(){setTimeout(cleanup,400);window.removeEventListener('focus',rm);};
-  window.addEventListener('focus',rm);
-}
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function pickPhoto(cb){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=function(){const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=function(){const img=new Image();img.onload=function(){const S=200,sc=Math.min(S/img.width,S/img.height,1),w=Math.round(img.width*sc),h=Math.round(img.height*sc);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);cb(c.toDataURL('image/jpeg',0.72));};img.src=rd.result;};rd.readAsDataURL(f);};inp.click();}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function recOnDate(isoStr){return records.filter(r=>r.start<=isoStr&&isoStr<=r.end);}
 function catTag(cat){return `<span class="tag" style="background:${CAT[cat].c}"><span class="d"></span>${CAT[cat].th}</span>`;}
 
 /* ---- navigation ---- */
-function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');renderSidebarUser();updateBadges();go('dashboard');syncDB();}
+function enterApp(){document.getElementById('landing').classList.add('hidden');document.getElementById('app').classList.remove('hidden');updateBadges();go('dashboard');syncDB();}
 function exitApp(){document.getElementById('app').classList.add('hidden');document.getElementById('landing').classList.remove('hidden');}
-let CURUSER={id:'',name:'ผู้เยี่ยมชม',role:'guest',pos:'',photo:''};
-function showLogin(){document.getElementById('clogin').classList.remove('hidden');setTimeout(function(){var u=document.getElementById('cl-user');if(u)u.focus();},60);}
-function clStatus(m,k){const el=document.getElementById('cl-status');if(el){el.textContent=m||'';el.className='clogin-status '+(k||'');}}
-async function clogin(){
-  const u=(document.getElementById('cl-user').value||'').trim();
-  const p=document.getElementById('cl-pass').value||'';
-  if(!u||!p){clStatus('กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน','err');return;}
-  clStatus('กำลังเชื่อมต่อฐานข้อมูล...','wait');
-  if(CONFIG.SHEETS_API_URL){
-    try{
-      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'login',username:u,password:p})});
-      const j=await res.json();
-      if(j&&j.ok&&j.data&&j.data.emp_id){CURUSER={id:String(j.data.emp_id),name:String(j.data.full_name||''),role:String(j.data.role||'user'),pos:String(j.data.position||''),photo:String(j.data.photo||'')};doEnter();return;}
-      if(j&&j.ok===false){clStatus(j.error||'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง','err');return;}
-    }catch(e){}
-  }
-  const fnd=employees.find(e=>e.user===u&&e.pass===p);
-  if(!fnd){clStatus('เชื่อมต่อฐานข้อมูลไม่ได้ และข้อมูลเข้าสู่ระบบไม่ถูกต้อง','err');return;}
-  CURUSER={id:fnd.id,name:fnd.name,role:fnd.role,pos:fnd.pos,photo:fnd.photo||''};doEnter();
-}
-function renderSidebarUser(){
-  const box=document.getElementById('sb-user'); if(!box)return;
-  if(!CURUSER.id||CURUSER.role==='guest'){
-    box.innerHTML=`<button class="sb-login-btn" onclick="showLogin()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> เข้าสู่ระบบ</button>`;
-    return;
-  }
-  const ava=CURUSER.photo?`<img src="${CURUSER.photo}" style="width:100%;height:100%;object-fit:cover;display:block">`:initial(CURUSER.name);
-  box.innerHTML=`<div class="sb-ava" style="background:${avaColor(CURUSER.id)}">${ava}</div>
-    <div style="min-width:0"><div class="u-name">${esc(CURUSER.name)}</div><div class="u-role">${({user:'ผู้ใช้ทั่วไป',approver:'ผู้อนุมัติ',admin:'ผู้ดูแลระบบ'})[CURUSER.role]||'ผู้ใช้งาน'}</div></div>
-    <button class="u-out" title="ออกจากระบบ" onclick="logoutUser()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>`;
-}
-function refreshSidebar(){renderSidebarUser();}
-function logoutUser(){CURUSER={id:'',name:'ผู้เยี่ยมชม',role:'guest',pos:'',photo:''};renderSidebarUser();go(currentView);toast('ออกจากระบบแล้ว','ok');}
-function doEnter(){
-  document.getElementById('clogin').classList.add('hidden');
-  clStatus('');
-  renderSidebarUser();
-  go(currentView);
-  toast('เข้าสู่ระบบ: '+CURUSER.name,'ok');
-}
 function openNav(){document.getElementById('app').classList.add('nav-open');}
 function closeNav(){document.getElementById('app').classList.remove('nav-open');}
 const TITLES={
@@ -730,20 +641,6 @@ function setDB(st){DBS=st;
   if(el){el.className='tb-line '+m[st][0];el.querySelector('span:last-child').textContent=m[st][1];}
   if(currentView==='admin'){const a=document.getElementById('ap-sheets'); if(a&&a.classList.contains('on')){a.innerHTML=adminSheets();}}
 }
-async function testConnection(){
-  if(!CONFIG.SHEETS_API_URL){toast('ยังไม่ได้ตั้งค่า URL ฐานข้อมูล','warn');return;}
-  toast('กำลังทดสอบการเชื่อมต่อ...','ok');
-  try{
-    const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'ping'})});
-    let j=null; try{ j=await r.json(); }catch(e){ j=null; }
-    if(j&&j.ok){
-      const build=(j.data&&j.data.build)||null;
-      if(build){ toast('✓ เชื่อมต่อสำเร็จ • โค้ดเวอร์ชัน '+build+' (รองรับบันทึกรูป) — กำลังโหลดข้อมูล','ok'); syncDB(); }
-      else { toast('⚠ เชื่อมต่อได้ แต่โค้ดที่ Deploy เป็นเวอร์ชันเก่า (จะบันทึกรูปไม่ได้) — โปรด Deploy > Manage deployments > New version','warn'); syncDB(); }
-    }
-    else { toast('✗ เซิร์ฟเวอร์ไม่ตอบเป็น JSON — มักเกิดจากยังไม่ได้ตั้ง Deploy = Anyone หรือยังไม่อนุญาตสิทธิ์ (Authorize)','warn'); }
-  }catch(e){ toast('✗ เชื่อมต่อไม่ได้ — ตรวจ 3 ข้อ: (1) Deploy = Anyone (2) อนุญาตสิทธิ์แล้ว (3) เปิดเว็บผ่าน https ไม่ใช่ file://','warn'); }
-}
 async function syncDB(){
   if(!CONFIG.SHEETS_API_URL){setDB('offline');return;}
   setDB('connecting');
@@ -751,12 +648,12 @@ async function syncDB(){
     const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bootstrap'})});
     const j=await res.json();
     if(j&&j.ok&&j.data){
-      const d=j.data, D=v=>(''+(v==null?'':v)).slice(0,10);
-      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:String(e.emp_id==null?'':e.emp_id),name:String(e.full_name==null?'':e.full_name),dept:String(e.dept==null?'':e.dept),pos:String(e.position==null?'':e.position),role:(['user','approver','admin'].indexOf(String(e.role))>=0?String(e.role):'user'),user:String(e.username==null?'':e.username),pass:String(e.password_hash==null?'':e.password_hash),line:!!e.line_user_id,status:String(e.status||'active'),photo:String(e.photo||'')})).filter(e=>e.id);
-      if(Array.isArray(d.records)) records=d.records.map(r=>({id:String(r.record_id==null?'':r.record_id),emp:String(r.emp_id==null?'':r.emp_id),cat:String(r.category||''),start:D(r.start_date),end:D(r.end_date||r.start_date),title:String(r.title==null?'':r.title),location:String(r.location||''),st:String(r.start_time||''),et:String(r.end_time||''),status:String(r.status||'none'),overnight:r.overnight===true||r.overnight==='TRUE'||r.overnight==='true',cost:(r.cost===''||r.cost==null)?null:Number(r.cost),note:String(r.note||'')})).filter(r=>CAT[r.cat]);
-      if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:String(h.name==null?'':h.name),type:String(h.type||'public')})).filter(h=>/^\d{4}-\d{2}-\d{2}$/.test(h.date));
-      const meRec=employees.find(x=>String(x.id)===String(CURUSER.id));
-      if(meRec){CURUSER.name=meRec.name;CURUSER.role=meRec.role;CURUSER.pos=meRec.pos;CURUSER.photo=meRec.photo||CURUSER.photo;refreshSidebar();}
+      const d=j.data, D=v=>{if(v==null||v==='')return '';v=''+v;
+        if(v.indexOf('T')>0&&(v.slice(-1)==='Z'||/[+-]\d{2}:\d{2}$/.test(v))){const dt=new Date(v);return new Date(dt.getTime()+7*3600*1000).toISOString().slice(0,10);} // แปลง UTC → เวลาไทย กันวันเลื่อน
+        return v.slice(0,10);};
+      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:e.emp_id,name:e.full_name,dept:e.dept,pos:e.position,role:e.role||'user',user:e.username,pass:e.password_hash,line:!!e.line_user_id,status:e.status||'active',photo:e.photo||''}));
+      if(Array.isArray(d.records)) records=d.records.map(r=>({id:r.record_id,emp:r.emp_id,cat:r.category,start:D(r.start_date),end:D(r.end_date||r.start_date),title:r.title,location:r.location||'',st:r.start_time||'',et:r.end_time||'',status:r.status||'none',overnight:r.overnight===true||r.overnight==='TRUE'||r.overnight==='true',cost:(r.cost===''||r.cost==null)?null:Number(r.cost),note:r.note||''})).filter(r=>CAT[r.cat]);
+      if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
       setDB('online'); updateBadges(); go(currentView);
       toast('โหลดข้อมูลจากฐานข้อมูลแล้ว • '+employees.length+' สมาชิก, '+records.length+' รายการ','ok');
     } else setDB('offline');
@@ -770,7 +667,7 @@ function viewDashboard(){
   const todayN=recOnDate(TODAY_ISO).length;
   const monthN=records.filter(r=>r.start.slice(0,7)===TODAY_ISO.slice(0,7)).length;
   return `
-  <div class="page-head"><div><h1>ภาพรวมทีม GNR3</h1><p>ข้อมูลล่าสุด • อัปเดตฐานข้อมูล</p></div>
+  <div class="page-head"><div><h1>ภาพรวมองค์กร</h1><p>ข้อมูลล่าสุด • อัปเดตจาก Google Sheets</p></div>
     <div class="head-actions"><button class="btn btn-ghost" onclick="toast('กำลังสร้างรายงาน...','ok')">${I.dl} ส่งออกรายงาน</button>
     <button class="btn btn-primary" onclick="openRecordPicker()">${I.plus} เพิ่มรายการ</button></div></div>
   <div class="kpi-rail">
@@ -1018,7 +915,7 @@ function notifRow(n){
 /* ===================== DECIDE / RECORD DETAIL ===================== */
 function decide(id,status){
   const r=records.find(x=>x.id===id); if(!r)return; r.status=status;
-  const n=notifs.find(x=>x.ref===id); if(n){n.kind=status;n.unread=false;n.by=CURUSER.name;}
+  const n=notifs.find(x=>x.ref===id); if(n){n.kind=status;n.unread=false;n.by='กนกพร ส.';}
   updateBadges(); go(currentView);
   toast(`${status==='approved'?'อนุมัติ':'ไม่อนุมัติ'} ${id} แล้ว`,status==='approved'?'ok':'warn');
 }
@@ -1041,11 +938,7 @@ function showRec(id){
 /* ===================== FORMS (insert real records) ===================== */
 function empOptions(sel){return employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(e.name)} (${e.id})</option>`).join('');}
 function fval(id){const el=document.getElementById(id);return el?el.value:'';}
-async function saveRecordDB(rec){
-  if(!CONFIG.SHEETS_API_URL)return;
-  try{await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'createRecord',emp_id:rec.emp,category:rec.cat,start_date:rec.start,end_date:rec.end,start_time:rec.st,end_time:rec.et,title:rec.title,location:rec.location,overnight:rec.overnight,cost:rec.cost,note:rec.note})});}catch(e){}
-}
-function addRecord(rec){records.unshift(rec);saveRecordDB(rec);}
+function addRecord(rec){records.unshift(rec);}
 
 function openLeaveForm(){
   openModal(`<div class="mh"><h3>แจ้งลา</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
@@ -1134,7 +1027,6 @@ function toast(msg,kind){kind=kind||'ok';
 /* ===================== ADMIN ===================== */
 function viewAdmin(){
   return `<div class="page-head"><div><h1>Admin Panel</h1><p>ตั้งค่าระบบ สมาชิก และผู้ใช้งาน</p></div></div>
-  ${(!CURUSER.id||CURUSER.role==='guest')?`<div class="admin-gate"><div class="ag-ic">${I.lock}</div><div class="ag-t"><b>โหมดผู้เยี่ยมชม</b><p>เข้าสู่ระบบเพื่อจัดการสมาชิก สิทธิ์ และการตั้งค่า (ดูข้อมูลได้ แต่การบันทึกต้องเข้าสู่ระบบ)</p></div><button class="btn btn-primary" onclick="showLogin()">${I.lock} เข้าสู่ระบบ</button></div>`:''}
   <div class="admin-layout">
     <nav class="admin-nav">
       <button class="on" data-a="employees" onclick="setAdmin('employees')">${I.users} สมาชิก &amp; สิทธิ์</button>
@@ -1164,7 +1056,6 @@ function setAdmin(tab){
   if(tab==='mobile')injectQR();
 }
 const ROLE={admin:['role-admin','ผู้ดูแลระบบ'],approver:['role-approver','ผู้อนุมัติ'],user:['role-user','ผู้ใช้ทั่วไป']};
-function roleInfo(r){return ROLE[r]||['role-user',(r&&String(r))||'ผู้ใช้ทั่วไป'];}
 
 function adminEmployees(){
   return `<div class="card"><div class="card-h"><div><h3>สมาชิกทีม &amp; สิทธิ์</h3><div class="sub">${employees.length} คน • ใช้เป็นแถวใน Gantt Tracker</div></div>
@@ -1182,13 +1073,11 @@ function adminEmployees(){
 }
 let _empPhoto='';
 function empPhotoBox(){const src=_empPhoto;return `<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
-    <div id="emp-ava-prev" style="width:72px;height:72px;border-radius:20px;background:${src?'#EEF2F8':'var(--canvas-2)'};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid var(--line)">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:`<span style="color:var(--ink-soft)">${I.users}</span>`}</div>
-    <div><button type="button" class="btn btn-ghost" onclick="pickEmpPhoto()">${I.dl} อัปโหลดรูป</button>
-    <button type="button" class="btn btn-ghost" style="margin-left:8px" onclick="clearEmpPhoto()">ลบรูป</button>
+    <div id="emp-ava-prev" style="width:72px;height:72px;border-radius:20px;background:${src?'#0000':'var(--canvas-2)'};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1px solid var(--line)">${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover">`:`<span style="color:var(--ink-soft)">${I.users}</span>`}</div>
+    <div><button type="button" class="btn btn-ghost" onclick="pickPhoto(function(d){_empPhoto=d;document.getElementById('emp-ava-prev').innerHTML='<img src=\''+d+'\' style=\'width:100%;height:100%;object-fit:cover\'>';})">${I.dl} อัปโหลดรูป</button>
+    ${src?`<button type="button" class="btn btn-ghost" style="margin-left:8px" onclick="_empPhoto='';document.getElementById('emp-ava-prev').innerHTML='<span style=\'color:var(--ink-soft)\'>${''}</span>'">ลบรูป</button>`:''}
     <div class="hint" style="margin-top:8px">แนะนำรูปสี่เหลี่ยมจัตุรัส • ระบบย่อขนาดอัตโนมัติ</div></div>
   </div>`;}
-function pickEmpPhoto(){pickPhoto(function(d){_empPhoto=d;const el=document.getElementById('emp-ava-prev');if(el)el.innerHTML='<img src="'+d+'" style="width:100%;height:100%;object-fit:cover">';});}
-function clearEmpPhoto(){_empPhoto='';const el=document.getElementById('emp-ava-prev');if(el)el.innerHTML='<span style="color:var(--ink-soft)">'+I.users+'</span>';}
 function openEmpForm(id){const e=id?emp(id):null; _empPhoto=e&&e.photo?e.photo:'';
   openModal(`<div class="mh"><h3>${e?'แก้ไขสมาชิก':'เพิ่มสมาชิก'}</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
@@ -1206,26 +1095,20 @@ function openEmpForm(id){const e=id?emp(id):null; _empPhoto=e&&e.photo?e.photo:'
 }
 async function submitEmp(id){
   const data={name:fval('e-name'),id:fval('e-id'),dept:fval('e-dept'),pos:fval('e-pos'),user:fval('e-user'),pass:fval('e-pass'),role:fval('e-role'),status:fval('e-status'),photo:_empPhoto};
-  if(!data.id){toast('กรุณาระบุรหัสสมาชิก','warn');return;}
+  if(!data.name||!data.id){toast('กรอกชื่อและรหัสพนักงาน','err');return;}
   if(id){Object.assign(emp(id),data);}else{employees.push(Object.assign({line:false},data));}
   closeModal();go(currentView==='gantt'?'gantt':'admin');if(currentView!=='gantt')setTimeout(()=>setAdmin('employees'),0);
-  // บันทึกลงฐานข้อมูลจริง
+  // บันทึกขึ้นฐานข้อมูลจริง (เดิมบันทึกเฉพาะในหน้าเว็บ ทำให้รูป/ข้อมูลหายเมื่อรีเฟรช)
   if(CONFIG.SHEETS_API_URL){
-    const AP=CONFIG.SHEETS_API_URL, HD={'Content-Type':'text/plain;charset=utf-8'};
     try{
-      const res=await fetch(AP,{method:'POST',headers:HD,body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,dept:data.dept,position:data.pos,role:data.role,username:data.user,password:data.pass,status:data.status,photo:data.photo,actor:CURUSER.id})});
+      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,dept:data.dept,position:data.pos,
+          role:data.role,username:data.user,password:data.pass||'',status:data.status,photo:data.photo||'',
+          actor:(typeof CUR!=='undefined'&&CUR&&CUR.id)?CUR.id:'web-admin'})});
       const j=await res.json();
-      if(j&&j.ok){
-        // อ่านข้อมูลกลับจากชีตเพื่อยืนยันว่าถูกเก็บจริง
-        let confirmed=false,hasPhoto=false;
-        try{const c=await fetch(AP,{method:'POST',headers:HD,body:JSON.stringify({action:'photoStatus',emp_id:data.id})});const cj=await c.json();if(cj&&cj.ok&&cj.data){confirmed=true;hasPhoto=!!cj.data.hasPhoto;}}catch(e){}
-        if(confirmed){
-          if(!data.photo||hasPhoto) toast('✓ ยืนยันแล้ว: บันทึกลงฐานข้อมูล'+(data.photo?' พร้อมรูปโปรไฟล์':'')+' • เปิดจากเครื่องอื่นเห็นได้','ok');
-          else toast('บันทึกข้อมูลแล้ว แต่ยังไม่พบรูปในฐานข้อมูล — โปรด Deploy Apps Script เวอร์ชันใหม่','warn');
-        } else toast('⚠ บันทึกข้อมูลแล้ว แต่ยืนยันรูปไม่ได้ — โค้ดที่ Deploy เป็นเวอร์ชันเก่า (ยังไม่มีระบบเก็บรูป) โปรด Deploy > Manage deployments > New version','warn');
-      }
-      else{toast('บันทึกในเครื่องแล้ว แต่ฐานข้อมูลตอบกลับผิดพลาด','warn');}
-    }catch(e){toast('บันทึกในเครื่องเท่านั้น • เชื่อมฐานข้อมูลไม่ได้ (เครื่องอื่นจะยังไม่เห็น)','warn');}
+      if(j&&j.ok){toast(id?'บันทึกข้อมูลเข้าฐานข้อมูลแล้ว':'เพิ่มสมาชิกเข้าฐานข้อมูลแล้ว','ok');}
+      else{toast((j&&j.error)||'บันทึกลงฐานข้อมูลไม่สำเร็จ','warn');}
+    }catch(e){toast('ออฟไลน์ • บันทึกเฉพาะในหน้าเว็บ','warn');}
   } else { toast(id?'บันทึกข้อมูลแล้ว':'เพิ่มสมาชิกแล้ว','ok'); }
 }
 
@@ -1293,7 +1176,7 @@ function adminSheets(){
   <div class="card-b">
     <div class="set-grid"><div class="field"><label>Spreadsheet ID</label><input class="mono" value="${CONFIG.SPREADSHEET_ID}"></div>
       <div class="field"><label>Apps Script Web App URL</label><input class="mono" placeholder="https://script.google.com/macros/s/…/exec" value="${CONFIG.SHEETS_API_URL}"></div></div>
-    <div style="display:flex;gap:10px;margin:4px 0 22px"><button class="btn btn-navy" onclick="testConnection()">${I.sync} ทดสอบการเชื่อมต่อ</button><button class="btn btn-ghost" onclick="toast('กำลังซิงค์...','ok')">${I.db} ซิงค์ตอนนี้</button></div>
+    <div style="display:flex;gap:10px;margin:4px 0 22px"><button class="btn btn-navy" onclick="syncDB();toast('กำลังทดสอบการเชื่อมต่อ...','ok')">${I.sync} ทดสอบการเชื่อมต่อ</button><button class="btn btn-ghost" onclick="toast('กำลังซิงค์...','ok')">${I.db} ซิงค์ตอนนี้</button></div>
     <div class="si" style="margin-bottom:6px">โครงสร้างชีต (8 แท็บ)</div><div class="sd" style="margin-bottom:14px">🔑 = คอลัมน์คีย์ • โครงสร้างนี้รองรับทุกประเภทกิจกรรมในระบบเดียว</div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">
       ${SHEETS.map(s=>`<div class="sheet-card"><div class="sh">${I.db}<span class="tabname">${s.n}</span><span class="cnt">${s.c.length} คอลัมน์</span></div>
@@ -1327,7 +1210,7 @@ function adminUsers(){
       <td><div class="person">${avaHTML(e.id)}<div><div class="nm">${esc(e.name)}</div><div class="meta">${e.id}</div></div></div></td>
       <td class="mono">${esc(e.user)}</td>
       <td><span class="mono" style="letter-spacing:2px">••••••••</span> <button class="icon-btn" style="display:inline-flex" onclick="toast('รหัส: ${esc(e.pass)}','ok')">${I.eye}</button></td>
-      <td><span class="role ${roleInfo(e.role)[0]}">${roleInfo(e.role)[1]}</span></td>
+      <td><span class="role ${ROLE[e.role][0]}">${ROLE[e.role][1]}</span></td>
       <td><div class="row-act" style="justify-content:flex-end"><button class="icon-btn" onclick="openEmpForm('${e.id}')">${I.pen}</button><button class="icon-btn" onclick="toast('ส่งลิงก์รีเซ็ตรหัสผ่านแล้ว','ok')">${I.lock}</button></div></td>
     </tr>`).join('')}</tbody></table></div>
     <div class="card-b" style="border-top:1px solid var(--line)"><div class="sd">ℹ️ รหัสผ่านควรเก็บแบบเข้ารหัส (hash) ในชีต Employees คอลัมน์ password_hash — ระบบจริงไม่ควรเก็บรหัสเป็นข้อความธรรมดา</div></div>
@@ -1361,7 +1244,7 @@ function submitHoliday(){const d=fval('h-date'); if(!d){toast('กรุณา�
 function delHoliday(date){holidays=holidays.filter(h=>h.date!==date);go('admin');setAdmin('holidays');toast('ลบวันหยุดแล้ว','ok');}
 
 /* ===================== QR ===================== */
-const QR_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges"><path class="qrline" stroke="#0a2342" d="M2 2.5h7m2 0h1m5 0h2m1 0h2m3 0h4m1 0h1m1 0h7m-37 1h1m5 0h1m3 0h1m1 0h4m2 0h1m1 0h2m4 0h1m3 0h1m5 0h1m-37 1h1m1 0h3m1 0h1m2 0h3m1 0h2m2 0h1m1 0h3m1 0h1m1 0h2m1 0h1m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m2 0h1m2 0h2m1 0h2m1 0h3m2 0h4m3 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h1m1 0h1m3 0h4m1 0h3m2 0h1m1 0h3m1 0h1m-37 1h1m5 0h1m2 0h1m2 0h2m1 0h1m1 0h1m1 0h1m6 0h1m3 0h1m5 0h1m-37 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-29 1h4m2 0h1m1 0h1m2 0h10m-27 1h2m2 0h4m1 0h5m2 0h1m1 0h1m2 0h5m1 0h2m1 0h1m-31 1h2m1 0h1m1 0h6m1 0h1m1 0h8m1 0h1m1 0h1m2 0h1m2 0h1m-34 1h1m2 0h2m1 0h1m7 0h1m4 0h2m2 0h3m2 0h2m1 0h1m1 0h1m-34 1h1m2 0h3m4 0h2m2 0h4m1 0h1m2 0h2m1 0h2m1 0h1m3 0h5m-37 1h1m2 0h1m2 0h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h1m2 0h4m1 0h4m1 0h3m-37 1h2m1 0h1m5 0h1m1 0h4m1 0h1m2 0h1m1 0h2m1 0h1m1 0h3m1 0h3m1 0h1m1 0h1m-37 1h3m3 0h1m1 0h3m1 0h2m1 0h1m1 0h1m1 0h1m1 0h2m2 0h2m1 0h1m2 0h1m2 0h1m-32 1h3m4 0h1m2 0h1m3 0h2m2 0h1m4 0h1m1 0h3m1 0h1m3 0h1m-37 1h1m3 0h1m1 0h2m3 0h4m1 0h4m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h2m-35 1h3m2 0h1m8 0h4m2 0h3m4 0h1m1 0h3m2 0h1m1 0h1m-33 1h1m1 0h3m2 0h1m1 0h1m3 0h3m1 0h2m2 0h7m1 0h1m1 0h2m-37 1h2m3 0h1m1 0h3m2 0h1m2 0h2m1 0h1m1 0h1m2 0h2m3 0h1m-27 1h1m3 0h2m1 0h1m1 0h1m2 0h1m2 0h3m2 0h2m3 0h3m2 0h2m1 0h1m-36 1h1m1 0h2m1 0h1m1 0h1m1 0h1m1 0h1m4 0h4m1 0h1m9 0h1m1 0h2m-35 1h1m1 0h2m2 0h2m1 0h1m1 0h1m4 0h1m1 0h1m2 0h3m2 0h1m2 0h1m2 0h2m-34 1h2m2 0h1m6 0h5m1 0h1m3 0h2m1 0h5m4 0h3m-36 1h1m1 0h5m3 0h1m2 0h2m1 0h1m1 0h2m1 0h3m6 0h1m1 0h1m1 0h3m-34 1h2m2 0h1m3 0h1m2 0h5m2 0h3m4 0h2m2 0h2m1 0h2m-36 1h1m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m2 0h4m4 0h2m1 0h2m6 0h1m-36 1h1m1 0h3m3 0h1m1 0h1m1 0h2m1 0h3m2 0h3m1 0h1m1 0h1m1 0h2m1 0h1m-29 1h1m2 0h1m1 0h1m1 0h1m3 0h2m2 0h2m1 0h3m1 0h1m1 0h6m1 0h1m1 0h1m-29 1h1m2 0h1m3 0h1m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m3 0h3m1 0h1m-37 1h7m1 0h1m2 0h5m1 0h2m1 0h2m2 0h1m1 0h1m1 0h1m1 0h1m1 0h2m1 0h2m-37 1h1m5 0h1m4 0h2m2 0h1m1 0h2m4 0h2m3 0h1m3 0h2m1 0h1m-36 1h1m1 0h3m1 0h1m4 0h9m1 0h1m1 0h1m4 0h6m1 0h1m-36 1h1m1 0h3m1 0h1m1 0h7m1 0h1m8 0h1m1 0h2m1 0h1m1 0h2m-34 1h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m1 0h2m2 0h1m4 0h3m2 0h1m-36 1h1m5 0h1m3 0h3m1 0h2m2 0h1m1 0h1m1 0h5m2 0h1m1 0h1m2 0h1m-35 1h7m4 0h2m1 0h3m2 0h2m1 0h6m1 0h1m1 0h1m2 0h3"/></svg>`;
+const QR_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" shape-rendering="crispEdges" fill="#0A2342"><rect x="0" y="0" width="7" height="1"/><rect x="12" y="0" width="1" height="1"/><rect x="14" y="0" width="1" height="1"/><rect x="18" y="0" width="7" height="1"/><rect x="0" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="8" y="1" width="3" height="1"/><rect x="14" y="1" width="1" height="1"/><rect x="16" y="1" width="1" height="1"/><rect x="18" y="1" width="1" height="1"/><rect x="24" y="1" width="1" height="1"/><rect x="0" y="2" width="1" height="1"/><rect x="2" y="2" width="3" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="8" y="2" width="3" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="18" y="2" width="1" height="1"/><rect x="20" y="2" width="3" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="2" y="3" width="3" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="12" y="3" width="2" height="1"/><rect x="15" y="3" width="2" height="1"/><rect x="18" y="3" width="1" height="1"/><rect x="20" y="3" width="3" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="0" y="4" width="1" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="3" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="18" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="0" y="6" width="7" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="6" width="7" height="1"/><rect x="8" y="7" width="4" height="1"/><rect x="14" y="7" width="1" height="1"/><rect x="0" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="12" y="8" width="7" height="1"/><rect x="21" y="8" width="3" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="5" y="9" width="1" height="1"/><rect x="7" y="9" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="14" y="9" width="2" height="1"/><rect x="19" y="9" width="5" height="1"/><rect x="0" y="10" width="5" height="1"/><rect x="6" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="11" y="10" width="1" height="1"/><rect x="15" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="3" height="1"/><rect x="23" y="10" width="2" height="1"/><rect x="1" y="11" width="2" height="1"/><rect x="7" y="11" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="14" y="11" width="1" height="1"/><rect x="19" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="24" y="11" width="1" height="1"/><rect x="0" y="12" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="5" y="12" width="2" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="15" y="12" width="1" height="1"/><rect x="18" y="12" width="2" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="0" y="13" width="1" height="1"/><rect x="2" y="13" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="7" y="13" width="2" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="14" y="13" width="4" height="1"/><rect x="19" y="13" width="1" height="1"/><rect x="23" y="13" width="1" height="1"/><rect x="0" y="14" width="1" height="1"/><rect x="4" y="14" width="3" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="10" y="14" width="7" height="1"/><rect x="18" y="14" width="4" height="1"/><rect x="23" y="14" width="2" height="1"/><rect x="0" y="15" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="7" y="15" width="5" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="19" y="15" width="1" height="1"/><rect x="21" y="15" width="2" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="0" y="16" width="1" height="1"/><rect x="3" y="16" width="4" height="1"/><rect x="8" y="16" width="2" height="1"/><rect x="11" y="16" width="1" height="1"/><rect x="13" y="16" width="8" height="1"/><rect x="22" y="16" width="1" height="1"/><rect x="8" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="20" y="17" width="1" height="1"/><rect x="0" y="18" width="7" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="18" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="24" y="18" width="1" height="1"/><rect x="0" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="14" y="19" width="3" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="0" y="20" width="1" height="1"/><rect x="2" y="20" width="3" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="9" y="20" width="2" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="6" height="1"/><rect x="22" y="20" width="3" height="1"/><rect x="0" y="21" width="1" height="1"/><rect x="2" y="21" width="3" height="1"/><rect x="6" y="21" width="1" height="1"/><rect x="10" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="23" y="21" width="2" height="1"/><rect x="0" y="22" width="1" height="1"/><rect x="2" y="22" width="3" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="10" y="22" width="3" height="1"/><rect x="16" y="22" width="2" height="1"/><rect x="21" y="22" width="2" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="0" y="23" width="1" height="1"/><rect x="6" y="23" width="1" height="1"/><rect x="10" y="23" width="2" height="1"/><rect x="16" y="23" width="1" height="1"/><rect x="18" y="23" width="3" height="1"/><rect x="24" y="23" width="1" height="1"/><rect x="0" y="24" width="7" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="10" y="24" width="1" height="1"/><rect x="12" y="24" width="5" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/></svg>`;
 function injectQR(){const el=document.getElementById('qr-svg'); if(el)el.innerHTML=QR_SVG;}
 function downloadQR(){const blob=new Blob([QR_SVG],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gnr3-team-qr.svg';a.click();toast('ดาวน์โหลด QR แล้ว','ok');}
 function copyLink(){navigator.clipboard&&navigator.clipboard.writeText(CONFIG.MOBILE_APP_URL);toast('คัดลอกลิงก์แล้ว','ok');}
