@@ -451,6 +451,7 @@ table.t tbody tr:hover{background:#F8FAFD}
     <button class="nav-link" data-view="absence" onclick="go('absence')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m9 16 2 2 4-4"/></svg>ระบบลา (Absence)<span class="nav-badge" id="nb-absence">3</span></button>
     <button class="nav-link" data-view="training" onclick="go('training')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>อบรม &amp; กิจกรรม</button>
     <button class="nav-link" data-view="ot" onclick="go('ot')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>OT &amp; นอกสถานที่</button>
+    <button class="nav-link" data-view="task" onclick="go('task')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Task Assignment</button>
     <div class="sb-section">ระบบ</div>
     <button class="nav-link" data-view="admin" onclick="go('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Admin Panel</button>
     <div class="sb-spacer"></div>
@@ -489,8 +490,25 @@ const CAT = {
   esv:      {g:'training', th:'อบรม ESV',      en:'ESV center',      c:'#0891B2', approve:true},
   event:    {g:'training', th:'กิจกรรม',       en:'Activity',        c:'#EC4899', approve:false},
   overtime: {g:'ot',       th:'ทำล่วงเวลา OT', en:'Overtime',        c:'#F97316', approve:true},
-  offsite:  {g:'ot',       th:'นอกสถานที่',    en:'Off-site',        c:'#14B8A6', approve:true}
+  offsite:  {g:'ot',       th:'นอกสถานที่',    en:'Off-site',        c:'#14B8A6', approve:true},
+  task:     {g:'task',     th:'มอบหมายงาน',    en:'Task Assignment', c:'#7C3AED', approve:false}
 };
+/* Task Assignment — อาคารและประเภทงาน (ไม่ต้องอนุมัติ) */
+const BUILDINGS=['ARI HILLS','BTSVP','อื่นๆ'];
+const TASKS=[
+  {th:'มอบหมายประจำอาคาร',en:'Building Assignment'},
+  {th:'การส่งของโดยผู้ขาย',en:'Vendor Delivery'},
+  {th:'สนับสนุนงานกิจกรรม/ฝึกอบรม',en:'Event & Training Support'},
+  {th:'บริการขนย้ายโดยผู้ขาย',en:'Vendor Moving Service'},
+  {th:'ติดตั้งโต๊ะทำงาน',en:'Workstation Installation'},
+  {th:'ติดตั้งระบบไฟฟ้าและเครือข่าย',en:'Electrical & Network Installation'},
+  {th:'ติดประกาศและสื่อสารประชาสัมพันธ์',en:'Signage & Communication'},
+  {th:'งานปรับปรุงพื้นที่',en:'Renovation Work'},
+  {th:'ตรวจรับและส่งมอบพื้นที่',en:'Site Inspection & Handover'},
+  {th:'การประชุม',en:'Meeting'},
+  {th:'งานบริการทำความสะอาด',en:'Cleaning Service'},
+  {th:'อื่นๆ',en:'Other'}
+];
 const ST = {pending:'รออนุมัติ',approved:'อนุมัติแล้ว',rejected:'ไม่อนุมัติ',cancelled:'ยกเลิก',none:'บันทึกแล้ว'};
 
 /* ---- date helpers ---- */
@@ -617,6 +635,7 @@ const TITLES={
   absence:['ระบบลา (Absence)','จัดการการลาของทีม'],
   training:['อบรม & กิจกรรม','บันทึกการอบรมและการเข้าร่วมกิจกรรม'],
   ot:['OT & นอกสถานที่','บันทึกการทำงานล่วงเวลาและนอกสถานที่'],
+  task:['Task Assignment','มอบหมายงานตามอาคารและประเภทงาน'],
   admin:['Admin Panel','ตั้งค่าระบบและผู้ใช้งาน'],
   notify:['การแจ้งเตือน','รายการที่เข้ามาและผลการอนุมัติ']
 };
@@ -628,7 +647,7 @@ function go(view){
   document.getElementById('tb-title').childNodes[0].nodeValue=TITLES[view][0];
   document.getElementById('tb-sub').textContent=TITLES[view][1];
   const v=document.getElementById('views');
-  const map={dashboard:viewDashboard,gantt:viewGantt,absence:viewAbsence,training:viewTraining,ot:viewOT,admin:viewAdmin,notify:viewNotify};
+  const map={dashboard:viewDashboard,gantt:viewGantt,absence:viewAbsence,training:viewTraining,ot:viewOT,task:viewTask,admin:viewAdmin,notify:viewNotify};
   v.innerHTML=map[view]();
   document.querySelector('.content').scrollTop=0;closeNav();
   if(view==='dashboard')renderCalendar();
@@ -922,6 +941,60 @@ function viewOT(){
 }
 function ochip(k,l,n){return `<button class="chip ${otF===k?'on':''}" onclick="otF='${k}';go('ot')">${l}<span class="ct mono">${n}</span></button>`;}
 
+/* ===================== TASK ASSIGNMENT (ไม่ต้องอนุมัติ) ===================== */
+let taskBF='all';
+function viewTask(){
+  const ts=records.filter(r=>r.cat==='task');
+  const f=taskBF==='all'?ts:ts.filter(r=>r.location===taskBF);
+  const bset=[...new Set(ts.map(r=>r.location).filter(Boolean))];
+  const chip=(k,l,n)=>`<button class="chip ${taskBF===k?'on':''}" onclick="taskBF='${esc(k)}';go('task')">${esc(l)}<span class="ct mono">${n}</span></button>`;
+  return `<div class="page-head"><div><h1>Task Assignment</h1><p>มอบหมายงานตามอาคารและประเภทงาน • บันทึกได้ทันที ไม่ต้องอนุมัติ</p></div>
+    <div class="head-actions"><button class="btn btn-primary" onclick="openTaskForm()">${I.check2} มอบหมายงานใหม่</button></div></div>
+  <div class="filterbar"><div class="chips">
+    ${chip('all','ทุกอาคาร',ts.length)}${bset.map(b=>chip(b,b,ts.filter(r=>r.location===b).length)).join('')}
+  </div></div>
+  <div class="card"><div class="tbl-scroll">${recTable(f,{titleHead:'ประเภทงาน',extra:'อาคาร',cell:r=>r.location?`<span class="tag" style="background:#7C3AED"><span class="d"></span>${esc(r.location)}</span>`:'<span class="meta" style="color:var(--ink-soft)">—</span>'})}</div></div>`;
+}
+function taskBuildingOptions(){return BUILDINGS.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join('');}
+function taskTypeOptions(){return TASKS.map((t,i)=>`<option value="${i}">${esc(t.th)} / ${esc(t.en)}</option>`).join('');}
+function taskBuildToggle(){document.getElementById('task-build-custom').classList.toggle('hidden',fval('t-build')!=='อื่นๆ');}
+function taskTypeToggle(){document.getElementById('task-type-custom').classList.toggle('hidden',TASKS[+fval('t-type')].th!=='อื่นๆ');}
+function openTaskForm(){if(!needAuth())return;
+  openModal(`<div class="mh"><h3>มอบหมายงาน (Task Assignment)</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
+  <div class="mb">
+    <div class="field"><label>มอบหมายให้สมาชิก</label><select id="t-emp">${empOptions()}</select></div>
+    <div class="set-grid">
+      <div class="field"><label>อาคาร</label><select id="t-build" onchange="taskBuildToggle()">${taskBuildingOptions()}</select></div>
+      <div class="field"><label>ประเภทงาน</label><select id="t-type" onchange="taskTypeToggle()">${taskTypeOptions()}</select></div>
+    </div>
+    <div class="field hidden" id="task-build-custom"><label>ระบุอาคาร (อื่นๆ)</label><input id="t-build-other" placeholder="ชื่ออาคาร/สถานที่"></div>
+    <div class="field hidden" id="task-type-custom"><label>ระบุประเภทงาน (อื่นๆ)</label><input id="t-type-other" placeholder="ระบุงานที่มอบหมาย"></div>
+    <div class="set-grid"><div class="field"><label>วันที่เริ่ม</label><input type="date" id="t-start" value="${TODAY_ISO}"></div><div class="field"><label>ถึงวันที่</label><input type="date" id="t-end" value="${TODAY_ISO}"></div></div>
+    <div class="field"><label>รายละเอียดเพิ่มเติม</label><textarea id="t-note" placeholder="รายละเอียดงาน / ผู้ประสานงาน / หมายเหตุ"></textarea></div>
+    <div class="field hint" style="margin:0">งานมอบหมายบันทึกได้ทันที ไม่ต้องรออนุมัติ</div>
+  </div>
+  <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitTask()">${I.check2} มอบหมายงาน</button></div>`);
+}
+async function submitTask(){
+  const emp=fval('t-emp');
+  let build=fval('t-build'); if(build==='อื่นๆ')build=(fval('t-build-other')||'').trim()||'อื่นๆ';
+  const ti=+fval('t-type'); let title=TASKS[ti].th==='อื่นๆ'?((fval('t-type-other')||'').trim()||'อื่นๆ'):(TASKS[ti].th+' / '+TASKS[ti].en);
+  const start=fval('t-start'),end=fval('t-end'),note=fval('t-note');
+  if(!emp||!start){toast('กรุณาเลือกสมาชิกและวันที่','warn');return;}
+  addRecord(R(emp,'task',start,end,{title,location:build,note,status:'none'}));
+  closeModal();updateBadges();go('task');
+  // บันทึกลงฐานข้อมูลจริง
+  if(CONFIG.SHEETS_API_URL){
+    try{
+      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'createRecord',emp_id:emp,category:'task',title,location:build,start_date:start,end_date:end,note,actor:CUR?CUR.id:'web-admin'})});
+      const j=await res.json();
+      toast(j&&j.ok?'มอบหมายงานและบันทึกลงฐานข้อมูลแล้ว':'บันทึกในหน้าเว็บแล้ว • ฐานข้อมูลไม่ตอบสนอง',j&&j.ok?'ok':'warn');
+    }catch(e){toast('ออฟไลน์ • บันทึกเฉพาะในหน้าเว็บ','warn');}
+  }else toast('มอบหมายงานแล้ว','ok');
+}
+
+
 /* ===================== NOTIFY ===================== */
 function viewNotify(){
   return `<div class="page-head"><div><h1>การแจ้งเตือน</h1><p>คำขอที่ต้องอนุมัติ และผลการดำเนินการ</p></div>
@@ -1038,6 +1111,7 @@ function openRecordPicker(){if(!needAuth())return;
     <label class="ck on" onclick="closeModal();openTrainForm()"><span class="box">${I.check}</span>อบรม/กิจกรรม</label>
     <label class="ck on" onclick="closeModal();openOTForm('overtime')"><span class="box">${I.check}</span>ทำ OT</label>
     <label class="ck on" onclick="closeModal();openOTForm('offsite')"><span class="box">${I.check}</span>งานนอกสถานที่</label>
+    <label class="ck on" onclick="closeModal();openTaskForm()"><span class="box">${I.check}</span>มอบหมายงาน (Task Assignment)</label>
   </div></div>`);
 }
 
