@@ -387,6 +387,22 @@ table.t tbody tr:hover{background:#F8FAFD}
   :root{--sb:300px}html{font-size:17.5px}
   .content{padding:36px 44px}.kpi-rail{grid-template-columns:repeat(auto-fit,minmax(248px,1fr))}
 }
+/* จอกว้าง 16:9 ขึ้นไป — คุมความสูงปฏิทินด้วย vh ไม่ให้ 6 แถวล้นจอ */
+@media (min-width:1280px){
+  .cal-cell{aspect-ratio:auto;height:clamp(58px,9.6vh,116px)}
+}
+@media (min-width:1600px){
+  .cal-layout{grid-template-columns:1.42fr 1fr}
+  .cal-cell{height:clamp(62px,9.2vh,120px)}
+}
+/* Ultrawide 3440×1440 (21:9) — จำกัดความกว้าง จัดกลาง คุมสูงปฏิทินให้พอดี */
+@media (min-width:2600px){
+  .content{padding:34px clamp(44px,5vw,120px)}
+  .kpi-rail,.cal-layout{max-width:2280px;margin-left:auto;margin-right:auto}
+  .cal-layout+.card,.page-head,.kpi-rail{max-width:2280px;margin-left:auto;margin-right:auto}
+  .cal-cell{height:clamp(78px,8vh,112px)}
+  .cal-layout{grid-template-columns:1.35fr 1fr}
+}
 @media (min-width:2900px){.wrap{max-width:2780px}}
 @media (max-width:1180px){ .cal-layout{grid-template-columns:1fr} }
 @media (max-width:1024px){
@@ -947,7 +963,7 @@ function recTable(rows,opts){opts=opts||{};
     <td><span class="st st-${r.status}">${ST[r.status]||esc(r.status)||"—"}</span></td>
     <td><div class="row-act" style="justify-content:flex-end">
       <button class="icon-btn" onclick="showRec('${r.id}')">${I.eye}</button>
-      ${r.status==='pending'?`<button class="icon-btn ok" onclick="decide('${r.id}','approved')">${I.check}</button><button class="icon-btn no" onclick="decide('${r.id}','rejected')">${I.x}</button>`:''}
+      ${r.status==='pending'&&canApprove()?`<button class="icon-btn ok" onclick="decide('${r.id}','approved')">${I.check}</button><button class="icon-btn no" onclick="decide('${r.id}','rejected')">${I.x}</button>`:''}
     </div></td></tr>`;}).join('')}</tbody></table>`;
 }
 
@@ -1048,8 +1064,10 @@ async function submitTask(){
       const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({action:'createRecord',emp_id:emp,category:'task',title,location:build,start_date:start,end_date:end,note,actor:CUR?CUR.id:'web-admin'})});
       const j=await res.json();
-      toast(j&&j.ok?'มอบหมายงานและบันทึกลงฐานข้อมูลแล้ว':'บันทึกในหน้าเว็บแล้ว • ฐานข้อมูลไม่ตอบสนอง',j&&j.ok?'ok':'warn');
-    }catch(e){toast('ออฟไลน์ • บันทึกเฉพาะในหน้าเว็บ','warn');}
+      if(j&&j.ok)toast('มอบหมายงานและบันทึกลงฐานข้อมูลแล้ว','ok');
+      else if(j&&/category/i.test(j.error||''))toast('บันทึกลงฐานข้อมูลไม่สำเร็จ • ต้องอัปเดต (deploy) โค้ด Apps Script เวอร์ชันใหม่ก่อน','warn');
+      else toast('บันทึกลงฐานข้อมูลไม่สำเร็จ • '+((j&&j.error)||'ฐานข้อมูลไม่ตอบสนอง'),'warn');
+    }catch(e){toast('ออฟไลน์ • บันทึกเฉพาะในหน้าเว็บ ยังไม่เข้าฐานข้อมูล','warn');}
   }else toast('มอบหมายงานแล้ว','ok');
 }
 
@@ -1073,11 +1091,24 @@ function notifRow(n){
 }
 
 /* ===================== DECIDE / RECORD DETAIL ===================== */
-function decide(id,status){if(!needAuth())return;
-  const r=records.find(x=>x.id===id); if(!r)return; r.status=status;
+function canApprove(){return !!(CUR&&(CUR.role==='admin'||CUR.role==='approver'));}
+async function decide(id,status){
+  if(!needAuth())return;
+  if(!canApprove()){toast('เฉพาะผู้ดูแลระบบหรือผู้อนุมัติเท่านั้นที่อนุมัติได้','warn');return;}
+  const r=records.find(x=>x.id===id); if(!r)return;
+  const prev=r.status;
+  r.status=status; // อัปเดตหน้าจอทันที (optimistic)
   const n=notifs.find(x=>x.ref===id); if(n){n.kind=status;n.unread=false;n.by=CUR?CUR.name:'ผู้ดูแลระบบ';}
   updateBadges(); go(currentView);
-  toast(`${status==='approved'?'อนุมัติ':'ไม่อนุมัติ'} ${id} แล้ว`,status==='approved'?'ok':'warn');
+  if(CONFIG.SHEETS_API_URL){
+    try{
+      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify({action:'decideRecord',id,decision:status,approver_id:CUR?CUR.id:''})});
+      const j=await res.json();
+      if(j&&j.ok){toast(`${status==='approved'?'อนุมัติ':'ไม่อนุมัติ'} ${id} และบันทึกลงฐานข้อมูลแล้ว`,status==='approved'?'ok':'warn');}
+      else{r.status=prev;if(n){n.kind=prev;}go(currentView);toast('บันทึกผลอนุมัติไม่สำเร็จ • '+((j&&j.error)||'ลองใหม่อีกครั้ง'),'warn');}
+    }catch(e){r.status=prev;if(n){n.kind=prev;}go(currentView);toast('ออฟไลน์ • ยังไม่ได้บันทึกผลอนุมัติลงฐานข้อมูล','warn');}
+  }else toast(`${status==='approved'?'อนุมัติ':'ไม่อนุมัติ'} ${id} แล้ว`,status==='approved'?'ok':'warn');
 }
 function showRec(id){
   const r=records.find(x=>x.id===id); const e=emp(r.emp);
@@ -1092,7 +1123,7 @@ function showRec(id){
       ${r.cat==='offsite'?`<dt>ค้างคืน</dt><dd>${r.overnight?'ค้างคืน':'ไปกลับ'}</dd><dt>ค่าใช้จ่าย</dt><dd>${r.cost!=null?'฿'+Number(r.cost).toLocaleString():'ไม่มี'}</dd>`:''}
       ${r.note?`<dt>หมายเหตุ</dt><dd>${esc(r.note)}</dd>`:''}
     </dl></div>
-  ${r.status==='pending'?`<div class="mf"><button class="btn btn-ghost" onclick="decide('${r.id}','rejected');closeModal()">${I.x} ไม่อนุมัติ</button><button class="btn btn-primary" onclick="decide('${r.id}','approved');closeModal()">${I.check} อนุมัติ</button></div>`:`<div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ปิด</button></div>`}`);
+  ${r.status==='pending'?(canApprove()?`<div class="mf"><button class="btn btn-ghost" onclick="decide('${r.id}','rejected');closeModal()">${I.x} ไม่อนุมัติ</button><button class="btn btn-primary" onclick="decide('${r.id}','approved');closeModal()">${I.check} อนุมัติ</button></div>`:`<div class="mf"><span class="meta" style="flex:1;color:var(--ink-soft);font-size:12.5px">รออนุมัติจากผู้ดูแลระบบ/ผู้อนุมัติ</span><button class="btn btn-ghost" onclick="closeModal()">ปิด</button></div>`):`<div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ปิด</button></div>`}`);
 }
 
 /* ===================== FORMS (insert real records) ===================== */
@@ -1357,15 +1388,22 @@ async function submitEmp(id){
 }
 
 function adminActivities(){
-  return `<div class="card"><div class="card-h"><div><h3>ตั้งค่าประเภทกิจกรรม</h3><div class="sub">กำหนดสี การอนุมัติ และการเปิดใช้งานของแต่ละประเภท</div></div></div>
+  const GN={leave:'การลา',training:'อบรม & กิจกรรม',ot:'OT & นอกสถานที่',task:'มอบหมายงาน'};
+  return `<div class="card"><div class="card-h"><div><h3>ตั้งค่าประเภทกิจกรรม</h3><div class="sub">แตะสวิตช์เพื่อกำหนดว่าประเภทนั้น "ต้องอนุมัติ" หรือ "ไม่ต้องอนุมัติ"</div></div></div>
     <div class="card-b">${Object.keys(CAT).map(k=>{const c=CAT[k];return `
       <div class="cat-row"><span class="cat-sw" style="background:${c.c}"></span>
-        <div style="flex:1"><div class="si">${c.th} <span class="meta" style="color:var(--ink-soft)">${c.en}</span></div><div class="sd">กลุ่ม: ${({leave:'การลา',training:'อบรม & กิจกรรม',ot:'OT & นอกสถานที่'})[c.g]}</div></div>
-        <span class="role ${c.approve?'role-approver':'role-user'}">${c.approve?'ต้องอนุมัติ':'ไม่ต้องอนุมัติ'}</span>
-        <div class="tg on" onclick="this.classList.toggle('on')"></div>
+        <div style="flex:1"><div class="si">${c.th} <span class="meta" style="color:var(--ink-soft)">${c.en}</span></div><div class="sd">กลุ่ม: ${GN[c.g]||c.g}</div></div>
+        <span class="role ${c.approve?'role-approver':'role-user'}" id="apl-${k}">${c.approve?'ต้องอนุมัติ':'ไม่ต้องอนุมัติ'}</span>
+        <div class="tg ${c.approve?'on':''}" id="apt-${k}" onclick="toggleApprove('${k}')"></div>
       </div>`;}).join('')}
       <button class="btn btn-primary" style="margin-top:16px" onclick="toast('บันทึกการตั้งค่าประเภทแล้ว','ok')">${I.check2} บันทึก</button>
     </div></div>`;
+}
+function toggleApprove(k){
+  CAT[k].approve=!CAT[k].approve;
+  const t=document.getElementById('apt-'+k),l=document.getElementById('apl-'+k);
+  if(t)t.classList.toggle('on',CAT[k].approve);
+  if(l){l.textContent=CAT[k].approve?'ต้องอนุมัติ':'ไม่ต้องอนุมัติ';l.className='role '+(CAT[k].approve?'role-approver':'role-user');}
 }
 
 function adminMobile(){
