@@ -522,10 +522,10 @@ table.t tbody tr:hover{background:#F8FAFD}
     <div class="sb-section">เมนูหลัก</div>
     <button class="nav-link active" data-view="dashboard" onclick="go('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>แดชบอร์ด / ปฏิทิน</button>
     <button class="nav-link" data-view="gantt" onclick="go('gantt')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="13" y2="6"/><line x1="7" y1="12" x2="18" y2="12"/><line x1="5" y1="18" x2="15" y2="18"/></svg>Gantt Tracker</button>
+    <button class="nav-link" data-view="task" onclick="go('task')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Task Assignment</button>
     <button class="nav-link" data-view="absence" onclick="go('absence')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><path d="m9 16 2 2 4-4"/></svg>ระบบลา (Absence)<span class="nav-badge" id="nb-absence">3</span></button>
     <button class="nav-link" data-view="training" onclick="go('training')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>อบรม &amp; กิจกรรม</button>
     <button class="nav-link" data-view="ot" onclick="go('ot')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>OT &amp; นอกสถานที่</button>
-    <button class="nav-link" data-view="task" onclick="go('task')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Task Assignment</button>
     <div class="sb-section">ระบบ</div>
     <button class="nav-link" data-view="admin" onclick="go('admin')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Admin Panel</button>
     <div class="sb-spacer"></div>
@@ -604,10 +604,10 @@ let employees=[]; // โหลดจากฐานข้อมูลจริ�
 
 let rid=2400;
 function R(emp,cat,start,end,o){o=o||{};return Object.assign({
-  id:(cat==='overtime'?'OT-':cat==='offsite'?'OS-':CAT[cat].g==='leave'?'LV-':'AC-')+(++rid),
-  emp,cat,start,end:end||start,title:o.title||CAT[cat].th,location:o.location||'',
-  st:o.st||'',et:o.et||'',status:CAT[cat].approve?(o.status||'pending'):'none',
-  overnight:o.overnight||false,cost:o.cost!=null?o.cost:null,note:o.note||''},o);}
+  id:(cat==='overtime'?'OT-':cat==='offsite'?'OS-':cat==='task'?'TA-':CAT[cat].g==='leave'?'LV-':'AC-')+(++rid),
+  emp:emp||'',cat,start,end:end||start,title:o.title||CAT[cat].th,location:o.location||'',
+  st:o.st||'',et:o.et||'',status:o.status!==undefined?o.status:(CAT[cat].approve?'pending':'none'),
+  overnight:o.overnight||false,cost:o.cost!=null?o.cost:null,note:o.note||'',pendingEmp:'',reqBy:''},o);}
 
 let records=[]; // โหลดจากฐานข้อมูลจริงเท่านั้น
 
@@ -643,7 +643,13 @@ function holiName(ds){const h=holidays.find(x=>x.date===ds);return h?h.name:'';}
 
 /* ---- helpers ---- */
 const AC=['#15396E','#2C5BA0','#0B7A55','#C0392B','#4F46E5','#D6418B','#B47400','#3D6BB0','#0E9488','#7C3AED'];
-const emp=id=>employees.find(e=>e.id===id)||{name:'-',dept:'-',id:id,pos:''};
+const emp=id=>employees.find(e=>e.id===id)||{name:'-',nick:'',dept:'-',id:id,pos:''};
+/* ชื่อที่แสดงในปฏิทิน: ใช้ชื่อเล่นถ้ามี ไม่งั้นชื่อจริงคำแรก */
+function dispName(id){const e=emp(id);return e.nick||(e.name||'-').split(' ')[0];}
+/* สมาชิกถือว่า "ปิดใช้งาน" เฉพาะเมื่อค่า status บ่งชี้ชัดเจน — ค่าอื่น/ว่าง/ภาษาไทย = ยังใช้งาน */
+function isInactive(e){const s=String(e.status||'').toLowerCase().trim();return s==='inactive'||s==='ปิดใช้งาน'||s==='disabled'||s==='ปิด'||s==='ลาออก';}
+/* ชื่อคู่สำหรับ Gantt: "ชื่อเล่น (ชื่อจริง)" ถ้ามีชื่อเล่น */
+function dualName(id){const e=emp(id);return e.nick?e.nick+' ('+(e.name||'').split(' ')[0]+')':(e.name||'-');}
 const initial=n=>String(n==null||n===''?'?':n).trim().charAt(0)||'?';
 function avaColor(id){id=String(id==null||id===''?'x':id);let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
 function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${e.photo?`<img src="${e.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">`:initial(e.name)}</div>`;}
@@ -659,7 +665,7 @@ function exitApp(){document.getElementById('app').classList.add('hidden');docume
 function updateLanding(){
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   if(!employees.length&&!records.length){set('ls-emp','—');set('ls-pend','—');set('ls-week','—');return;}
-  set('ls-emp',employees.filter(e=>e.status==='active').length);
+  set('ls-emp',employees.filter(e=>!isInactive(e)).length);
   set('ls-pend',records.filter(r=>r.status==='pending').length);
   const base=new Date(NOW),dow=base.getDay(),mon=new Date(base);mon.setDate(base.getDate()-((dow+6)%7));
   const sun=new Date(mon);sun.setDate(mon.getDate()+6);
@@ -727,6 +733,7 @@ function go(view){
   document.querySelector('.content').scrollTop=0;closeNav();
   if(view==='dashboard')renderCalendar();
   if(view==='gantt')renderGantt();
+  if(view==='task')renderTaskCal();
   if(view==='admin')setAdmin('employees');
 }
 function updateBadges(){
@@ -755,8 +762,8 @@ async function syncDB(){
         if(v.indexOf('T')>0&&(v.slice(-1)==='Z'||/[+-]\d{2}:\d{2}$/.test(v))){const dt=new Date(v);return new Date(dt.getTime()+7*3600*1000).toISOString().slice(0,10);} // แปลง UTC → เวลาไทย กันวันเลื่อน
         return v.slice(0,10);};
       const S=v=>v==null?'':String(v).trim(); // Sheets ส่งชนิดข้อมูลปนกัน ต้องบังคับเป็น string
-      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:S(e.emp_id),name:S(e.full_name),dept:S(e.dept),pos:S(e.position),role:S(e.role).toLowerCase()||'user',user:S(e.username),pass:S(e.password_hash),line:!!S(e.line_user_id),status:S(e.status).toLowerCase()||'active',photo:S(e.photo)}));
-      if(Array.isArray(d.records)) records=d.records.map(r=>({id:S(r.record_id),emp:S(r.emp_id),cat:S(r.category).toLowerCase(),start:D(r.start_date),end:D(r.end_date||r.start_date),title:S(r.title),location:S(r.location),st:S(r.start_time),et:S(r.end_time),status:S(r.status).toLowerCase()||'none',overnight:r.overnight===true||S(r.overnight).toUpperCase()==='TRUE',cost:(r.cost===''||r.cost==null||isNaN(Number(r.cost)))?null:Number(r.cost),note:S(r.note)})).filter(r=>CAT[r.cat]&&r.start);
+      if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:S(e.emp_id),name:S(e.full_name),nick:S(e.nickname),dept:S(e.dept),pos:S(e.position),role:S(e.role).toLowerCase()||'user',user:S(e.username),pass:S(e.password_hash),line:!!S(e.line_user_id),status:S(e.status).toLowerCase()||'active',photo:S(e.photo)}));
+      if(Array.isArray(d.records)) records=d.records.map(r=>({id:S(r.record_id),emp:S(r.emp_id),cat:S(r.category).toLowerCase(),start:D(r.start_date),end:D(r.end_date||r.start_date),title:S(r.title),location:S(r.location),st:S(r.start_time),et:S(r.end_time),status:S(r.status).toLowerCase()||'none',overnight:r.overnight===true||S(r.overnight).toUpperCase()==='TRUE',cost:(r.cost===''||r.cost==null||isNaN(Number(r.cost)))?null:Number(r.cost),note:S(r.note),pendingEmp:S(r.pending_emp_id),reqBy:S(r.req_by)})).filter(r=>CAT[r.cat]&&r.start);
       if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
       setDB('online'); updateSbUser(); updateBadges(); updateLanding(); go(currentView);
       toast('โหลดข้อมูลจากฐานข้อมูลแล้ว • '+employees.length+' สมาชิก, '+records.length+' รายการ','ok');
@@ -793,7 +800,7 @@ function viewDashboard(){
     <div class="head-actions"><button class="btn btn-ghost" onclick="toast('กำลังสร้างรายงาน...','ok')">${I.dl} ส่งออกรายงาน</button>
     <button class="btn btn-primary" onclick="openRecordPicker()">${I.plus} เพิ่มรายการ</button></div></div>
   <div class="kpi-rail">
-    ${kpi('n',I.users,employees.filter(e=>e.status==='active').length,'สมาชิกทีม')}
+    ${kpi('n',I.users,employees.filter(e=>!isInactive(e)).length,'สมาชิกทีม')}
     ${kpi('y',I.cal,todayN,'กิจกรรมวันนี้')}
     ${kpi('r',I.clock,pend,'รออนุมัติ')}
     ${kpi('t',I.pin,records.filter(r=>r.cat==='offsite').length,'งานนอกสถานที่')}
@@ -864,7 +871,7 @@ function weekRecords(){
   let out='';
   for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const ds=iso(d);const recs=recOnDate(ds);
     out+=`<div class="week-day ${ds===TODAY_ISO?'today':''}"><div class="wd-h"><span class="wd-dow">${DOW_TH[d.getDay()]} ${THAI_MS[d.getMonth()]}</span><span class="wd-num">${d.getDate()}</span></div>
-      ${recs.length?recs.map(r=>`<div class="week-ev" style="background:${CAT[r.cat].c}">${esc(emp(r.emp).name.split(' ')[0])} • ${esc(r.title)}</div>`).join(''):'<div class="week-empty">—</div>'}</div>`;
+      ${recs.length?recs.map(r=>`<div class="week-ev" style="background:${CAT[r.cat].c}">${esc(r.emp?dispName(r.emp):'งานว่าง')} • ${esc(r.title)}</div>`).join(''):'<div class="week-empty">—</div>'}</div>`;
   }
   return out;
 }
@@ -894,6 +901,8 @@ const I={
   copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
   dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
   plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  refresh:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>',
   mobile:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>',
   lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
   inbox:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>'
@@ -926,7 +935,7 @@ function renderGantt(){
     head+=`<div class="gantt-daycell ${dow===0||dow===6?'we':''} ${isHoli(ds)?'holi':''} ${ds===TODAY_ISO?'tdy':''}" title="${esc(holiName(ds))}">${d}</div>`;}
   head+=`</div></div>`;
   let rows='';
-  employees.filter(e=>e.status==='active').forEach(e=>{
+  employees.filter(e=>!isInactive(e)).forEach(e=>{
     const recs=records.filter(r=>r.emp===e.id && r.start<=mEnd && r.end>=mStart);
     const lanes=packLanes(recs.map(r=>{
       const s=r.start<mStart?1:parse(r.start).getDate(); const en=r.end>mEnd?dim:parse(r.end).getDate();
@@ -937,7 +946,7 @@ function renderGantt(){
       bg+=`<div class="cellbg ${dow===0||dow===6?'we':''} ${isHoli(ds)?'holi':''} ${ds===TODAY_ISO?'tdy':''}" style="left:${(d-1)*dw}px;width:${dw}px"></div>`;}
     let bars=lanes.map(x=>{const left=(x.s-1)*dw; const width=(x.e-x.s+1)*dw-4; const top=7+x.lane*28;
       return `<div class="gantt-bar" style="left:${left+2}px;width:${Math.max(width,dw-4)}px;top:${top}px;background:${CAT[x.r.cat].c}" title="${esc(x.r.title)} (${fmtTH(x.r.start)}${x.r.end!==x.r.start?' - '+fmtTH(x.r.end):''})" onclick="showRec('${x.r.id}')">${esc(x.r.title)}</div>`;}).join('');
-    rows+=`<div class="gantt-row"><div class="gantt-name">${avaHTML(e.id,'ava')}<div style="min-width:0"><div class="nm">${esc(e.name)}</div><div class="meta">${esc(e.dept)}</div></div></div>
+    rows+=`<div class="gantt-row"><div class="gantt-name">${avaHTML(e.id,'ava')}<div style="min-width:0"><div class="nm">${esc(e.nick||e.name.split(' ')[0])}</div><div class="meta">${esc(e.nick?e.name:e.dept)}</div></div></div>
       <div class="gantt-track" style="width:${gw}px;height:${h}px">${bg}${bars}</div></div>`;
   });
   el.innerHTML=head+rows;
@@ -1017,18 +1026,96 @@ function viewOT(){
 function ochip(k,l,n){return `<button class="chip ${otF===k?'on':''}" onclick="otF='${k}';go('ot')">${l}<span class="ct mono">${n}</span></button>`;}
 
 /* ===================== TASK ASSIGNMENT (ไม่ต้องอนุมัติ) ===================== */
-let taskBF='all';
+let taskBF='all', tCalY=NOW.getFullYear(), tCalM=NOW.getMonth(), tSel=TODAY_ISO;
+function taskList(){return records.filter(r=>r.cat==='task');}
+function tasksOn(ds){return taskList().filter(r=>r.start<=ds&&ds<=r.end);}
+function taskStColor(r){return r.status==='open'?'#F59E0B':(r.pendingEmp?'#3B82F6':'#7C3AED');}
+function taskStLabel(r){return r.status==='open'?'ยังไม่มีผู้รับผิดชอบ':(r.pendingEmp?'รอเปลี่ยนผู้รับผิดชอบ':'มอบหมายแล้ว');}
 function viewTask(){
-  const ts=records.filter(r=>r.cat==='task');
-  const f=taskBF==='all'?ts:ts.filter(r=>r.location===taskBF);
-  const bset=[...new Set(ts.map(r=>r.location).filter(Boolean))];
-  const chip=(k,l,n)=>`<button class="chip ${taskBF===k?'on':''}" onclick="taskBF='${esc(k)}';go('task')">${esc(l)}<span class="ct mono">${n}</span></button>`;
-  return `<div class="page-head"><div><h1>Task Assignment</h1><p>มอบหมายงานตามอาคารและประเภทงาน • บันทึกได้ทันที ไม่ต้องอนุมัติ</p></div>
+  const ts=taskList();
+  const openN=ts.filter(r=>r.status==='open'||!r.emp).length;
+  const pendN=ts.filter(r=>r.pendingEmp).length;
+  const mineN=CUR?ts.filter(r=>r.emp===CUR.id).length:0;
+  return `<div class="page-head"><div><h1>Task Assignment</h1><p>ปฏิทินงานมอบหมาย • เปิดงานไว้ให้กดรับได้ • ขอเปลี่ยนผู้รับผิดชอบได้</p></div>
     <div class="head-actions"><button class="btn btn-primary" onclick="openTaskForm()">${I.check2} มอบหมายงานใหม่</button></div></div>
-  <div class="filterbar"><div class="chips">
-    ${chip('all','ทุกอาคาร',ts.length)}${bset.map(b=>chip(b,b,ts.filter(r=>r.location===b).length)).join('')}
-  </div></div>
-  <div class="card"><div class="tbl-scroll">${recTable(f,{titleHead:'ประเภทงาน',extra:'อาคาร',cell:r=>r.location?`<span class="tag" style="background:#7C3AED"><span class="d"></span>${esc(r.location)}</span>`:'<span class="meta" style="color:var(--ink-soft)">—</span>'})}</div></div>`;
+  <div class="kpi-rail">
+    ${kpi('n',I.check2,ts.length,'งานทั้งหมด')}
+    ${kpi('y',I.plus,openN,'งานว่าง (กดรับได้)')}
+    ${kpi('r',I.clock,pendN,'รอเปลี่ยนผู้รับผิดชอบ')}
+    ${kpi('t',I.users,mineN,'งานของฉัน')}
+  </div>
+  <div class="cal-layout">
+    <div class="card"><div class="card-b">
+      <div class="cal-head">
+        <div><div class="cal-title" id="tcal-title"></div><div class="sub">ปฏิทินงานมอบหมาย Task Assignment</div></div>
+        <div class="cal-nav"><button class="cal-today-btn" onclick="tCalToday()">วันนี้</button>
+          <button onclick="tCalStep(-1)">${I.chevL}</button><button onclick="tCalStep(1)">${I.chevR}</button></div>
+      </div>
+      <div class="cal-grid" id="tcal-grid"></div>
+      <div class="gantt-legend" style="margin-top:16px">
+        <span class="gl"><span class="sw" style="background:#F59E0B"></span>ยังไม่มีผู้รับผิดชอบ</span>
+        <span class="gl"><span class="sw" style="background:#7C3AED"></span>มอบหมายแล้ว</span>
+        <span class="gl"><span class="sw" style="background:#3B82F6"></span>รอเปลี่ยนผู้รับผิดชอบ</span>
+      </div>
+    </div></div>
+    <div class="card"><div class="card-b day-panel" id="tday-panel"></div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-h"><div><h3>รายการงานทั้งหมด</h3><div class="sub">งานมอบหมายทุกอาคาร</div></div></div>
+    <div class="tbl-scroll">${taskTable(ts)}</div></div>`;
+}
+function taskTable(ts){
+  if(!ts.length)return '<div style="padding:30px;text-align:center;color:var(--ink-soft)">ยังไม่มีงานมอบหมาย</div>';
+  return `<table class="tbl"><thead><tr><th>ผู้รับผิดชอบ</th><th>ประเภทงาน</th><th>อาคาร</th><th>วันที่</th><th>สถานะ</th><th></th></tr></thead><tbody>${
+    ts.sort((a,b)=>a.start<b.start?1:-1).map(r=>{const e=r.emp?emp(r.emp):null;return `<tr>
+      <td>${e?`<div class="person">${avaHTML(r.emp)}<div><div class="nm">${esc(e.nick||e.name)}</div><div class="meta">${esc(e.name)} • ${r.id}</div></div></div>`:`<span class="tag" style="background:#F59E0B"><span class="d"></span>ยังไม่มีผู้รับผิดชอบ</span>`}</td>
+      <td><div class="nm" style="font-weight:600">${esc(r.title)}</div>${r.pendingEmp?`<div class="meta" style="color:#3B82F6">ขอเปลี่ยนเป็น: ${esc(emp(r.pendingEmp).nick||emp(r.pendingEmp).name)}</div>`:''}</td>
+      <td>${r.location?`<span class="tag" style="background:#7C3AED"><span class="d"></span>${esc(r.location)}</span>`:'—'}</td>
+      <td style="white-space:nowrap">${fmtTH(r.start)}${r.end!==r.start?' – '+fmtTH(r.end):''}</td>
+      <td><span class="st" style="background:${taskStColor(r)}22;color:${taskStColor(r)}">${taskStLabel(r)}</span></td>
+      <td><div class="row-act" style="justify-content:flex-end">${taskActions(r,'sm')}</div></td></tr>`;}).join('')
+  }</tbody></table>`;
+}
+/* ปุ่ม action ตามสิทธิ์และสถานะงาน */
+function taskActions(r,size){
+  const btns=[];
+  const cls=size==='sm'?'icon-btn':'btn btn-ghost';
+  if((r.status==='open'||!r.emp)&&CUR) btns.push(`<button class="${size==='sm'?'icon-btn ok':'btn btn-primary'}" onclick="taskClaim('${r.id}')">${I.check} ${size==='sm'?'':'กดรับงานนี้'}</button>`);
+  if(r.emp&&CUR&&r.emp!==CUR.id&&!r.pendingEmp) btns.push(`<button class="${cls}" onclick="taskReqReassign('${r.id}')">${size==='sm'?I.refresh:I.refresh+' ขอเปลี่ยนเป็นฉัน'}</button>`);
+  if(r.pendingEmp&&canApprove()){btns.push(`<button class="${size==='sm'?'icon-btn ok':'btn btn-primary'}" onclick="taskDecideReassign('${r.id}','approved')">${I.check} ${size==='sm'?'':'อนุมัติเปลี่ยน'}</button>`);
+    btns.push(`<button class="${size==='sm'?'icon-btn no':'btn btn-ghost'}" onclick="taskDecideReassign('${r.id}','rejected')">${I.x} ${size==='sm'?'':'ปฏิเสธ'}</button>`);}
+  if(canApprove()) btns.push(`<button class="${cls}" onclick="openTaskEdit('${r.id}')">${size==='sm'?I.edit:I.edit+' แก้ไข'}</button>`);
+  return btns.join('');
+}
+function renderTaskCal(){
+  const t=document.getElementById('tcal-title'); if(!t)return;
+  t.innerHTML=`${THAI_M[tCalM]} ${be(tCalY)} <span class="en">${EN_M[tCalM]} ${tCalY}</span>`;
+  const grid=document.getElementById('tcal-grid');
+  let html=DOW_TH.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const first=new Date(tCalY,tCalM,1).getDay(), dim=daysIn(tCalY,tCalM), prevDim=daysIn(tCalM===0?tCalY-1:tCalY,(tCalM+11)%12);
+  for(let i=0;i<first;i++){const dn=prevDim-first+1+i;html+=`<div class="cal-cell muted"><span class="cdn">${dn}</span></div>`;}
+  for(let d=1;d<=dim;d++){
+    const ds=tCalY+'-'+pad(tCalM+1)+'-'+pad(d); const recs=tasksOn(ds); const dow=new Date(tCalY,tCalM,d).getDay();
+    const cls=['cal-cell'];if(ds===TODAY_ISO)cls.push('today');if(ds===tSel)cls.push('sel');if(dow===0||dow===6)cls.push('weekend');
+    let chips=recs.slice(0,2).map(r=>`<span class="cal-chip" style="background:${taskStColor(r)}">${esc(r.emp?dispName(r.emp):'ว่าง')} • ${esc(r.title.split(' / ')[0])}</span>`).join('');
+    if(recs.length>2)chips+=`<span class="cal-more">+${recs.length-2} เพิ่มเติม</span>`;
+    let dots=recs.slice(0,5).map(r=>`<span class="cal-dot" style="background:${taskStColor(r)}"></span>`).join('');
+    html+=`<div class="${cls.join(' ')}" onclick="tSelectDay('${ds}')"><span class="cdn">${d}</span>${chips}<div class="cal-dots">${dots}</div></div>`;
+  }
+  grid.innerHTML=html; renderTaskDay();
+}
+function tSelectDay(ds){tSel=ds;renderTaskCal();}
+function tCalStep(d){tCalM+=d;if(tCalM>11){tCalM=0;tCalY++;}if(tCalM<0){tCalM=11;tCalY--;}renderTaskCal();}
+function tCalToday(){tCalY=NOW.getFullYear();tCalM=NOW.getMonth();tSel=TODAY_ISO;renderTaskCal();}
+function renderTaskDay(){
+  const p=document.getElementById('tday-panel'); if(!p)return; const d=parse(tSel); const recs=tasksOn(tSel);
+  p.innerHTML=`<div class="dp-date">${d.getDate()} ${THAI_M[d.getMonth()]} ${be(d.getFullYear())}<div class="en">${EN_M[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}${tSel===TODAY_ISO?' • วันนี้':''}</div></div>
+  <div class="day-list">${recs.length?recs.map(r=>{const e=r.emp?emp(r.emp):null;return `
+    <div class="day-item"><div class="bar" style="background:${taskStColor(r)}"></div><div class="di-b" style="flex:1">
+      <div style="font-weight:600;font-size:13.5px">${esc(r.title)}</div>
+      <div class="meta">${r.location?esc(r.location)+' • ':''}${e?'ผู้รับผิดชอบ: '+esc(e.nick||e.name):'<span style="color:#F59E0B;font-weight:600">ยังไม่มีผู้รับผิดชอบ</span>'}</div>
+      ${r.pendingEmp?`<div class="meta" style="color:#3B82F6">⏳ ${esc(emp(r.reqBy).nick||emp(r.reqBy).name)} ขอเปลี่ยนเป็นผู้รับผิดชอบ</div>`:''}
+      <div class="row-act" style="margin-top:8px;flex-wrap:wrap">${taskActions(r,'lg')}</div>
+    </div></div>`;}).join(''):'<div style="padding:24px;text-align:center;color:var(--ink-soft)">ไม่มีงานในวันนี้</div>'}</div>`;
 }
 function taskBuildingOptions(){return BUILDINGS.map(b=>`<option value="${esc(b)}">${esc(b)}</option>`).join('');}
 function taskTypeOptions(){return TASKS.map((t,i)=>`<option value="${i}">${esc(t.th)} / ${esc(t.en)}</option>`).join('');}
@@ -1037,7 +1124,7 @@ function taskTypeToggle(){document.getElementById('task-type-custom').classList.
 function openTaskForm(){if(!needAuth())return;
   openModal(`<div class="mh"><h3>มอบหมายงาน (Task Assignment)</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
-    <div class="field"><label>มอบหมายให้สมาชิก</label><select id="t-emp">${empOptions()}</select></div>
+    <div class="field"><label>มอบหมายให้สมาชิก</label><select id="t-emp"><option value="">— เปิดงานไว้ (ยังไม่มีผู้รับผิดชอบ ให้กดรับเอง) —</option>${empOptions()}</select></div>
     <div class="set-grid">
       <div class="field"><label>อาคาร</label><select id="t-build" onchange="taskBuildToggle()">${taskBuildingOptions()}</select></div>
       <div class="field"><label>ประเภทงาน</label><select id="t-type" onchange="taskTypeToggle()">${taskTypeOptions()}</select></div>
@@ -1051,24 +1138,68 @@ function openTaskForm(){if(!needAuth())return;
   <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitTask()">${I.check2} มอบหมายงาน</button></div>`);
 }
 async function submitTask(){
-  const emp=fval('t-emp');
+  const empId=fval('t-emp');
   let build=fval('t-build'); if(build==='อื่นๆ')build=(fval('t-build-other')||'').trim()||'อื่นๆ';
   const ti=+fval('t-type'); let title=TASKS[ti].th==='อื่นๆ'?((fval('t-type-other')||'').trim()||'อื่นๆ'):(TASKS[ti].th+' / '+TASKS[ti].en);
   const start=fval('t-start'),end=fval('t-end'),note=fval('t-note');
-  if(!emp||!start){toast('กรุณาเลือกสมาชิกและวันที่','warn');return;}
-  addRecord(R(emp,'task',start,end,{title,location:build,note,status:'none'}));
+  if(!start){toast('กรุณาเลือกวันที่','warn');return;}
+  addRecord(R(empId,'task',start,end,{title,location:build,note,status:empId?'none':'open'}));
   closeModal();updateBadges();go('task');
-  // บันทึกลงฐานข้อมูลจริง
   if(CONFIG.SHEETS_API_URL){
     try{
       const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify({action:'createRecord',emp_id:emp,category:'task',title,location:build,start_date:start,end_date:end,note,actor:CUR?CUR.id:'web-admin'})});
+        body:JSON.stringify({action:'createRecord',emp_id:empId,category:'task',title,location:build,start_date:start,end_date:end,note,actor:CUR?CUR.id:'web-admin'})});
       const j=await res.json();
-      if(j&&j.ok)toast('มอบหมายงานและบันทึกลงฐานข้อมูลแล้ว','ok');
-      else if(j&&/category/i.test(j.error||''))toast('บันทึกลงฐานข้อมูลไม่สำเร็จ • ต้องอัปเดต (deploy) โค้ด Apps Script เวอร์ชันใหม่ก่อน','warn');
+      if(j&&j.ok)toast(empId?'มอบหมายงานและบันทึกลงฐานข้อมูลแล้ว':'เปิดงานไว้ให้กดรับแล้ว','ok');
+      else if(j&&/category/i.test(j.error||''))toast('บันทึกไม่สำเร็จ • ต้องอัปเดต (deploy) โค้ด Apps Script เวอร์ชันใหม่ก่อน','warn');
       else toast('บันทึกลงฐานข้อมูลไม่สำเร็จ • '+((j&&j.error)||'ฐานข้อมูลไม่ตอบสนอง'),'warn');
-    }catch(e){toast('ออฟไลน์ • บันทึกเฉพาะในหน้าเว็บ ยังไม่เข้าฐานข้อมูล','warn');}
-  }else toast('มอบหมายงานแล้ว','ok');
+    }catch(e){toast('ออฟไลน์ • บันทึกเฉพาะในหน้าเว็บ','warn');}
+  }else toast('บันทึกงานแล้ว','ok');
+}
+/* ---- Task workflow (เว็บ) ---- */
+async function taskPost(payload,okMsg,r,revert){
+  if(!CONFIG.SHEETS_API_URL){toast(okMsg,'ok');return true;}
+  try{const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    const j=await res.json();
+    if(j&&j.ok){toast(okMsg,'ok');return true;}
+    revert&&revert();go('task');toast((j&&j.error)||'ทำรายการไม่สำเร็จ','warn');return false;
+  }catch(e){revert&&revert();go('task');toast('ออฟไลน์ • ทำรายการไม่สำเร็จ','warn');return false;}
+}
+async function taskClaim(id){
+  if(!needAuth())return; const r=records.find(x=>x.id===id); if(!r)return; const prev={emp:r.emp,status:r.status};
+  r.emp=CUR.id; r.status='none'; go('task');
+  await taskPost({action:'claimTask',id,emp_id:CUR.id},'รับงานเรียบร้อย • คุณเป็นผู้รับผิดชอบแล้ว',r,()=>{r.emp=prev.emp;r.status=prev.status;});
+}
+async function taskReqReassign(id){
+  if(!needAuth())return; const r=records.find(x=>x.id===id); if(!r)return; const prev=r.pendingEmp;
+  r.pendingEmp=CUR.id; r.reqBy=CUR.id; go('task');
+  await taskPost({action:'requestReassign',id,emp_id:CUR.id},'ส่งคำขอเปลี่ยนผู้รับผิดชอบแล้ว • รอผู้อนุมัติ',r,()=>{r.pendingEmp=prev;});
+}
+async function taskDecideReassign(id,decision){
+  if(!needAuth())return; if(!canApprove()){toast('เฉพาะผู้อนุมัติ/ผู้ดูแลระบบ','warn');return;}
+  const r=records.find(x=>x.id===id); if(!r)return; const prev={emp:r.emp,pending:r.pendingEmp};
+  if(decision==='approved'&&r.pendingEmp)r.emp=r.pendingEmp; r.pendingEmp=''; r.reqBy=''; go('task');
+  await taskPost({action:'decideReassign',id,decision,approver_id:CUR.id},decision==='approved'?'อนุมัติเปลี่ยนผู้รับผิดชอบแล้ว':'ปฏิเสธคำขอแล้ว',r,()=>{r.emp=prev.emp;r.pendingEmp=prev.pending;});
+}
+function openTaskEdit(id){
+  if(!needAuth())return; if(!canApprove()){toast('เฉพาะผู้ดูแลระบบแก้ไขงานได้','warn');return;}
+  const r=records.find(x=>x.id===id); if(!r)return;
+  openModal(`<div class="mh"><h3>แก้ไขงาน (Task)</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
+  <div class="mb">
+    <div class="field"><label>ผู้รับผิดชอบ</label><select id="te-emp"><option value="">— ยังไม่มีผู้รับผิดชอบ —</option>${employees.filter(e=>!isInactive(e)).map(e=>`<option value="${e.id}" ${r.emp===e.id?'selected':''}>${esc(e.nick?e.nick+' ('+e.name+')':e.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>ประเภทงาน / ชื่องาน</label><input id="te-title" value="${esc(r.title)}"></div>
+    <div class="set-grid"><div class="field"><label>อาคาร</label><input id="te-loc" value="${esc(r.location)}"></div>
+      <div class="field"><label>สถานะ</label><select id="te-status"><option value="none" ${r.status==='none'?'selected':''}>มอบหมายแล้ว</option><option value="open" ${r.status==='open'?'selected':''}>เปิดงานไว้ (ว่าง)</option><option value="cancelled" ${r.status==='cancelled'?'selected':''}>ยกเลิก</option></select></div></div>
+    <div class="set-grid"><div class="field"><label>วันที่เริ่ม</label>${dateField('te-start',r.start)}</div><div class="field"><label>ถึงวันที่</label>${dateField('te-end',r.end)}</div></div>
+    <div class="field"><label>รายละเอียด</label><textarea id="te-note">${esc(r.note)}</textarea></div>
+  </div>
+  <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitTaskEdit('${id}')">${I.check2} บันทึก</button></div>`);
+}
+async function submitTaskEdit(id){
+  const r=records.find(x=>x.id===id); if(!r)return;
+  const patch={emp:fval('te-emp'),title:fval('te-title'),location:fval('te-loc'),status:fval('te-status'),start:fval('te-start'),end:fval('te-end'),note:fval('te-note')};
+  Object.assign(r,patch); closeModal(); go('task');
+  await taskPost({action:'updateTask',id,emp_id:patch.emp,title:patch.title,location:patch.location,status:patch.status,start_date:patch.start,end_date:patch.end,note:patch.note,actor:CUR?CUR.id:''},'บันทึกการแก้ไขงานแล้ว',r);
 }
 
 
@@ -1127,7 +1258,7 @@ function showRec(id){
 }
 
 /* ===================== FORMS (insert real records) ===================== */
-function empOptions(sel){return employees.filter(e=>e.status==='active').map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(e.name)} (${e.id})</option>`).join('');}
+function empOptions(sel){return employees.filter(e=>!isInactive(e)).map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(e.name)} (${e.id})</option>`).join('');}
 function fval(id){const el=document.getElementById(id);return el?el.value:'';}
 function addRecord(rec){records.unshift(rec);}
 
@@ -1341,7 +1472,7 @@ function adminEmployees(){
       <td><select class="select" style="padding:6px 12px" onchange="emp('${e.id}').role=this.value;toast('อัปเดตสิทธิ์แล้ว','ok')">
         <option value="user" ${e.role==='user'?'selected':''}>ผู้ใช้ทั่วไป</option><option value="approver" ${e.role==='approver'?'selected':''}>ผู้อนุมัติ</option><option value="admin" ${e.role==='admin'?'selected':''}>ผู้ดูแลระบบ</option></select></td>
       <td>${e.line?'<span class="st st-approved">เชื่อม</span>':'<span class="st st-cancelled">ยังไม่</span>'}</td>
-      <td><span class="st ${e.status==='active'?'st-approved':'st-cancelled'}">${e.status==='active'?'ใช้งาน':'ปิด'}</span></td>
+      <td><span class="st ${!isInactive(e)?'st-approved':'st-cancelled'}">${!isInactive(e)?'ใช้งาน':'ปิด'}</span></td>
       <td><div class="row-act" style="justify-content:flex-end"><button class="icon-btn" onclick="openEmpForm('${e.id}')">${I.pen}</button></div></td>
     </tr>`).join('')}</tbody></table></div></div>`;
 }
@@ -1359,17 +1490,19 @@ function openEmpForm(id){if(!needAuth())return;const e=id?emp(id):null; _empPhot
     ${empPhotoBox()}
     <div class="set-grid"><div class="field"><label>ชื่อ-นามสกุล</label><input id="e-name" value="${e?esc(e.name):''}"></div>
       <div class="field"><label>รหัสสมาชิก</label><input id="e-id" class="mono" value="${e?e.id:''}" placeholder="EMP0xx"></div></div>
-    <div class="set-grid"><div class="field"><label>แผนก</label><input id="e-dept" value="${e?esc(e.dept):''}"></div>
-      <div class="field"><label>ตำแหน่ง</label><input id="e-pos" value="${e?esc(e.pos):''}"></div></div>
-    <div class="set-grid"><div class="field"><label>Username</label><input id="e-user" class="mono" value="${e?esc(e.user):''}"></div>
-      <div class="field"><label>รหัสผ่าน</label><input id="e-pass" class="mono" value="${e?esc(e.pass):'gnr3@123'}"></div></div>
+    <div class="set-grid"><div class="field"><label>ชื่อเล่น <span style="color:var(--ink-soft);font-weight:400">(แสดงในปฏิทิน/Gantt)</span></label><input id="e-nick" value="${e?esc(e.nick||''):''}" placeholder="เช่น ชาย"></div>
+      <div class="field"><label>แผนก</label><input id="e-dept" value="${e?esc(e.dept):''}"></div></div>
+    <div class="set-grid"><div class="field"><label>ตำแหน่ง</label><input id="e-pos" value="${e?esc(e.pos):''}"></div>
+      <div class="field"><label>Username</label><input id="e-user" class="mono" value="${e?esc(e.user):''}"></div></div>
+    <div class="set-grid"><div class="field"><label>รหัสผ่าน</label><input id="e-pass" class="mono" value="${e?esc(e.pass):'gnr3@123'}"></div>
+      <div class="field"></div></div>
     <div class="set-grid"><div class="field"><label>สิทธิ์</label><select id="e-role"><option value="user" ${e&&e.role==='user'?'selected':''}>ผู้ใช้ทั่วไป</option><option value="approver" ${e&&e.role==='approver'?'selected':''}>ผู้อนุมัติ</option><option value="admin" ${e&&e.role==='admin'?'selected':''}>ผู้ดูแลระบบ</option></select></div>
       <div class="field"><label>สถานะ</label><select id="e-status"><option value="active" ${!e||e.status==='active'?'selected':''}>ใช้งาน</option><option value="inactive" ${e&&e.status==='inactive'?'selected':''}>ปิดใช้งาน</option></select></div></div>
   </div>
   <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitEmp(${e?`'${e.id}'`:'null'})">${I.check2} บันทึก</button></div>`);
 }
 async function submitEmp(id){
-  const data={name:fval('e-name'),id:fval('e-id'),dept:fval('e-dept'),pos:fval('e-pos'),user:fval('e-user'),pass:fval('e-pass'),role:fval('e-role'),status:fval('e-status'),photo:_empPhoto};
+  const data={name:fval('e-name'),nick:fval('e-nick'),id:fval('e-id'),dept:fval('e-dept'),pos:fval('e-pos'),user:fval('e-user'),pass:fval('e-pass'),role:fval('e-role'),status:fval('e-status'),photo:_empPhoto};
   if(!data.name||!data.id){toast('กรอกชื่อและรหัสพนักงาน','err');return;}
   if(id){Object.assign(emp(id),data);}else{employees.push(Object.assign({line:false},data));}
   closeModal();go(currentView==='gantt'?'gantt':'admin');if(currentView!=='gantt')setTimeout(()=>setAdmin('employees'),0);
@@ -1377,7 +1510,7 @@ async function submitEmp(id){
   if(CONFIG.SHEETS_API_URL){
     try{
       const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,dept:data.dept,position:data.pos,
+        body:JSON.stringify({action:'upsertEmployee',emp_id:data.id,full_name:data.name,nickname:data.nick,dept:data.dept,position:data.pos,
           role:data.role,username:data.user,password:data.pass||'',status:data.status,photo:data.photo||'',
           actor:CUR?CUR.id:'web-admin'})});
       const j=await res.json();
