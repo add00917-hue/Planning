@@ -427,7 +427,7 @@ table.t tbody tr:hover{background:#F8FAFD}
   .cal-chip{display:none}
 }
 @media (max-width:380px){.kpi-rail{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){*:not(.savepop-spin){animation:none!important;transition:none!important}}
 /* ===== Bilingual Date/Time Picker ===== */
 .dtf-btn{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;transition:.16s;font-family:inherit}
 .dtf-btn:hover{border-color:var(--navy-soft);box-shadow:0 0 0 3px rgba(44,91,160,.08)}
