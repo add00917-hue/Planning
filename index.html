@@ -141,9 +141,9 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .btn-ghost:hover{border-color:var(--navy-soft);color:var(--navy)}
 
 .kpi-rail{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;margin-bottom:18px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
-.kpi .ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:13px}
-.kpi .ic svg{width:21px;height:21px;stroke-width:2}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.kpi .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px}
+.kpi .ic svg{width:22px;height:22px;stroke-width:2}
 .kpi .val{font-family:var(--mono);font-size:31px;font-weight:600;color:var(--ink);line-height:1}
 .kpi .val .u{font-size:14px;color:var(--ink-soft);font-weight:500;margin-left:3px}
 .kpi .lbl{font-size:12.5px;color:var(--ink-mid);margin-top:7px;font-weight:500}
@@ -906,7 +906,7 @@ function viewDashboard(){
   const todayN=recOnDate(TODAY_ISO).length;
   const monthN=records.filter(r=>r.start.slice(0,7)===TODAY_ISO.slice(0,7)).length;
   return `
-  <div class="page-head"><div><h1>ภาพรวมองค์กร</h1><p>ข้อมูลล่าสุด • อัปเดตจาก Google Sheets</p></div>
+  <div class="page-head"><div><h1>ภาพรวมกิจกรรม GNR3</h1><p>ข้อมูลล่าสุด • อัปเดตจาก ฐานข้อมูล</p></div>
     <div class="head-actions"><button class="btn btn-ghost" onclick="toast('กำลังสร้างรายงาน...','ok')">${I.dl} ส่งออกรายงาน</button>
     <button class="btn btn-primary" onclick="openRecordPicker()">${I.plus} เพิ่มรายการ</button></div></div>
   <div class="kpi-rail">
