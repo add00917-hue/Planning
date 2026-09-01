@@ -526,6 +526,14 @@ table.t tbody tr:hover{background:#F8FAFD}
 .sbt{flex:1;height:8px;background:var(--canvas-2);border-radius:4px;overflow:hidden}
 .sbf{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.16,1,.3,1);min-width:2px}
 .sbn{font-size:12px;font-weight:600;color:var(--ink);width:22px;text-align:right;flex-shrink:0}
+.sum-leave{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.sl-h{font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:9px}
+.sl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.sl-item{background:var(--canvas);border-radius:11px;padding:10px 4px;text-align:center;position:relative}
+.sl-item .sl-dot{width:8px;height:8px;border-radius:50%;display:block;margin:0 auto 5px}
+.sl-item b{display:block;font-size:18px;color:var(--ink);line-height:1}
+.sl-item span{font-size:10px;color:var(--ink-soft);display:block;margin-top:3px}
+@media (max-width:400px){.sl-grid{grid-template-columns:repeat(2,1fr)}}
 @media (min-width:2600px){.sum-grid{max-width:2280px;margin:0 auto}}
 /* ===== Bulk Entry ===== */
 .bulk-cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
@@ -649,15 +657,15 @@ const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i
 
 /* ---- categories (drive calendar dots, gantt bars, sections) ---- */
 const CAT = {
-  sick:     {g:'leave',    th:'ลาป่วย',        en:'Sick leave',      c:'#EF4444', approve:true},
-  personal: {g:'leave',    th:'ลากิจ',         en:'Personal leave',  c:'#6366F1', approve:true},
-  other:    {g:'leave',    th:'ลาอื่นๆ',       en:'Other leave',     c:'#8B5CF6', approve:true},
-  vacation: {g:'leave',    th:'ลาพักร้อน',     en:'Vacation',        c:'#10B981', approve:false},
-  internal: {g:'training', th:'อบรมภายใน',     en:'Internal training',c:'#0EA5E9', approve:true},
-  esv:      {g:'training', th:'อบรม ESV',      en:'ESV center',      c:'#0891B2', approve:true},
-  event:    {g:'training', th:'กิจกรรม',       en:'Activity',        c:'#EC4899', approve:false},
-  overtime: {g:'ot',       th:'ทำล่วงเวลา OT', en:'Overtime',        c:'#F97316', approve:true},
-  offsite:  {g:'ot',       th:'นอกสถานที่',    en:'Off-site',        c:'#14B8A6', approve:true},
+  sick:     {g:'leave',    th:'ลาป่วย',        en:'Sick leave',      c:'#DC2626', approve:true},
+  personal: {g:'leave',    th:'ลากิจ',         en:'Personal leave',  c:'#F59E0B', approve:true},
+  other:    {g:'leave',    th:'ลาอื่นๆ',       en:'Other leave',     c:'#64748B', approve:true},
+  vacation: {g:'leave',    th:'ลาพักร้อน',     en:'Vacation',        c:'#16A34A', approve:false},
+  internal: {g:'training', th:'อบรมภายใน',     en:'Internal training',c:'#2563EB', approve:true},
+  esv:      {g:'training', th:'อบรม ESV',      en:'ESV center',      c:'#4F46E5', approve:true},
+  event:    {g:'training', th:'กิจกรรม',       en:'Activity',        c:'#DB2777', approve:false},
+  overtime: {g:'ot',       th:'ทำล่วงเวลา OT', en:'Overtime',        c:'#EA580C', approve:true},
+  offsite:  {g:'ot',       th:'นอกสถานที่',    en:'Off-site',        c:'#0D9488', approve:true},
   task:     {g:'task',     th:'มอบหมายงาน',    en:'Task Assignment', c:'#7C3AED', approve:false}
 };
 /* Task Assignment — อาคารและประเภทงาน (ไม่ต้องอนุมัติ) */
@@ -946,9 +954,12 @@ function viewSummary(){
   const GRP={leave:{th:'ลา',c:'#EF4444'},training:{th:'อบรม/กิจกรรม',c:'#3B82F6'},ot:{th:'OT/นอกสถานที่',c:'#F97316'},task:{th:'งานมอบหมาย',c:'#7C3AED'}};
   const stat=e=>{const rs=records.filter(r=>r.emp===e.id);
     const g={leave:0,training:0,ot:0,task:0}; let pend=0,cost=0,days=0;
+    const lv={}; Object.keys(CAT).filter(k=>CAT[k].g==='leave').forEach(k=>lv[k]=0); // วันลาแยกประเภท
     rs.forEach(r=>{const grp=CAT[r.cat]?CAT[r.cat].g:'';if(g[grp]!=null)g[grp]++;if(r.status==='pending')pend++;if(r.cost)cost+=r.cost;
-      const dd=Math.round((parse(r.end)-parse(r.start))/864e5)+1;days+=dd>0?dd:1;});
-    return {rs,g,pend,cost,days,total:rs.length};};
+      const dd=Math.round((parse(r.end)-parse(r.start))/864e5)+1; const nd=dd>0?dd:1; days+=nd;
+      if(grp==='leave'&&lv[r.cat]!=null)lv[r.cat]+=nd;});
+    const leaveDays=Object.values(lv).reduce((a,b)=>a+b,0);
+    return {rs,g,lv,leaveDays,pend,cost,days,total:rs.length};};
   let mData=mems.map(e=>({e,s:stat(e)}));
   if(sumSort==='active')mData.sort((a,b)=>b.s.total-a.s.total);
   else if(sumSort==='pending')mData.sort((a,b)=>b.s.pend-a.s.pend);
@@ -979,6 +990,11 @@ function viewSummary(){
         <div class="sum-bar-row"><span class="sbl">${GRP[k].th}</span>
           <div class="sbt"><div class="sbf" style="width:${s.g[k]/maxG*100}%;background:${GRP[k].c}"></div></div>
           <span class="sbn mono">${s.g[k]}</span></div>`).join('')}</div>
+      <div class="sum-leave">
+        <div class="sl-h">การลา (วันที่ใช้ไป) • รวม ${s.leaveDays} วัน</div>
+        <div class="sl-grid">${Object.keys(CAT).filter(k=>CAT[k].g==='leave').map(k=>`
+          <div class="sl-item"><span class="sl-dot" style="background:${CAT[k].c}"></span><b class="mono">${s.lv[k]}</b><span>${CAT[k].th}</span></div>`).join('')}</div>
+      </div>
       <button class="btn btn-ghost" style="width:100%;margin-top:12px;justify-content:center" onclick="showMemberDetail('${e.id}')">${I.eye} ดูรายการทั้งหมด</button>
     </div>`;}).join('')}</div>`;
 }
