@@ -501,6 +501,14 @@ table.t tbody tr:hover{background:#F8FAFD}
 .savepop-en{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
 .savepop-sub{font-size:13px;color:var(--ink-mid);margin-top:10px;line-height:1.5}
 .savepop-btn{margin-top:20px;padding:12px 24px;border-radius:13px;background:linear-gradient(180deg,var(--yellow-bright),var(--yellow-dark));color:var(--navy-deep);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+.savepop-btn.ghost{background:var(--canvas);color:var(--ink-mid)}
+.savepop-prog{height:10px;background:var(--canvas-2);border-radius:6px;overflow:hidden;margin:16px 0 6px}
+.savepop-prog-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--navy-mid));border-radius:6px;transition:width .25s ease;width:0}
+.savepop-pct{font-size:12px;color:var(--ink-soft);font-family:var(--mono)}
+.savepop-fails{margin-top:12px;background:var(--danger-bg);border-radius:12px;padding:10px 12px;text-align:left;max-height:120px;overflow-y:auto}
+.savepop-fails .ff{font-size:12px;color:#C0392B;padding:3px 0}
+.savepop-btns{display:flex;gap:8px;margin-top:18px}
+.savepop-btns button{flex:1;margin-top:0}
 /* ===== Member summary ===== */
 .sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
 .sum-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow-sm)}
@@ -519,6 +527,55 @@ table.t tbody tr:hover{background:#F8FAFD}
 .sbf{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.16,1,.3,1);min-width:2px}
 .sbn{font-size:12px;font-weight:600;color:var(--ink);width:22px;text-align:right;flex-shrink:0}
 @media (min-width:2600px){.sum-grid{max-width:2280px;margin:0 auto}}
+/* ===== Bulk Entry ===== */
+.bulk-cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.bulk-cat{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:20px;text-align:left;cursor:pointer;transition:.16s;position:relative;overflow:hidden}
+.bulk-cat:hover{border-color:var(--cc);transform:translateY(-2px);box-shadow:0 10px 28px rgba(7,24,46,.12)}
+.bc-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:14px}
+.bc-ic svg{width:24px;height:24px}
+.bc-t{font-size:16px;font-weight:700;color:var(--ink)}
+.bc-s{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+.bc-n{font-size:11.5px;color:var(--ink-soft);margin-top:10px;font-family:var(--mono)}
+.bulk-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--canvas);padding:14px 16px;border-radius:14px;margin-bottom:16px}
+.bulk-detail{margin-bottom:16px}
+.bulk-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.bulk-detail-grid{grid-template-columns:1fr}}
+.bulk-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start}
+.bulk-hint{font-size:12px;color:var(--ink-soft);margin-top:10px;display:flex;align-items:center;gap:6px}
+.bulk-hint svg{width:14px;height:14px}
+.bulk-cell{cursor:pointer}
+.bulk-cell.picked{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-color:var(--navy)}
+.bulk-cell.picked .cdn{color:#fff}
+.bulk-cell.picked .cal-hol{color:rgba(255,255,255,.8)}
+.bulk-check{position:absolute;top:5px;right:7px;color:var(--yellow-bright);font-weight:700;font-size:14px}
+.bulk-side{background:var(--canvas);border-radius:16px;padding:16px;position:sticky;top:12px;max-height:calc(100vh - 40px);overflow-y:auto}
+.bulk-side-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.bulk-toggles{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.bulk-tg{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink-mid);background:#fff;padding:11px 13px;border-radius:12px;border:1px solid var(--line)}
+.bulk-tg b{color:var(--navy)}
+.bulk-global{background:#fff;padding:12px 13px;border-radius:12px;border:1px solid var(--line)}
+.bulk-days{display:flex;flex-direction:column;gap:9px}
+.bulk-day{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.bd-date{display:flex;align-items:center;gap:8px;font-size:13.5px}
+.bd-date .en{font-size:11px;color:var(--ink-soft);font-weight:500}
+.bd-x{margin-left:auto;width:24px;height:24px;border-radius:7px;background:var(--canvas);display:flex;align-items:center;justify-content:center;color:var(--ink-soft)}
+.bd-x svg{width:13px;height:13px}
+.bd-row{display:flex;align-items:center;gap:8px;margin-top:8px;min-width:0}
+/* กันช่องเวลา/ข้อมูลล้นในกล่องด้านข้างที่แคบ */
+.bulk-side,.bulk-side *{min-width:0}
+.bulk-side .dtf-btn{flex:1;padding:9px 10px;gap:7px}
+.bulk-side .dtf-btn .dtf-en{display:none}
+.bulk-side .dtf-btn .dtf-th{font-size:12.5px}
+.bulk-side .dtf-btn .dtf-ic svg{width:16px;height:16px}
+.bulk-side .select{max-width:100%;text-overflow:ellipsis}
+.bd-row .bd-l{white-space:nowrap}
+.bd-l{font-size:11.5px;color:var(--ink-soft);width:70px;flex-shrink:0}
+.bd-info{font-size:12px;color:var(--ink-mid);margin-top:7px;padding-top:7px;border-top:1px dashed var(--line)}
+.bulk-empty{text-align:center;padding:40px 20px;color:var(--ink-soft)}
+.bulk-empty svg{width:38px;height:38px;margin-bottom:10px;opacity:.5}
+.bulk-empty div{font-weight:600;font-size:14px;color:var(--ink-mid)}
+.bulk-empty span{font-size:12px}
+@media (max-width:1100px){.bulk-grid{grid-template-columns:1fr}.bulk-side{position:static;max-height:none}}
 </style>
 </head>
 <body>
@@ -588,7 +645,7 @@ table.t tbody tr:hover{background:#F8FAFD}
 
 <script>
 /* ===================== Plans & Activities of the GNR3 team ===================== */
-const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://gnr3.app/team' };
+const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://add00917-hue.github.io/leave/' };
 
 /* ---- categories (drive calendar dots, gantt bars, sections) ---- */
 const CAT = {
@@ -789,7 +846,7 @@ function setDB(st){DBS=st;
 }
 async function syncDB(){
   if(!CONFIG.SHEETS_API_URL){setDB('offline');return;}
-  setDB('connecting');
+  setDB('connecting'); showConnecting();
   try{
     const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'bootstrap'})});
     const j=await res.json();
@@ -802,9 +859,26 @@ async function syncDB(){
       if(Array.isArray(d.records)) records=d.records.map(r=>({id:S(r.record_id),emp:S(r.emp_id),cat:S(r.category).toLowerCase(),start:D(r.start_date),end:D(r.end_date||r.start_date),title:S(r.title),location:S(r.location),st:S(r.start_time),et:S(r.end_time),status:S(r.status).toLowerCase()||'none',overnight:r.overnight===true||S(r.overnight).toUpperCase()==='TRUE',cost:(r.cost===''||r.cost==null||isNaN(Number(r.cost)))?null:Number(r.cost),note:S(r.note),pendingEmp:S(r.pending_emp_id),reqBy:S(r.req_by)})).filter(r=>CAT[r.cat]&&r.start);
       if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
       setDB('online'); updateSbUser(); updateBadges(); updateLanding(); go(currentView);
-      toast('โหลดข้อมูลจากฐานข้อมูลแล้ว • '+employees.length+' สมาชิก, '+records.length+' รายการ','ok');
-    } else setDB('offline');
-  }catch(e){ setDB('offline'); }
+      hideConnecting(true,'เชื่อมต่อฐานข้อมูลสำเร็จ • '+employees.length+' สมาชิก, '+records.length+' รายการ');
+    } else { setDB('offline'); hideConnecting(false,'เชื่อมต่อฐานข้อมูลไม่ได้'); }
+  }catch(e){ setDB('offline'); hideConnecting(false,'เชื่อมต่อฐานข้อมูลไม่ได้ • ตรวจสอบอินเทอร์เน็ต'); }
+}
+/* popup กลางจอ: กำลังเชื่อมต่อฐานข้อมูล (วงกลมวิ่ง) */
+function showConnecting(){
+  document.getElementById('savepop').className='savepop open saving';
+  document.getElementById('savepop-card').innerHTML=`<div class="savepop-ic"><div class="savepop-spin"></div></div>
+    <div class="savepop-th">กำลังเชื่อมต่อฐานข้อมูล</div><div class="savepop-en">Connecting to database...</div>
+    <div class="savepop-sub">กรุณารอสักครู่</div>`;
+}
+function hideConnecting(ok,msg){
+  const pop=document.getElementById('savepop'); if(!pop.classList.contains('open'))return;
+  const el=document.getElementById('savepop-card');
+  if(ok){pop.className='savepop open ok';
+    el.innerHTML=`<div class="savepop-ic">${I.check}</div><div class="savepop-th">เชื่อมต่อสำเร็จ</div><div class="savepop-en">Connected</div><div class="savepop-sub">${esc(msg||'')}</div>`;
+    setTimeout(closeSavePop,1200);
+  }else{pop.className='savepop open err';
+    el.innerHTML=`<div class="savepop-ic">${I.x}</div><div class="savepop-th">เชื่อมต่อไม่สำเร็จ</div><div class="savepop-en">Connection failed</div><div class="savepop-sub">${esc(msg||'')}</div><button class="savepop-btn" onclick="closeSavePop()">ปิด</button>`;
+  }
 }
 /* การ์ดผู้ใช้: แสดงคนที่ล็อกอินจริง / ยังไม่ล็อกอิน = ผู้เยี่ยมชม (โหมดดูอย่างเดียว) */
 function updateSbUser(){
@@ -1531,18 +1605,18 @@ async function saveRecord(payload,localRec){
   addRecord(localRec); closeModal(); updateBadges(); go(currentView);
   if(!CONFIG.SHEETS_API_URL){toast('บันทึกในหน้าเว็บแล้ว','ok');return;}
   showSaving();
-  try{
-    const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    const j=await res.json();
-    if(j&&j.ok){
-      const dd=j.data||{}; // ใช้ record_id/สถานะจริงจาก backend แทน id ที่หน้าเว็บสร้างเอง (กันอนุมัติแล้วหาไม่เจอ)
-      if(dd.record_id)localRec.id=String(dd.record_id);
-      if(dd.status)localRec.status=String(dd.status).toLowerCase();
-      go(currentView); showSaved(true);
-    }
-    else if(j&&/category/i.test(j.error||'')){showSaved(false,'ต้องอัปเดต (deploy) โค้ด Apps Script เวอร์ชันใหม่ก่อน');}
-    else{showSaved(false,(j&&j.error)||'ฐานข้อมูลไม่ตอบสนอง');}
-  }catch(e){showSaved(false,'เชื่อมต่อฐานข้อมูลไม่ได้ • ตรวจสอบอินเทอร์เน็ต');}
+  const j=await postJSON(payload); // retry อัตโนมัติ
+  if(j&&j.ok){
+    const dd=j.data||{};
+    if(dd.record_id)localRec.id=String(dd.record_id);
+    if(dd.status)localRec.status=String(dd.status).toLowerCase();
+    go(currentView); showSaved(true);
+  }else if(j&&/category/i.test(j.error||'')){
+    records=records.filter(r=>r!==localRec); go(currentView); showSaved(false,'ต้องอัปเดต (deploy) โค้ด Apps Script เวอร์ชันใหม่ก่อน');
+  }else{
+    records=records.filter(r=>r!==localRec); go(currentView); // เอา local ออกเพราะไม่ได้ลง Sheet (กันหน้าเว็บกับ Sheet ไม่ตรง)
+    showSaved(false,(j&&j.error)||'ฐานข้อมูลไม่ตอบสนอง');
+  }
 }
 
 function toast(msg,kind){kind=kind||'ok';
@@ -1557,6 +1631,7 @@ function viewAdmin(){
   return `<div class="page-head"><div><h1>Admin Panel</h1><p>ตั้งค่าระบบ สมาชิก และผู้ใช้งาน</p></div></div>
   <div class="admin-layout">
     <nav class="admin-nav">
+      ${CUR&&CUR.role==='admin'?`<button data-a="bulk" onclick="setAdmin('bulk')">${I.check2} บันทึกกิจกรรม (ทีละมาก)</button>`:''}
       <button class="on" data-a="employees" onclick="setAdmin('employees')">${I.users} สมาชิก &amp; สิทธิ์</button>
       <button data-a="activities" onclick="setAdmin('activities')">${I.sliders} ตั้งค่ากิจกรรม</button>
       <button data-a="holidays" onclick="setAdmin('holidays')">${I.cal} วันหยุดบริษัท</button>
@@ -1567,6 +1642,7 @@ function viewAdmin(){
       <button data-a="users" onclick="setAdmin('users')">${I.lock} ผู้ใช้งานระบบ</button>
     </nav>
     <div class="admin-panel">
+      ${CUR&&CUR.role==='admin'?`<div class="apane" id="ap-bulk">${adminBulk()}</div>`:''}
       <div class="apane" id="ap-employees">${adminEmployees()}</div>
       <div class="apane" id="ap-activities">${adminActivities()}</div>
       <div class="apane" id="ap-holidays">${adminHolidays()}</div>
@@ -1582,8 +1658,218 @@ function setAdmin(tab){
   document.querySelectorAll('.admin-nav button').forEach(b=>b.classList.toggle('on',b.dataset.a===tab));
   document.querySelectorAll('.apane').forEach(p=>p.classList.toggle('on',p.id==='ap-'+tab));
   if(tab==='mobile')injectQR();
+  if(tab==='bulk')renderBulkCal();
 }
 const ROLE={admin:['role-admin','ผู้ดูแลระบบ'],approver:['role-approver','ผู้อนุมัติ'],user:['role-user','ผู้ใช้ทั่วไป']};
+
+/* ===================== บันทึกกิจกรรมทีละมาก (Bulk Entry) ===================== */
+const BULK_CATS=[
+  {g:'task',cat:'task',th:'Task Assignment',en:'งานมอบหมาย',c:'#7C3AED',icon:'check2'},
+  {g:'leave',th:'ระบบลา (Absence)',en:'การลา',c:'#EF4444',icon:'cal'},
+  {g:'training',th:'อบรม & กิจกรรม',en:'Training & Events',c:'#3B82F6',icon:'users'},
+  {g:'ot',th:'OT & นอกสถานที่',en:'Overtime & Off-site',c:'#F97316',icon:'clock'}
+];
+// หมวดย่อยในแต่ละกลุ่ม (เลือกประเภทกิจกรรมจริง)
+function bulkSubCats(g){return Object.keys(CAT).filter(k=>CAT[k].g===g);}
+let bulkG=null;               // กลุ่มที่เลือก (task/leave/training/ot)
+let bulkY=NOW.getFullYear(), bulkM=NOW.getMonth();
+let bulkSel={};               // { 'yyyy-mm-dd': {time:{st,et}, emp:'id'|''} }
+let bulkSameTime=true, bulkSameEmp=true;
+let bulkGlobalSt='09:00', bulkGlobalEt='', bulkGlobalEmp='';
+
+function adminBulk(){
+  return `<div class="card"><div class="card-h"><div><h3>บันทึกกิจกรรม GNR3 (ทีละจำนวนมาก)</h3><div class="sub">เฉพาะผู้ดูแลระบบ • เลือกประเภท แล้วเลือกวันในปฏิทินได้หลายวัน • 1 วัน = 1 รายการ • บันทึกทันทีไม่ต้องอนุมัติ</div></div>
+    ${bulkG?`<button class="btn btn-ghost" onclick="bulkReset()">${I.chevL} เปลี่ยนประเภท</button>`:''}</div>
+    <div class="card-b" id="bulk-body">${bulkG?bulkWorkspace():bulkPicker()}</div></div>`;
+}
+function bulkPicker(){
+  return `<div class="bulk-cats">${BULK_CATS.map(b=>`
+    <button class="bulk-cat" style="--cc:${b.c}" onclick="bulkPick('${b.g}')">
+      <div class="bc-ic" style="background:${b.c}">${I[b.icon]||I.check2}</div>
+      <div class="bc-t">${b.th}</div><div class="bc-s">${b.en}</div>
+      <div class="bc-n">${records.filter(r=>CAT[r.cat]&&CAT[r.cat].g===b.g).length} รายการในระบบ</div>
+    </button>`).join('')}</div>`;
+}
+function bulkPick(g){bulkG=g;bulkSel={};bulkSameTime=true;bulkSameEmp=true;bulkGlobalSt='09:00';bulkGlobalEt='';bulkGlobalEmp='';
+  bulkSubCat=bulkSubCats(g)[0];
+  go('admin');setAdmin('bulk');
+}
+let bulkSubCat=null;
+function bulkReset(){bulkG=null;go('admin');setAdmin('bulk');}
+function bulkWorkspace(){
+  const gInfo=BULK_CATS.find(b=>b.g===bulkG);
+  const sub=bulkSubCats(bulkG);
+  const isTask=bulkG==='task';
+  return `<div class="bulk-head" style="border-left:4px solid ${gInfo.c}">
+      <div><b>${gInfo.th}</b><span class="meta"> • เลือกวันในปฏิทินที่ต้องการบันทึก</span></div>
+      ${isTask?'':`<div class="field" style="margin:0;min-width:220px"><label>ประเภทกิจกรรม</label>
+        <select class="select" id="bulk-subcat" onchange="bulkSubCat=this.value">${sub.map(k=>`<option value="${k}" ${k===bulkSubCat?'selected':''}>${CAT[k].th} / ${CAT[k].en}</option>`).join('')}</select></div>`}
+    </div>
+    <div class="bulk-detail">${bulkDetailFields()}</div>
+    <div class="bulk-grid">
+      <div class="bulk-cal-wrap">
+        <div class="cal-head" style="margin-bottom:10px">
+          <div class="cal-title" id="bulk-title"></div>
+          <div class="cal-nav">
+            <select class="select" id="bulk-year" onchange="bulkY=+this.value;renderBulkCal()">${[2026,2027,2028,2029,2030].map(y=>`<option value="${y}" ${y===bulkY?'selected':''}>ปี ${be(y)} (${y})</option>`).join('')}</select>
+            <button onclick="bulkStep(-1)">${I.chevL}</button><button onclick="bulkStep(1)">${I.chevR}</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="bulk-cal"></div>
+        <div class="bulk-hint">${I.check} แตะวันเพื่อเลือก/ยกเลิก • เลือกได้หลายวัน</div>
+      </div>
+      <div class="bulk-side" id="bulk-side"></div>
+    </div>`;
+}
+/* field เฉพาะประเภท (ใช้ร่วมกันทุกวันที่เลือก) — ให้เหมือนฟอร์มหน้าหลัก */
+function bulkDetailFields(){
+  if(bulkG==='task'){
+    return `<div class="bulk-detail-grid">
+      <div class="field" style="margin:0"><label>อาคาร</label><select class="select" id="bulk-build" onchange="document.getElementById('bulk-build-c').classList.toggle('hidden',this.value!=='อื่นๆ')">${BUILDINGS.map(b=>`<option value="${b}">${b}</option>`).join('')}</select></div>
+      <div class="field hidden" id="bulk-build-c" style="margin:0"><label>ระบุอาคาร (อื่นๆ)</label><input id="bulk-build-o" placeholder="ชื่ออาคาร/สถานที่"></div>
+      <div class="field" style="margin:0"><label>ประเภทงาน</label><select class="select" id="bulk-tasktype" onchange="document.getElementById('bulk-tasktype-c').classList.toggle('hidden',TASKS[+this.value].th!=='อื่นๆ')">${TASKS.map((t,i)=>`<option value="${i}">${t.th} / ${t.en}</option>`).join('')}</select></div>
+      <div class="field hidden" id="bulk-tasktype-c" style="margin:0"><label>ระบุประเภทงาน (อื่นๆ)</label><input id="bulk-tasktype-o" placeholder="ระบุงานที่มอบหมาย"></div>
+    </div>`;
+  }
+  if(bulkG==='leave'){
+    return `<div class="field" style="margin:0"><label>เหตุผล / หมายเหตุ (ใช้กับทุกวัน)</label><input id="bulk-note" placeholder="เหตุผลการลา (ไม่บังคับ)"></div>`;
+  }
+  // training / ot
+  return `<div class="bulk-detail-grid">
+    <div class="field" style="margin:0"><label>ชื่อหัวข้อ / งาน (ใช้กับทุกวัน)</label><input id="bulk-gtitle" placeholder="${bulkG==='ot'?'เช่น ปิดงบสิ้นเดือน':'เช่น อบรมความปลอดภัย'}"></div>
+    <div class="field" style="margin:0"><label>สถานที่ (ใช้กับทุกวัน)</label><input id="bulk-gloc" placeholder="เช่น ห้องประชุม A / ออนไลน์"></div>
+  </div>`;
+}
+function renderBulkCal(){
+  if(!bulkG)return; const t=document.getElementById('bulk-title'); if(!t)return;
+  t.innerHTML=`${THAI_M[bulkM]} ${be(bulkY)} <span class="en">${EN_M[bulkM]} ${bulkY}</span>`;
+  const grid=document.getElementById('bulk-cal');
+  let html=DOW_TH.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  const first=new Date(bulkY,bulkM,1).getDay(), dim=daysIn(bulkY,bulkM), prevDim=daysIn(bulkM===0?bulkY-1:bulkY,(bulkM+11)%12);
+  for(let i=0;i<first;i++)html+=`<div class="cal-cell muted"><span class="cdn">${prevDim-first+1+i}</span></div>`;
+  for(let d=1;d<=dim;d++){const ds=bulkY+'-'+pad(bulkM+1)+'-'+pad(d); const dow=new Date(bulkY,bulkM,d).getDay();
+    const cls=['cal-cell','bulk-cell'];if(ds===TODAY_ISO)cls.push('today');if(bulkSel[ds])cls.push('picked');if(dow===0||dow===6)cls.push('weekend');
+    const hol=holidays.find(h=>h.date===ds);
+    html+=`<div class="${cls.join(' ')}" onclick="bulkToggle('${ds}')"><span class="cdn">${d}</span>${hol?`<span class="cal-hol">${esc(hol.name)}</span>`:''}${bulkSel[ds]?'<span class="bulk-check">✓</span>':''}</div>`;
+  }
+  grid.innerHTML=html; renderBulkSide();
+}
+function bulkStep(n){bulkM+=n;if(bulkM>11){bulkM=0;bulkY++;}if(bulkM<0){bulkM=11;bulkY--;}document.getElementById('bulk-year').value=bulkY;renderBulkCal();}
+function bulkToggle(ds){
+  if(bulkSel[ds])delete bulkSel[ds];
+  else bulkSel[ds]={st:bulkGlobalSt,et:bulkGlobalEt,emp:bulkGlobalEmp};
+  renderBulkCal();
+}
+function renderBulkSide(){
+  const side=document.getElementById('bulk-side'); if(!side)return;
+  const days=Object.keys(bulkSel).sort();
+  const isTask=bulkG==='task';
+  const empOpts=(cur)=>`<option value="">${isTask?'— รอมอบหมาย —':'— เลือกผู้รับผิดชอบ —'}</option>${employees.filter(e=>!isInactive(e)).map(e=>`<option value="${e.id}" ${cur===e.id?'selected':''}>${esc(e.nick?e.nick+' ('+e.name+')':e.name)}</option>`).join('')}`;
+  side.innerHTML=`
+    <div class="bulk-side-h">
+      <div><b>วันที่เลือก</b><span class="meta"> • ${days.length} วัน = ${days.length} รายการ</span></div>
+      ${days.length?`<button class="chip" onclick="bulkClear()">ล้างทั้งหมด</button>`:''}
+    </div>
+    ${days.length?`
+    <div class="bulk-toggles">
+      <label class="bulk-tg"><span>เวลา: <b>${bulkSameTime?'เหมือนกันทั้งหมด':'แยกแต่ละวัน'}</b></span><div class="tg ${bulkSameTime?'on':''}" onclick="bulkSameTime=!bulkSameTime;bulkApplyGlobal();renderBulkSide()"></div></label>
+      ${bulkSameTime?`<div class="bulk-global"><div class="field" style="margin:0"><label>เวลาเริ่ม–สิ้นสุด (ทุกวัน)</label><div style="display:flex;gap:8px">${timeField('bulk-gst',bulkGlobalSt)}${timeField('bulk-get',bulkGlobalEt)}</div></div></div>`:''}
+      <label class="bulk-tg"><span>ผู้รับผิดชอบ: <b>${bulkSameEmp?'เหมือนกันทั้งหมด':'แยกแต่ละวัน'}</b></span><div class="tg ${bulkSameEmp?'on':''}" onclick="bulkSameEmp=!bulkSameEmp;bulkApplyGlobal();renderBulkSide()"></div></label>
+      ${bulkSameEmp?`<div class="bulk-global"><div class="field" style="margin:0"><label>ผู้รับผิดชอบ (ทุกวัน)</label><select class="select" id="bulk-gemp" onchange="bulkGlobalEmp=this.value;bulkApplyGlobal();renderBulkSide()">${empOpts(bulkGlobalEmp)}</select></div></div>`:''}
+    </div>
+    <div class="bulk-days">${days.map(ds=>{const d=parse(ds);const it=bulkSel[ds];return `
+      <div class="bulk-day">
+        <div class="bd-date"><b>${d.getDate()} ${THAI_M[d.getMonth()]}</b> <span class="en">${DOW_EN[d.getDay()]} ${d.getDate()} ${EN_MS[d.getMonth()]}</span><button class="bd-x" onclick="bulkToggle('${ds}')">${I.x}</button></div>
+        ${!bulkSameTime?`<div class="bd-row"><span class="bd-l">เวลา</span><div style="display:flex;gap:6px;flex:1">${timeField('bt-st-'+ds,it.st)}${timeField('bt-et-'+ds,it.et)}</div></div>`:''}
+        ${!bulkSameEmp?`<div class="bd-row"><span class="bd-l">ผู้รับผิดชอบ</span><select class="select" style="flex:1" onchange="bulkSel['${ds}'].emp=this.value">${empOpts(it.emp)}</select></div>`:''}
+        ${bulkSameTime&&bulkSameEmp?`<div class="bd-info">${bulkGlobalSt||'ทั้งวัน'}${bulkGlobalEt?'–'+bulkGlobalEt:''} • ${it.emp?esc(dispName(it.emp)):(isTask?'รอมอบหมาย':'⚠ ยังไม่เลือกผู้รับผิดชอบ')}</div>`:''}
+      </div>`;}).join('')}</div>
+    <button class="btn btn-primary" style="width:100%;margin-top:14px;justify-content:center" onclick="bulkSubmit()">${I.check2} บันทึกทั้งหมด ${days.length} รายการ</button>
+    ` : `<div class="bulk-empty">${I.cal}<div>ยังไม่ได้เลือกวัน</div><span>แตะวันในปฏิทินเพื่อเริ่ม</span></div>`}`;
+}
+/* เมื่อ setDF (time picker) อัปเดตช่องเวลา bulk ให้ sync กลับเข้า state */
+function bulkApplyGlobal(){
+  const gst=document.getElementById('bulk-gst'), get=document.getElementById('bulk-get');
+  if(gst)bulkGlobalSt=gst.value; if(get)bulkGlobalEt=get.value;
+  Object.keys(bulkSel).forEach(ds=>{if(bulkSameTime){bulkSel[ds].st=bulkGlobalSt;bulkSel[ds].et=bulkGlobalEt;}if(bulkSameEmp)bulkSel[ds].emp=bulkGlobalEmp;});
+}
+function bulkClear(){bulkSel={};renderBulkCal();}
+/* POST พร้อม retry อัตโนมัติ (กันเน็ตสะดุด/timeout) */
+async function postJSON(payload,tries){
+  tries=tries||3;
+  for(let a=1;a<=tries;a++){
+    try{
+      const res=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+      const j=await res.json();
+      if(j&&j.ok)return j;
+      if(j&&j.error&&/category|ไม่ถูกต้อง|deploy/i.test(j.error))return j; // error ถาวร ไม่ต้อง retry
+    }catch(e){/* network error → retry */}
+    if(a<tries)await new Promise(r=>setTimeout(r,500*a));
+  }
+  return {ok:false,error:'บันทึกไม่สำเร็จหลังลอง '+tries+' ครั้ง'};
+}
+async function bulkSubmit(retryDays){
+  if(!CUR||CUR.role!=='admin'){toast('เฉพาะผู้ดูแลระบบ','warn');return;}
+  if(!retryDays)bulkApplyGlobal();
+  const days=retryDays||Object.keys(bulkSel).sort();
+  if(!days.length){toast('กรุณาเลือกวันอย่างน้อย 1 วัน','warn');return;}
+  const isTask=bulkG==='task';
+  const cat=isTask?'task':bulkSubCat;
+  if(!isTask){const missing=days.filter(ds=>!bulkSel[ds]||!bulkSel[ds].emp);
+    if(missing.length){toast('กิจกรรมประเภทนี้ต้องเลือกผู้รับผิดชอบทุกวัน ('+missing.length+' วันยังว่าง)','warn');return;}}
+  // อ่าน field เฉพาะประเภท (ครั้งเดียว ใช้กับทุกวัน)
+  let detail={};
+  if(isTask){
+    let build=fval('bulk-build'); if(build==='อื่นๆ')build=(fval('bulk-build-o')||'').trim()||'อื่นๆ';
+    const ti=+fval('bulk-tasktype'); const ttl=TASKS[ti].th==='อื่นๆ'?((fval('bulk-tasktype-o')||'').trim()||'อื่นๆ'):(TASKS[ti].th+' / '+TASKS[ti].en);
+    detail={title:ttl,location:build};
+  }else if(bulkG==='leave'){
+    detail={title:CAT[cat].th,note:fval('bulk-note')||''};
+  }else{ // training/ot
+    detail={title:fval('bulk-gtitle')||CAT[cat].th,location:fval('bulk-gloc')||''};
+  }
+  showBulkSaving(0,days.length);
+  const done=[], failed=[];
+  for(let i=0;i<days.length;i++){
+    const ds=days[i], it=bulkSel[ds]; const empId=it.emp||'';
+    const status=isTask?(empId?'none':'open'):'none';
+    const payload={action:'createRecord',emp_id:empId,category:cat,title:detail.title,location:detail.location||'',note:detail.note||'',start_date:ds,end_date:ds,start_time:it.st||'',end_time:it.et||'',actor:CUR.id,force_status:status};
+    if(!CONFIG.SHEETS_API_URL){addRecord(R(empId,cat,ds,ds,{title:detail.title,location:detail.location||'',note:detail.note||'',st:it.st||'',et:it.et||'',status}));done.push(ds);showBulkSaving(i+1,days.length);continue;}
+    const j=await postJSON(payload);
+    if(j&&j.ok){
+      const dd=j.data||{}; const lr=R(empId,cat,ds,ds,{title:detail.title,location:detail.location||'',note:detail.note||'',st:it.st||'',et:it.et||'',status});
+      if(dd.record_id)lr.id=String(dd.record_id); if(dd.status)lr.status=String(dd.status).toLowerCase();
+      addRecord(lr); done.push(ds);
+    }else failed.push({ds,err:(j&&j.error)||'ไม่สำเร็จ'});
+    showBulkSaving(i+1,days.length);
+  }
+  done.forEach(ds=>delete bulkSel[ds]);
+  updateBadges();
+  showBulkDone(done.length, failed);
+}
+function showBulkSaving(done,total){
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('savepop').className='savepop open saving';
+  document.getElementById('savepop-card').innerHTML=`<div class="savepop-ic"><div class="savepop-spin"></div></div>
+    <div class="savepop-th">กำลังบันทึก ${done}/${total}</div><div class="savepop-en">Saving to Google Sheet</div>
+    <div class="savepop-prog"><div class="savepop-prog-fill" style="width:${pct}%"></div></div>
+    <div class="savepop-pct">${pct}% • ห้ามปิดหน้าต่างจนกว่าจะเสร็จ</div>`;
+}
+function showBulkDone(okN,failed){
+  const el=document.getElementById('savepop-card');
+  if(!failed.length){
+    document.getElementById('savepop').className='savepop open ok';
+    el.innerHTML=`<div class="savepop-ic">${I.check}</div><div class="savepop-th">บันทึกครบทั้งหมด</div><div class="savepop-en">Saved ${okN}/${okN} to Google Sheet</div><div class="savepop-sub">บันทึกลง Google Sheet เรียบร้อย ${okN} รายการ</div><button class="savepop-btn" onclick="closeSavePop();go('admin');setAdmin('bulk')">ตกลง / OK</button>`;
+  }else{
+    const failDays=failed.map(f=>f.ds);
+    document.getElementById('savepop').className='savepop open err';
+    el.innerHTML=`<div class="savepop-ic">${I.x}</div><div class="savepop-th">บันทึกไม่ครบ</div><div class="savepop-en">Saved ${okN} • Failed ${failed.length}</div>
+      <div class="savepop-sub">สำเร็จ ${okN} รายการ • ไม่สำเร็จ ${failed.length} รายการ<br>วันที่ไม่สำเร็จยังค้างอยู่ในรายการ กดลองใหม่ได้</div>
+      <div class="savepop-fails">${failed.map(f=>{const d=parse(f.ds);return `<div class="ff">• ${d.getDate()} ${THAI_M[d.getMonth()]} — ${esc(f.err)}</div>`;}).join('')}</div>
+      <div class="savepop-btns"><button class="savepop-btn ghost" onclick="closeSavePop();go('admin');setAdmin('bulk')">ปิด</button>
+      <button class="savepop-btn" onclick="closeSavePop();bulkSubmit(${JSON.stringify(failDays)})">ลองบันทึกใหม่เฉพาะที่ไม่สำเร็จ</button></div>`;
+  }
+}
 
 function adminEmployees(){
   return `<div class="card"><div class="card-h"><div><h3>สมาชิกทีม &amp; สิทธิ์</h3><div class="sub">${employees.length} คน • ใช้เป็นแถวใน Gantt Tracker</div></div>
@@ -1782,9 +2068,10 @@ function submitHoliday(){const d=fval('h-date'); if(!d){toast('กรุณา�
 function delHoliday(date){if(!needAuth())return;holidays=holidays.filter(h=>h.date!==date);go('admin');setAdmin('holidays');toast('ลบวันหยุดแล้ว','ok');}
 
 /* ===================== QR ===================== */
-const QR_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" shape-rendering="crispEdges" fill="#0A2342"><rect x="0" y="0" width="7" height="1"/><rect x="12" y="0" width="1" height="1"/><rect x="14" y="0" width="1" height="1"/><rect x="18" y="0" width="7" height="1"/><rect x="0" y="1" width="1" height="1"/><rect x="6" y="1" width="1" height="1"/><rect x="8" y="1" width="3" height="1"/><rect x="14" y="1" width="1" height="1"/><rect x="16" y="1" width="1" height="1"/><rect x="18" y="1" width="1" height="1"/><rect x="24" y="1" width="1" height="1"/><rect x="0" y="2" width="1" height="1"/><rect x="2" y="2" width="3" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="8" y="2" width="3" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="16" y="2" width="1" height="1"/><rect x="18" y="2" width="1" height="1"/><rect x="20" y="2" width="3" height="1"/><rect x="24" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="2" y="3" width="3" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="12" y="3" width="2" height="1"/><rect x="15" y="3" width="2" height="1"/><rect x="18" y="3" width="1" height="1"/><rect x="20" y="3" width="3" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="0" y="4" width="1" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="6" y="4" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="3" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="0" y="5" width="1" height="1"/><rect x="6" y="5" width="1" height="1"/><rect x="10" y="5" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="18" y="5" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="0" y="6" width="7" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="12" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="6" width="7" height="1"/><rect x="8" y="7" width="4" height="1"/><rect x="14" y="7" width="1" height="1"/><rect x="0" y="8" width="1" height="1"/><rect x="6" y="8" width="1" height="1"/><rect x="8" y="8" width="1" height="1"/><rect x="12" y="8" width="7" height="1"/><rect x="21" y="8" width="3" height="1"/><rect x="3" y="9" width="1" height="1"/><rect x="5" y="9" width="1" height="1"/><rect x="7" y="9" width="1" height="1"/><rect x="9" y="9" width="1" height="1"/><rect x="14" y="9" width="2" height="1"/><rect x="19" y="9" width="5" height="1"/><rect x="0" y="10" width="5" height="1"/><rect x="6" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/><rect x="11" y="10" width="1" height="1"/><rect x="15" y="10" width="1" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="3" height="1"/><rect x="23" y="10" width="2" height="1"/><rect x="1" y="11" width="2" height="1"/><rect x="7" y="11" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="14" y="11" width="1" height="1"/><rect x="19" y="11" width="1" height="1"/><rect x="21" y="11" width="1" height="1"/><rect x="24" y="11" width="1" height="1"/><rect x="0" y="12" width="1" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="5" y="12" width="2" height="1"/><rect x="8" y="12" width="1" height="1"/><rect x="10" y="12" width="1" height="1"/><rect x="12" y="12" width="1" height="1"/><rect x="15" y="12" width="1" height="1"/><rect x="18" y="12" width="2" height="1"/><rect x="24" y="12" width="1" height="1"/><rect x="0" y="13" width="1" height="1"/><rect x="2" y="13" width="1" height="1"/><rect x="4" y="13" width="1" height="1"/><rect x="7" y="13" width="2" height="1"/><rect x="10" y="13" width="1" height="1"/><rect x="14" y="13" width="4" height="1"/><rect x="19" y="13" width="1" height="1"/><rect x="23" y="13" width="1" height="1"/><rect x="0" y="14" width="1" height="1"/><rect x="4" y="14" width="3" height="1"/><rect x="8" y="14" width="1" height="1"/><rect x="10" y="14" width="7" height="1"/><rect x="18" y="14" width="4" height="1"/><rect x="23" y="14" width="2" height="1"/><rect x="0" y="15" width="1" height="1"/><rect x="2" y="15" width="1" height="1"/><rect x="4" y="15" width="1" height="1"/><rect x="7" y="15" width="5" height="1"/><rect x="14" y="15" width="1" height="1"/><rect x="16" y="15" width="1" height="1"/><rect x="19" y="15" width="1" height="1"/><rect x="21" y="15" width="2" height="1"/><rect x="24" y="15" width="1" height="1"/><rect x="0" y="16" width="1" height="1"/><rect x="3" y="16" width="4" height="1"/><rect x="8" y="16" width="2" height="1"/><rect x="11" y="16" width="1" height="1"/><rect x="13" y="16" width="8" height="1"/><rect x="22" y="16" width="1" height="1"/><rect x="8" y="17" width="1" height="1"/><rect x="10" y="17" width="1" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="16" y="17" width="1" height="1"/><rect x="20" y="17" width="1" height="1"/><rect x="0" y="18" width="7" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="13" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="18" y="18" width="1" height="1"/><rect x="20" y="18" width="1" height="1"/><rect x="24" y="18" width="1" height="1"/><rect x="0" y="19" width="1" height="1"/><rect x="6" y="19" width="1" height="1"/><rect x="9" y="19" width="1" height="1"/><rect x="12" y="19" width="1" height="1"/><rect x="14" y="19" width="3" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="0" y="20" width="1" height="1"/><rect x="2" y="20" width="3" height="1"/><rect x="6" y="20" width="1" height="1"/><rect x="9" y="20" width="2" height="1"/><rect x="12" y="20" width="1" height="1"/><rect x="15" y="20" width="6" height="1"/><rect x="22" y="20" width="3" height="1"/><rect x="0" y="21" width="1" height="1"/><rect x="2" y="21" width="3" height="1"/><rect x="6" y="21" width="1" height="1"/><rect x="10" y="21" width="1" height="1"/><rect x="14" y="21" width="1" height="1"/><rect x="18" y="21" width="1" height="1"/><rect x="23" y="21" width="2" height="1"/><rect x="0" y="22" width="1" height="1"/><rect x="2" y="22" width="3" height="1"/><rect x="6" y="22" width="1" height="1"/><rect x="10" y="22" width="3" height="1"/><rect x="16" y="22" width="2" height="1"/><rect x="21" y="22" width="2" height="1"/><rect x="24" y="22" width="1" height="1"/><rect x="0" y="23" width="1" height="1"/><rect x="6" y="23" width="1" height="1"/><rect x="10" y="23" width="2" height="1"/><rect x="16" y="23" width="1" height="1"/><rect x="18" y="23" width="3" height="1"/><rect x="24" y="23" width="1" height="1"/><rect x="0" y="24" width="7" height="1"/><rect x="8" y="24" width="1" height="1"/><rect x="10" y="24" width="1" height="1"/><rect x="12" y="24" width="5" height="1"/><rect x="21" y="24" width="1" height="1"/><rect x="24" y="24" width="1" height="1"/></svg>`;
-function injectQR(){const el=document.getElementById('qr-svg'); if(el)el.innerHTML=QR_SVG;}
-function downloadQR(){const blob=new Blob([QR_SVG],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gnr3-team-qr.svg';a.click();toast('ดาวน์โหลด QR แล้ว','ok');}
+const QR_SVG="";
+function qrURL(size){return 'https://api.qrserver.com/v1/create-qr-code/?size='+(size||220)+'x'+(size||220)+'&margin=0&ecc=H&data='+encodeURIComponent(CONFIG.MOBILE_APP_URL);}
+function injectQR(){const el=document.getElementById('qr-svg'); if(el)el.innerHTML=`<img src="${qrURL(220)}" alt="QR" style="width:100%;height:100%;object-fit:contain" onerror="this.parentNode.innerHTML='<div style=\\'font-size:11px;color:#888;text-align:center;padding-top:80px\\'>สแกน QR จากลิงก์ด้านล่าง</div>'">`;}
+function downloadQR(){const a=document.createElement('a');a.href=qrURL(600);a.download='gnr3-team-qr.png';a.target='_blank';a.click();toast('เปิด/ดาวน์โหลด QR แล้ว','ok');}
 function copyLink(){navigator.clipboard&&navigator.clipboard.writeText(CONFIG.MOBILE_APP_URL);toast('คัดลอกลิงก์แล้ว','ok');}
 
 </script>
