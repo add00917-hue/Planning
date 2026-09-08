@@ -545,6 +545,18 @@ table.t tbody tr:hover{background:#F8FAFD}
 .bc-s{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
 .bc-n{font-size:11.5px;color:var(--ink-soft);margin-top:10px;font-family:var(--mono)}
 .bulk-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--canvas);padding:14px 16px;border-radius:14px;margin-bottom:16px}
+.conn-status.off{color:var(--danger)}
+.conn-status.off .dot{background:var(--danger)}
+.line-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:8px}
+.line-cat{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-size:13px;color:var(--ink-mid);transition:.14s;user-select:none}
+.line-cat:hover{border-color:var(--navy-soft)}
+.line-cat .lc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.line-cat .lc-t{flex:1}
+.line-cat .lc-box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.line-cat .lc-box svg{width:13px;height:13px;opacity:0}
+.line-cat.on{border-color:var(--navy);background:var(--navy-pale,#EEF3FB);color:var(--ink);font-weight:500}
+.line-cat.on .lc-box{background:var(--navy);border-color:var(--navy)}
+.line-cat.on .lc-box svg{opacity:1}
 .bulk-detail{margin-bottom:16px}
 .bulk-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:640px){.bulk-detail-grid{grid-template-columns:1fr}}
@@ -710,6 +722,7 @@ function R(emp,cat,start,end,o){o=o||{};return Object.assign({
   overnight:o.overnight||false,cost:o.cost!=null?o.cost:null,note:o.note||'',pendingEmp:'',reqBy:''},o);}
 
 let records=[]; // โหลดจากฐานข้อมูลจริงเท่านั้น
+let SETTINGS={};
 
 let notifs=[]; // สร้างจากเหตุการณ์จริงเท่านั้น
 
@@ -866,6 +879,7 @@ async function syncDB(){
       if(Array.isArray(d.employees)) employees=d.employees.map(e=>({id:S(e.emp_id),name:S(e.full_name),nick:S(e.nickname),dept:S(e.dept),pos:S(e.position),role:S(e.role).toLowerCase()||'user',user:S(e.username),pass:S(e.password_hash),line:!!S(e.line_user_id),status:S(e.status).toLowerCase()||'active',photo:S(e.photo)}));
       if(Array.isArray(d.records)) records=d.records.map(r=>({id:S(r.record_id),emp:S(r.emp_id),cat:S(r.category).toLowerCase(),start:D(r.start_date),end:D(r.end_date||r.start_date),title:S(r.title),location:S(r.location),st:S(r.start_time),et:S(r.end_time),status:S(r.status).toLowerCase()||'none',overnight:r.overnight===true||S(r.overnight).toUpperCase()==='TRUE',cost:(r.cost===''||r.cost==null||isNaN(Number(r.cost)))?null:Number(r.cost),note:S(r.note),pendingEmp:S(r.pending_emp_id),reqBy:S(r.req_by)})).filter(r=>CAT[r.cat]&&r.start);
       if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
+      if(d.settings) SETTINGS=d.settings;
       setDB('online'); updateSbUser(); updateBadges(); updateLanding(); go(currentView);
       hideConnecting(true,'เชื่อมต่อฐานข้อมูลสำเร็จ • '+employees.length+' สมาชิก, '+records.length+' รายการ');
     } else { setDB('offline'); hideConnecting(false,'เชื่อมต่อฐานข้อมูลไม่ได้'); }
@@ -2026,20 +2040,59 @@ function adminSheets(){
 }
 
 function adminLine(){
-  const events=['มีคำขออนุมัติใหม่','อนุมัติแล้ว','ไม่อนุมัติ','ใกล้ถึงวันกิจกรรม','สรุปรายสัปดาห์'];
-  return `<div class="card"><div class="card-h"><div><h3>การแจ้งเตือน LINE</h3><div class="sub">LINE Official Account &amp; Messaging API</div></div><span class="conn-status"><span class="dot"></span>เชื่อมต่อแล้ว</span></div>
+  const enabled=String(SETTINGS.line_enabled)!=='false';
+  const hasToken=!!SETTINGS.line_channel_token;
+  const hasGroup=!!SETTINGS.line_group_id;
+  const ready=hasToken&&hasGroup;
+  const lc=SETTINGS.line_categories; const catOn=k=>(lc===undefined||lc===''||lc==null)?true:String(lc).split(',').map(x=>x.trim()).includes(k);
+  const events=['มีคำขออนุมัติใหม่','อนุมัติแล้ว','ไม่อนุมัติ','ขอเปลี่ยนผู้รับผิดชอบ'];
+  return `<div class="card"><div class="card-h"><div><h3>การแจ้งเตือน LINE (กลุ่ม)</h3><div class="sub">LINE Messaging API • ส่งเข้ากลุ่ม LINE ของทีม</div></div>
+    <span class="conn-status ${ready?'':'off'}"><span class="dot"></span>${ready?'พร้อมส่งเข้ากลุ่ม':(hasToken?'ยังไม่ได้ตั้ง Group ID':'ยังไม่ได้ตั้งค่า Token')}</span></div>
   <div class="card-b">
-    <div class="set-row"><div><div class="si">เปิดการแจ้งเตือน LINE</div></div><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-grid" style="margin-top:14px"><div class="field"><label>LINE OA ID</label><input class="mono" value="@gnr3team"></div>
-      <div class="field"><label>Channel Access Token</label><input class="mono" type="password" value="aB3kP9xQ7mZ2wL5nR8tY1uH4"></div></div>
-    <div class="field"><label>เหตุการณ์ที่แจ้งเตือน</label><div class="checklist">${events.map((f,i)=>`<label class="ck ${i<3?'on':''}" onclick="this.classList.toggle('on')"><span class="box">${I.check}</span>${f}</label>`).join('')}</div></div>
-    <div class="field"><label>เทมเพลตข้อความ</label><textarea>🔔 มีคำขออนุมัติใหม่
-สมาชิก: {{name}} ({{dept}})
-ประเภท: {{category}}
-ช่วง: {{start}} - {{end}}
-อนุมัติ: {{link}}</textarea></div>
-    <div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="toast('บันทึกการตั้งค่า LINE แล้ว','ok')">${I.check2} บันทึก</button><button class="btn btn-ghost" onclick="toast('ส่งข้อความทดสอบแล้ว','ok')">${I.line} ทดสอบส่ง</button></div>
+    <div class="set-row"><div><div class="si">เปิดการแจ้งเตือน LINE</div><div class="sd">ส่งข้อความแจ้งเตือนเข้ากลุ่ม LINE ของทีม</div></div><div class="tg ${enabled?'on':''}" id="line-enabled" onclick="this.classList.toggle('on')"></div></div>
+    <div class="set-grid" style="margin-top:14px"><div class="field"><label>Channel Access Token</label><input class="mono" id="line-token" type="password" value="${hasToken?'••••••••••••••••':''}" placeholder="วาง token จาก LINE Developers"></div>
+      <div class="field"><label>LINE Group ID <span style="color:var(--ink-soft);font-weight:400">(ขึ้นต้นด้วย C)</span></label><input class="mono" id="line-group" value="${esc(SETTINGS.line_group_id||'')}" placeholder="Cxxxxxxxxxxxxxxxx"></div></div>
+    <div class="hint" style="margin-top:6px">${I.check} วิธีหา Group ID: เชิญบอท LINE เข้ากลุ่ม → บอทรับ event จากกลุ่ม → นำ groupId มาใส่ (หรือใช้ webhook log)</div>
+
+    <div class="field" style="margin-top:16px"><label>ส่ง LINE ตามประเภทงาน <span style="color:var(--ink-soft);font-weight:400">(เลือกประเภทที่ต้องการให้แจ้งเข้ากลุ่ม)</span></label>
+      <div class="line-cat-grid">${Object.keys(CAT).map(k=>`
+        <label class="line-cat ${catOn(k)?'on':''}" data-cat="${k}" onclick="this.classList.toggle('on')">
+          <span class="lc-dot" style="background:${CAT[k].c}"></span><span class="lc-t">${CAT[k].th}</span><span class="lc-box">${I.check}</span></label>`).join('')}
+      </div>
+      <div class="hint" style="margin-top:8px">${I.check} = แจ้งเข้ากลุ่มเมื่อมีกิจกรรมประเภทนี้ • ไม่เลือก = ไม่แจ้ง</div>
+    </div>
+
+    <div class="field"><label>เหตุการณ์ที่แจ้งเตือน</label><div class="checklist">${events.map((f,i)=>`<label class="ck on"><span class="box">${I.check}</span>${f}</label>`).join('')}</div></div>
+    <div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveLineSettings()">${I.check2} บันทึกการตั้งค่า</button><button class="btn btn-ghost" onclick="testLine()">${I.line} ทดสอบส่งเข้ากลุ่ม</button></div>
+    <div class="hint" style="margin-top:10px">การเปลี่ยนแปลงมีผลกับการแจ้งเตือนครั้งถัดไป • ข้อความทั้งหมดส่งเข้ากลุ่ม LINE (ไม่ส่งรายบุคคล)</div>
   </div></div>`;
+}
+async function saveLineSettings(){
+  if(!CUR||CUR.role!=='admin'){toast('เฉพาะผู้ดูแลระบบ','warn');return;}
+  const enabled=document.getElementById('line-enabled').classList.contains('on');
+  const grp=fval('line-group');
+  const cats=[...document.querySelectorAll('.line-cat.on')].map(e=>e.dataset.cat);
+  const allCats=Object.keys(CAT);
+  const lineCategories=cats.length===allCats.length?'':cats.join(',');
+  const tokenEl=document.getElementById('line-token'), tokenVal=tokenEl.value;
+  const payloads=[
+    {action:'setSetting',key:'line_enabled',value:enabled?'true':'false'},
+    {action:'setSetting',key:'line_categories',value:lineCategories},
+    {action:'setSetting',key:'line_group_id',value:grp}
+  ];
+  if(tokenVal && tokenVal.indexOf('•')<0) payloads.push({action:'setSetting',key:'line_channel_token',value:tokenVal});
+  showSaving();
+  let ok=true;
+  for(const p of payloads){ const j=await postJSON(p); if(!(j&&j.ok)){ok=false;break;} }
+  SETTINGS.line_enabled=enabled?'true':'false'; SETTINGS.line_categories=lineCategories; SETTINGS.line_group_id=grp;
+  if(ok)showSaved(true); else showSaved(false,'บันทึกบางค่าไม่สำเร็จ');
+}
+async function testLine(){
+  if(!CUR){toast('กรุณาเข้าสู่ระบบ','warn');return;}
+  showSaving();
+  const j=await postJSON({action:'testLine'});
+  if(j&&j.ok&&j.sent)showSaved(true,'ส่งข้อความทดสอบเข้ากลุ่ม LINE แล้ว');
+  else showSaved(false,(j&&j.error)||'ส่งไม่สำเร็จ • ตรวจสอบ Token และ Group ID');
 }
 
 function adminUsers(){
