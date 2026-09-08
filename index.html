@@ -565,16 +565,18 @@ table.t tbody tr:hover{background:#F8FAFD}
 .ev-em{font-size:20px;flex-shrink:0}
 .ev-t{font-size:13.5px;font-weight:600;color:var(--ink)}
 .ev-s{font-size:11.5px;color:var(--ink-soft)}
-.rmd-list{display:flex;flex-direction:column;gap:7px}
-.rmd-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;flex-wrap:wrap}
+.rmd-list{display:flex;flex-direction:column;gap:8px}
+.rmd-row{display:flex;flex-direction:column;gap:9px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.rmd-head{display:flex;align-items:center;gap:9px}
 .rmd-row .lc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.rmd-t{font-size:13px;font-weight:500;color:var(--ink);min-width:96px}
-.rmd-lbl{font-size:12px;color:var(--ink-soft)}
-.rmd-days{width:52px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);text-align:center;font-size:13px}
-.rmd-time{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:13px}
-.tg.sm{width:38px;height:22px;flex-shrink:0}
-.tg.sm::after{width:16px;height:16px}
-.tg.sm.on::after{transform:translateX(16px)}
+.rmd-t{flex:1;font-size:13.5px;font-weight:600;color:var(--ink);min-width:0}
+.rmd-cfg{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-left:19px}
+.rmd-lbl{font-size:12px;color:var(--ink-soft);white-space:nowrap}
+.field .rmd-days{width:60px!important;padding:8px!important;border:1px solid var(--line);border-radius:9px;font-family:var(--mono);text-align:center;font-size:13.5px}
+.field .rmd-time{width:auto!important;flex:0 0 auto;padding:8px 10px!important;border:1px solid var(--line);border-radius:9px;font-family:var(--mono);font-size:13.5px}
+.tg.sm{width:40px;height:23px;flex-shrink:0}
+.tg.sm::after{width:17px;height:17px}
+.tg.sm.on::after{transform:translateX(17px)}
 .line-preview{margin-top:8px;background:#06C755;color:#fff;border-radius:16px;padding:14px 16px;font-size:13px;line-height:1.6;white-space:pre-wrap;box-shadow:0 4px 14px rgba(6,199,85,.25);max-width:420px;word-break:break-word}
 .bulk-detail{margin-bottom:16px}
 .bulk-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -582,11 +584,25 @@ table.t tbody tr:hover{background:#F8FAFD}
 .bulk-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start}
 .bulk-hint{font-size:12px;color:var(--ink-soft);margin-top:10px;display:flex;align-items:center;gap:6px}
 .bulk-hint svg{width:14px;height:14px}
-.bulk-cell{cursor:pointer}
+.bulk-cell{cursor:pointer;min-height:74px;align-items:stretch}
 .bulk-cell.picked{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-color:var(--navy)}
 .bulk-cell.picked .cdn{color:#fff}
 .bulk-cell.picked .cal-hol{color:rgba(255,255,255,.8)}
 .bulk-check{position:absolute;top:5px;right:7px;color:var(--yellow-bright);font-weight:700;font-size:14px}
+.bulk-exist{display:flex;flex-direction:column;gap:2px;margin-top:3px;width:100%}
+.bulk-chip{font-size:8.5px;line-height:1.3;color:#fff;border-radius:4px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.bulk-more{font-size:8px;color:var(--ink-soft);font-weight:600}
+.bulk-cell.picked .bulk-chip{opacity:.92}
+.bulk-cell.picked .bulk-more{color:rgba(255,255,255,.85)}
+.di-note{font-size:12px;color:var(--ink-mid);background:var(--canvas);border-radius:8px;padding:6px 9px;margin-top:6px;line-height:1.5}
+.pd-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--pill);white-space:nowrap}
+.pd-badge .pd-ic{display:inline-flex;width:13px;height:13px}
+.pd-badge .pd-ic svg{width:13px;height:13px}
+.cal-chip .chip-ic{display:inline-flex;width:10px;height:10px;vertical-align:middle;margin-right:2px}
+.cal-chip .chip-ic svg{width:10px;height:10px}
+.di-note .note-ic,.note-line .note-ic{width:13px;height:13px;flex-shrink:0;vertical-align:-2px}
+.di-note{display:flex;align-items:flex-start;gap:6px}
+.note-line{display:inline-flex;align-items:center;gap:4px}
 .bulk-side{background:var(--canvas);border-radius:16px;padding:16px;position:sticky;top:12px;max-height:calc(100vh - 40px);overflow-y:auto}
 .bulk-side-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
 .bulk-toggles{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
@@ -782,6 +798,22 @@ function dispName(id){const e=emp(id);return e.nick||(e.name||'-').split(' ')[0]
 function isInactive(e){const s=String(e.status||'').toLowerCase().trim();return s==='inactive'||s==='ปิดใช้งาน'||s==='disabled'||s==='ปิด'||s==='ลาออก';}
 /* ชื่อคู่สำหรับ Gantt: "ชื่อเล่น (ชื่อจริง)" ถ้ามีชื่อเล่น */
 function dualName(id){const e=emp(id);return e.nick?e.nick+' ('+(e.name||'').split(' ')[0]+')':(e.name||'-');}
+/* ช่วงวันจากเวลาเริ่ม: เช้า/บ่าย/กลางคืน (ไม่มีเวลา = ทั้งวัน) */
+const PD_SVG={
+  morning:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.2" y1="10.2" x2="5.6" y2="11.6"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.4" y1="11.6" x2="19.8" y2="10.2"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>',
+  afternoon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="1" x2="12" y2="3.5"/><line x1="12" y1="20.5" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3.5" y2="12"/><line x1="20.5" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></svg>',
+  evening:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>',
+  allday:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="16" y1="2.5" x2="16" y2="6.5"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+};
+function period(st){
+  if(!st) return {k:'allday',th:'ทั้งวัน',en:'All day',em:'📆',svg:PD_SVG.allday,c:'#64748B'};
+  const h=parseInt(String(st).split(':')[0],10);
+  if(isNaN(h)) return {k:'allday',th:'ทั้งวัน',en:'All day',em:'📆',svg:PD_SVG.allday,c:'#64748B'};
+  if(h<12) return {k:'morning',th:'เช้า',en:'Morning',em:'🌅',svg:PD_SVG.morning,c:'#F59E0B'};
+  if(h<18) return {k:'afternoon',th:'บ่าย',en:'Afternoon',em:'☀️',svg:PD_SVG.afternoon,c:'#0EA5E9'};
+  return {k:'evening',th:'กลางคืน',en:'Evening',em:'🌙',svg:PD_SVG.evening,c:'#6366F1'};
+}
+function periodBadge(st,et){const p=period(st);return `<span class="pd-badge" style="background:${p.c}1a;color:${p.c}"><span class="pd-ic">${p.svg}</span>${p.th}${st?' '+st+(et?'-'+et:''):''}</span>`;}
 const initial=n=>String(n==null||n===''?'?':n).trim().charAt(0)||'?';
 function avaColor(id){id=String(id==null||id===''?'x':id);let h=0;for(const c of id)h=(h*31+c.charCodeAt(0))%AC.length;return AC[h];}
 function avaHTML(id,cls='ava'){const e=emp(id);return `<div class="${cls}" style="background:${avaColor(id)}">${e.photo?`<img src="${e.photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">`:initial(e.name)}</div>`;}
@@ -1055,7 +1087,7 @@ function renderCalendar(){
     const dow=new Date(calY,calM,d).getDay(); const hol=holiName(ds);
     const cls=['cal-cell'];if(ds===TODAY_ISO)cls.push('today');if(ds===selDate)cls.push('sel');if(dow===0||dow===6)cls.push('weekend');if(hol)cls.push('holiday');
     const maxc=hol?1:2;
-    let chips=(hol?`<span class="cal-chip holi">${esc(hol)}</span>`:'')+recs.slice(0,maxc).map(r=>`<span class="cal-chip" style="background:${CAT[r.cat].c}">${esc(r.title)}</span>`).join('');
+    let chips=(hol?`<span class="cal-chip holi">${esc(hol)}</span>`:'')+recs.slice(0,maxc).map(r=>`<span class="cal-chip" style="background:${CAT[r.cat].c}"><span class="chip-ic">${period(r.st).svg}</span>${esc(r.title)}</span>`).join('');
     if(recs.length>maxc)chips+=`<span class="cal-more">+${recs.length-maxc} เพิ่มเติม</span>`;
     let dots=recs.slice(0,5).map(r=>`<span class="cal-dot" style="background:${CAT[r.cat].c}"></span>`).join('');
     html+=`<div class="${cls.join(' ')}" onclick="selectDay('${ds}')"><span class="cdn">${d}</span>${chips}<div class="cal-dots">${dots}</div></div>`;
@@ -1075,7 +1107,9 @@ function renderDayPanel(){
   <div class="day-list">${recs.length?recs.map(r=>{const e=emp(r.emp);return `
     <div class="day-item"><div class="bar" style="background:${CAT[r.cat].c}"></div><div class="di-b">
       <div class="di-t">${esc(r.title)}</div>
-      <div class="di-m">${esc(e.name)} • ${r.st?r.st+(r.et?'-'+r.et:'')+' • ':''}${r.location?esc(r.location):'—'}</div>
+      <div class="di-m">${esc(e.name)} • ${r.location?esc(r.location):'—'}</div>
+      <div style="margin-top:5px">${periodBadge(r.st,r.et)}</div>
+      ${r.note?`<div class="di-note"><svg class="note-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> ${esc(r.note)}</div>`:''}
     </div><span class="di-cat" style="background:${CAT[r.cat].c}">${CAT[r.cat].th}</span></div>`;}).join(''):
     `<div class="empty">${I.cal}<h4>ไม่มีกิจกรรม</h4><p>วันนี้ยังไม่มีรายการที่บันทึกไว้</p></div>`}</div>`;
 }
@@ -1278,12 +1312,13 @@ function viewTask(){
 }
 function taskTable(ts){
   if(!ts.length)return '<div style="padding:30px;text-align:center;color:var(--ink-soft)">ยังไม่มีงานมอบหมาย</div>';
-  return `<table class="tbl"><thead><tr><th>ผู้รับผิดชอบ</th><th>ประเภทงาน</th><th>อาคาร</th><th>วันที่</th><th>สถานะ</th><th></th></tr></thead><tbody>${
+  return `<table class="tbl"><thead><tr><th>ผู้รับผิดชอบ</th><th>ประเภทงาน</th><th>อาคาร</th><th>วันที่</th><th>ช่วงเวลา</th><th>สถานะ</th><th></th></tr></thead><tbody>${
     ts.sort((a,b)=>a.start<b.start?1:-1).map(r=>{const e=r.emp?emp(r.emp):null;return `<tr>
       <td>${e?`<div class="person">${avaHTML(r.emp)}<div><div class="nm">${esc(e.nick||e.name)}</div><div class="meta">${esc(e.name)} • ${r.id}</div></div></div>`:`<span class="tag" style="background:#F59E0B"><span class="d"></span>ยังไม่มีผู้รับผิดชอบ</span>`}</td>
-      <td><div class="nm" style="font-weight:600">${esc(r.title)}</div>${r.pendingEmp?`<div class="meta" style="color:#3B82F6">ขอเปลี่ยนเป็น: ${esc(emp(r.pendingEmp).nick||emp(r.pendingEmp).name)}</div>`:''}</td>
+      <td><div class="nm" style="font-weight:600">${esc(r.title)}</div>${r.note?`<div class="meta note-line"><svg class="note-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> ${esc(r.note)}</div>`:''}${r.pendingEmp?`<div class="meta" style="color:#3B82F6">ขอเปลี่ยนเป็น: ${esc(emp(r.pendingEmp).nick||emp(r.pendingEmp).name)}</div>`:''}</td>
       <td>${r.location?`<span class="tag" style="background:#7C3AED"><span class="d"></span>${esc(r.location)}</span>`:'—'}</td>
       <td style="white-space:nowrap">${fmtTH(r.start)}${r.end!==r.start?' – '+fmtTH(r.end):''}</td>
+      <td>${periodBadge(r.st,r.et)}</td>
       <td><span class="st" style="background:${taskStColor(r)}22;color:${taskStColor(r)}">${taskStLabel(r)}</span></td>
       <td><div class="row-act" style="justify-content:flex-end">${taskActions(r,'sm')}</div></td></tr>`;}).join('')
   }</tbody></table>`;
@@ -1309,7 +1344,7 @@ function renderTaskCal(){
   for(let d=1;d<=dim;d++){
     const ds=tCalY+'-'+pad(tCalM+1)+'-'+pad(d); const recs=tasksOn(ds); const dow=new Date(tCalY,tCalM,d).getDay();
     const cls=['cal-cell'];if(ds===TODAY_ISO)cls.push('today');if(ds===tSel)cls.push('sel');if(dow===0||dow===6)cls.push('weekend');
-    let chips=recs.slice(0,2).map(r=>`<span class="cal-chip" style="background:${taskStColor(r)}">${esc(r.emp?dispName(r.emp):'ว่าง')} • ${esc(r.title.split(' / ')[0])}</span>`).join('');
+    let chips=recs.slice(0,2).map(r=>`<span class="cal-chip" style="background:${taskStColor(r)}"><span class="chip-ic">${period(r.st).svg}</span>${esc(r.emp?dispName(r.emp):'ว่าง')} • ${esc(r.title.split(' / ')[0])}</span>`).join('');
     if(recs.length>2)chips+=`<span class="cal-more">+${recs.length-2} เพิ่มเติม</span>`;
     let dots=recs.slice(0,5).map(r=>`<span class="cal-dot" style="background:${taskStColor(r)}"></span>`).join('');
     html+=`<div class="${cls.join(' ')}" onclick="tSelectDay('${ds}')"><span class="cdn">${d}</span>${chips}<div class="cal-dots">${dots}</div></div>`;
@@ -1326,6 +1361,8 @@ function renderTaskDay(){
     <div class="day-item"><div class="bar" style="background:${taskStColor(r)}"></div><div class="di-b" style="flex:1">
       <div style="font-weight:600;font-size:13.5px">${esc(r.title)}</div>
       <div class="meta">${r.location?esc(r.location)+' • ':''}${e?'ผู้รับผิดชอบ: '+esc(e.nick||e.name):'<span style="color:#F59E0B;font-weight:600">ยังไม่มีผู้รับผิดชอบ</span>'}</div>
+      <div style="margin-top:5px">${periodBadge(r.st,r.et)}</div>
+      ${r.note?`<div class="di-note"><svg class="note-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg> ${esc(r.note)}</div>`:''}
       ${r.pendingEmp?`<div class="meta" style="color:#3B82F6">⏳ ${esc(emp(r.reqBy).nick||emp(r.reqBy).name)} ขอเปลี่ยนเป็นผู้รับผิดชอบ</div>`:''}
       <div class="row-act" style="margin-top:8px;flex-wrap:wrap">${taskActions(r,'lg')}</div>
     </div></div>`;}).join(''):'<div style="padding:24px;text-align:center;color:var(--ink-soft)">ไม่มีงานในวันนี้</div>'}</div>`;
@@ -1773,22 +1810,23 @@ function bulkWorkspace(){
 }
 /* field เฉพาะประเภท (ใช้ร่วมกันทุกวันที่เลือก) — ให้เหมือนฟอร์มหน้าหลัก */
 function bulkDetailFields(){
+  const noteField=`<div class="field" style="margin:10px 0 0"><label>รายละเอียดเพิ่มเติม (ใช้กับทุกวันที่เลือก)</label><textarea id="bulk-note" placeholder="รายละเอียดงาน / ผู้ประสานงาน / อุปกรณ์ / หมายเหตุอื่นๆ"></textarea></div>`;
   if(bulkG==='task'){
     return `<div class="bulk-detail-grid">
       <div class="field" style="margin:0"><label>อาคาร</label><select class="select" id="bulk-build" onchange="document.getElementById('bulk-build-c').classList.toggle('hidden',this.value!=='อื่นๆ')">${BUILDINGS.map(b=>`<option value="${b}">${b}</option>`).join('')}</select></div>
       <div class="field hidden" id="bulk-build-c" style="margin:0"><label>ระบุอาคาร (อื่นๆ)</label><input id="bulk-build-o" placeholder="ชื่ออาคาร/สถานที่"></div>
       <div class="field" style="margin:0"><label>ประเภทงาน</label><select class="select" id="bulk-tasktype" onchange="document.getElementById('bulk-tasktype-c').classList.toggle('hidden',TASKS[+this.value].th!=='อื่นๆ')">${TASKS.map((t,i)=>`<option value="${i}">${t.th} / ${t.en}</option>`).join('')}</select></div>
       <div class="field hidden" id="bulk-tasktype-c" style="margin:0"><label>ระบุประเภทงาน (อื่นๆ)</label><input id="bulk-tasktype-o" placeholder="ระบุงานที่มอบหมาย"></div>
-    </div>`;
+    </div>${noteField}`;
   }
   if(bulkG==='leave'){
-    return `<div class="field" style="margin:0"><label>เหตุผล / หมายเหตุ (ใช้กับทุกวัน)</label><input id="bulk-note" placeholder="เหตุผลการลา (ไม่บังคับ)"></div>`;
+    return `<div class="field" style="margin:0"><label>รายละเอียด / เหตุผลการลา (ใช้กับทุกวัน)</label><textarea id="bulk-note" placeholder="เหตุผลการลา / รายละเอียดเพิ่มเติม (ไม่บังคับ)"></textarea></div>`;
   }
   // training / ot
   return `<div class="bulk-detail-grid">
     <div class="field" style="margin:0"><label>ชื่อหัวข้อ / งาน (ใช้กับทุกวัน)</label><input id="bulk-gtitle" placeholder="${bulkG==='ot'?'เช่น ปิดงบสิ้นเดือน':'เช่น อบรมความปลอดภัย'}"></div>
     <div class="field" style="margin:0"><label>สถานที่ (ใช้กับทุกวัน)</label><input id="bulk-gloc" placeholder="เช่น ห้องประชุม A / ออนไลน์"></div>
-  </div>`;
+  </div>${noteField}`;
 }
 function renderBulkCal(){
   if(!bulkG)return; const t=document.getElementById('bulk-title'); if(!t)return;
@@ -1800,7 +1838,10 @@ function renderBulkCal(){
   for(let d=1;d<=dim;d++){const ds=bulkY+'-'+pad(bulkM+1)+'-'+pad(d); const dow=new Date(bulkY,bulkM,d).getDay();
     const cls=['cal-cell','bulk-cell'];if(ds===TODAY_ISO)cls.push('today');if(bulkSel[ds])cls.push('picked');if(dow===0||dow===6)cls.push('weekend');
     const hol=holidays.find(h=>h.date===ds);
-    html+=`<div class="${cls.join(' ')}" onclick="bulkToggle('${ds}')"><span class="cdn">${d}</span>${hol?`<span class="cal-hol">${esc(hol.name)}</span>`:''}${bulkSel[ds]?'<span class="bulk-check">✓</span>':''}</div>`;
+    const exist=records.filter(r=>r.start<=ds&&ds<=r.end&&r.status!=='cancelled'&&r.status!=='rejected'); // รายการที่มีอยู่แล้ววันนี้
+    let chips=exist.slice(0,2).map(r=>`<span class="bulk-chip" style="background:${CAT[r.cat]?CAT[r.cat].c:'#888'}">${esc(r.emp?dispName(r.emp):'ว่าง')}·${esc((r.title||'').split(' / ')[0].slice(0,8))}</span>`).join('');
+    if(exist.length>2)chips+=`<span class="bulk-more">+${exist.length-2}</span>`;
+    html+=`<div class="${cls.join(' ')}" onclick="bulkToggle('${ds}')"><span class="cdn">${d}</span>${hol?`<span class="cal-hol">${esc(hol.name)}</span>`:''}${chips?`<div class="bulk-exist">${chips}</div>`:''}${bulkSel[ds]?'<span class="bulk-check">✓</span>':''}</div>`;
   }
   grid.innerHTML=html; renderBulkSide();
 }
@@ -1869,14 +1910,15 @@ async function bulkSubmit(retryDays){
     if(missing.length){toast('กิจกรรมประเภทนี้ต้องเลือกผู้รับผิดชอบทุกวัน ('+missing.length+' วันยังว่าง)','warn');return;}}
   // อ่าน field เฉพาะประเภท (ครั้งเดียว ใช้กับทุกวัน)
   let detail={};
+  const bnote=fval('bulk-note')||'';
   if(isTask){
     let build=fval('bulk-build'); if(build==='อื่นๆ')build=(fval('bulk-build-o')||'').trim()||'อื่นๆ';
     const ti=+fval('bulk-tasktype'); const ttl=TASKS[ti].th==='อื่นๆ'?((fval('bulk-tasktype-o')||'').trim()||'อื่นๆ'):(TASKS[ti].th+' / '+TASKS[ti].en);
-    detail={title:ttl,location:build};
+    detail={title:ttl,location:build,note:bnote};
   }else if(bulkG==='leave'){
-    detail={title:CAT[cat].th,note:fval('bulk-note')||''};
+    detail={title:CAT[cat].th,note:bnote};
   }else{ // training/ot
-    detail={title:fval('bulk-gtitle')||CAT[cat].th,location:fval('bulk-gloc')||''};
+    detail={title:fval('bulk-gtitle')||CAT[cat].th,location:fval('bulk-gloc')||'',note:bnote};
   }
   showBulkSaving(0,days.length);
   const done=[], failed=[];
@@ -2093,9 +2135,8 @@ function adminLine(){
       <div class="hint" style="margin:0 0 8px">ระบบจะแจ้งเข้ากลุ่มล่วงหน้าตามจำนวนวัน/เวลาที่ตั้ง (ต้องตั้ง Trigger รายชั่วโมง — ดูวิธีด้านล่าง)</div>
       <div class="rmd-list">${Object.keys(CAT).map(k=>{const cfg=rmdCfg(k);return `
         <div class="rmd-row" data-cat="${k}">
-          <span class="lc-dot" style="background:${CAT[k].c}"></span><span class="rmd-t">${CAT[k].th}</span>
-          <div class="tg sm ${cfg.on?'on':''}" data-rmd="${k}" onclick="this.classList.toggle('on')"></div>
-          <span class="rmd-lbl">ล่วงหน้า</span><input class="rmd-days" id="rmd-d-${k}" type="number" min="0" max="30" value="${cfg.days}"><span class="rmd-lbl">วัน เวลา</span><input class="rmd-time" id="rmd-t-${k}" type="time" value="${cfg.time}">
+          <div class="rmd-head"><span class="lc-dot" style="background:${CAT[k].c}"></span><span class="rmd-t">${CAT[k].th}</span><div class="tg sm ${cfg.on?'on':''}" data-rmd="${k}" onclick="this.classList.toggle('on')"></div></div>
+          <div class="rmd-cfg"><span class="rmd-lbl">ล่วงหน้า</span><input class="rmd-days" id="rmd-d-${k}" type="number" min="0" max="30" value="${cfg.days}"><span class="rmd-lbl">วัน • เวลา</span><input class="rmd-time" id="rmd-t-${k}" type="time" value="${cfg.time}"></div>
         </div>`;}).join('')}
       </div>
     </div>
