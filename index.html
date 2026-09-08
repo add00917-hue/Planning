@@ -557,6 +557,8 @@ table.t tbody tr:hover{background:#F8FAFD}
 .line-cat.on{border-color:var(--navy);background:var(--navy-pale,#EEF3FB);color:var(--ink);font-weight:500}
 .line-cat.on .lc-box{background:var(--navy);border-color:var(--navy)}
 .line-cat.on .lc-box svg{opacity:1}
+.line-detect{margin-top:8px;padding:10px 13px;background:var(--success-bg);border-radius:11px;font-size:12.5px;color:#0B7A55;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.line-detect b{color:var(--ink)}
 .bulk-detail{margin-bottom:16px}
 .bulk-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:640px){.bulk-detail-grid{grid-template-columns:1fr}}
@@ -2052,7 +2054,8 @@ function adminLine(){
     <div class="set-row"><div><div class="si">เปิดการแจ้งเตือน LINE</div><div class="sd">ส่งข้อความแจ้งเตือนเข้ากลุ่ม LINE ของทีม</div></div><div class="tg ${enabled?'on':''}" id="line-enabled" onclick="this.classList.toggle('on')"></div></div>
     <div class="set-grid" style="margin-top:14px"><div class="field"><label>Channel Access Token</label><input class="mono" id="line-token" type="password" value="${hasToken?'••••••••••••••••':''}" placeholder="วาง token จาก LINE Developers"></div>
       <div class="field"><label>LINE Group ID <span style="color:var(--ink-soft);font-weight:400">(ขึ้นต้นด้วย C)</span></label><input class="mono" id="line-group" value="${esc(SETTINGS.line_group_id||'')}" placeholder="Cxxxxxxxxxxxxxxxx"></div></div>
-    <div class="hint" style="margin-top:6px">${I.check} วิธีหา Group ID: เชิญบอท LINE เข้ากลุ่ม → บอทรับ event จากกลุ่ม → นำ groupId มาใส่ (หรือใช้ webhook log)</div>
+    ${SETTINGS.line_last_group_id?`<div class="line-detect">${I.check} ตรวจพบกลุ่มล่าสุด: <b class="mono">${esc(SETTINGS.line_last_group_id)}</b> <button class="chip" onclick="document.getElementById('line-group').value='${esc(SETTINGS.line_last_group_id)}'">ใช้กลุ่มนี้</button></div>`:''}
+    <div class="hint" style="margin-top:6px">${I.check} <b>วิธีหา Group ID อัตโนมัติ:</b> 1) ตั้ง Webhook URL ในหน้า LINE Developers = URL ของ Apps Script นี้ + เปิด "Use webhook" &nbsp; 2) เชิญบอทเข้ากลุ่ม หรือพิมพ์ข้อความอะไรก็ได้ในกลุ่ม &nbsp; 3) ระบบจะบันทึก Group ID อัตโนมัติ — รีเฟรชหน้านี้แล้วจะขึ้นให้เลือก</div>
 
     <div class="field" style="margin-top:16px"><label>ส่ง LINE ตามประเภทงาน <span style="color:var(--ink-soft);font-weight:400">(เลือกประเภทที่ต้องการให้แจ้งเข้ากลุ่ม)</span></label>
       <div class="line-cat-grid">${Object.keys(CAT).map(k=>`
