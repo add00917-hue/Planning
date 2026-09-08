@@ -559,6 +559,23 @@ table.t tbody tr:hover{background:#F8FAFD}
 .line-cat.on .lc-box svg{opacity:1}
 .line-detect{margin-top:8px;padding:10px 13px;background:var(--success-bg);border-radius:11px;font-size:12.5px;color:#0B7A55;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .line-detect b{color:var(--ink)}
+.ev-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ev-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.ev-i{display:flex;align-items:center;gap:11px;min-width:0}
+.ev-em{font-size:20px;flex-shrink:0}
+.ev-t{font-size:13.5px;font-weight:600;color:var(--ink)}
+.ev-s{font-size:11.5px;color:var(--ink-soft)}
+.rmd-list{display:flex;flex-direction:column;gap:7px}
+.rmd-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;flex-wrap:wrap}
+.rmd-row .lc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.rmd-t{font-size:13px;font-weight:500;color:var(--ink);min-width:96px}
+.rmd-lbl{font-size:12px;color:var(--ink-soft)}
+.rmd-days{width:52px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);text-align:center;font-size:13px}
+.rmd-time{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:13px}
+.tg.sm{width:38px;height:22px;flex-shrink:0}
+.tg.sm::after{width:16px;height:16px}
+.tg.sm.on::after{transform:translateX(16px)}
+.line-preview{margin-top:8px;background:#06C755;color:#fff;border-radius:16px;padding:14px 16px;font-size:13px;line-height:1.6;white-space:pre-wrap;box-shadow:0 4px 14px rgba(6,199,85,.25);max-width:420px;word-break:break-word}
 .bulk-detail{margin-bottom:16px}
 .bulk-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:640px){.bulk-detail-grid{grid-template-columns:1fr}}
@@ -1691,6 +1708,7 @@ function setAdmin(tab){
   document.querySelectorAll('.apane').forEach(p=>p.classList.toggle('on',p.id==='ap-'+tab));
   if(tab==='mobile')injectQR();
   if(tab==='bulk')renderBulkCal();
+  if(tab==='line')renderLinePreview();
 }
 const ROLE={admin:['role-admin','ผู้ดูแลระบบ'],approver:['role-approver','ผู้อนุมัติ'],user:['role-user','ผู้ใช้ทั่วไป']};
 
@@ -2047,7 +2065,6 @@ function adminLine(){
   const hasGroup=!!SETTINGS.line_group_id;
   const ready=hasToken&&hasGroup;
   const lc=SETTINGS.line_categories; const catOn=k=>(lc===undefined||lc===''||lc==null)?true:String(lc).split(',').map(x=>x.trim()).includes(k);
-  const events=['มีคำขออนุมัติใหม่','อนุมัติแล้ว','ไม่อนุมัติ','ขอเปลี่ยนผู้รับผิดชอบ'];
   return `<div class="card"><div class="card-h"><div><h3>การแจ้งเตือน LINE (กลุ่ม)</h3><div class="sub">LINE Messaging API • ส่งเข้ากลุ่ม LINE ของทีม</div></div>
     <span class="conn-status ${ready?'':'off'}"><span class="dot"></span>${ready?'พร้อมส่งเข้ากลุ่ม':(hasToken?'ยังไม่ได้ตั้ง Group ID':'ยังไม่ได้ตั้งค่า Token')}</span></div>
   <div class="card-b">
@@ -2065,10 +2082,82 @@ function adminLine(){
       <div class="hint" style="margin-top:8px">${I.check} = แจ้งเข้ากลุ่มเมื่อมีกิจกรรมประเภทนี้ • ไม่เลือก = ไม่แจ้ง</div>
     </div>
 
-    <div class="field"><label>เหตุการณ์ที่แจ้งเตือน</label><div class="checklist">${events.map((f,i)=>`<label class="ck on"><span class="box">${I.check}</span>${f}</label>`).join('')}</div></div>
-    <div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveLineSettings()">${I.check2} บันทึกการตั้งค่า</button><button class="btn btn-ghost" onclick="testLine()">${I.line} ทดสอบส่งเข้ากลุ่ม</button></div>
-    <div class="hint" style="margin-top:10px">การเปลี่ยนแปลงมีผลกับการแจ้งเตือนครั้งถัดไป • ข้อความทั้งหมดส่งเข้ากลุ่ม LINE (ไม่ส่งรายบุคคล)</div>
+    <div class="field"><label>เหตุการณ์ที่ส่งแจ้งเตือน (เปิด/ปิดแต่ละอย่าง)</label>
+      <div class="ev-list">${LINE_EVENTS.map(ev=>`
+        <div class="ev-row"><div class="ev-i"><span class="ev-em">${ev.em}</span><div><div class="ev-t">${ev.th}</div><div class="ev-s">${ev.sd}</div></div></div>
+          <div class="tg ${evOn(ev.k)?'on':''}" data-ev="${ev.k}" onclick="this.classList.toggle('on')"></div></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="field"><label>⏰ เตือนล่วงหน้าก่อนถึงกำหนด (ตั้งแยกแต่ละประเภท)</label>
+      <div class="hint" style="margin:0 0 8px">ระบบจะแจ้งเข้ากลุ่มล่วงหน้าตามจำนวนวัน/เวลาที่ตั้ง (ต้องตั้ง Trigger รายชั่วโมง — ดูวิธีด้านล่าง)</div>
+      <div class="rmd-list">${Object.keys(CAT).map(k=>{const cfg=rmdCfg(k);return `
+        <div class="rmd-row" data-cat="${k}">
+          <span class="lc-dot" style="background:${CAT[k].c}"></span><span class="rmd-t">${CAT[k].th}</span>
+          <div class="tg sm ${cfg.on?'on':''}" data-rmd="${k}" onclick="this.classList.toggle('on')"></div>
+          <span class="rmd-lbl">ล่วงหน้า</span><input class="rmd-days" id="rmd-d-${k}" type="number" min="0" max="30" value="${cfg.days}"><span class="rmd-lbl">วัน เวลา</span><input class="rmd-time" id="rmd-t-${k}" type="time" value="${cfg.time}">
+        </div>`;}).join('')}
+      </div>
+    </div>
+
+    <div class="set-grid">
+      <div class="field"><label>📅 สรุปรายวันเข้ากลุ่ม</label>
+        <div style="display:flex;align-items:center;gap:10px"><div class="tg ${SETTINGS.sch_daily?'on':''}" id="sch-daily-on" onclick="this.classList.toggle('on')"></div><span class="rmd-lbl">เวลา</span><input class="rmd-time" id="sch-daily-time" type="time" value="${(SETTINGS.sch_daily&&String(SETTINGS.sch_daily).indexOf(':')>=0)?SETTINGS.sch_daily:'08:00'}"></div></div>
+      <div class="field"><label>📊 สรุปรายสัปดาห์เข้ากลุ่ม</label>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><div class="tg ${SETTINGS.sch_weekly?'on':''}" id="sch-week-on" onclick="this.classList.toggle('on')"></div>
+        <select class="select" id="sch-week-dow" style="width:auto">${['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'].map((d,i)=>`<option value="${i}" ${schWeekDow()===i?'selected':''}>${d}</option>`).join('')}</select>
+        <input class="rmd-time" id="sch-week-time" type="time" value="${schWeekTime()}"></div></div>
+    </div>
+
+    <div class="field"><label>🔍 จำลองข้อความ (Preview)</label>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><select class="select" id="prev-type" onchange="renderLinePreview()" style="width:auto">
+        ${LINE_EVENTS.filter(e=>e.prev).map(e=>`<option value="${e.k}">${e.th}</option>`).join('')}<option value="daily">📅 สรุปรายวัน</option><option value="weekly">📊 สรุปรายสัปดาห์</option><option value="remind">⏰ เตือนล่วงหน้า</option></select>
+        <span class="hint" style="margin:0">ตัวอย่างข้อความที่จะส่งเข้ากลุ่ม</span></div>
+      <div class="line-preview" id="line-preview"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" onclick="saveLineSettings()">${I.check2} บันทึกการตั้งค่า</button><button class="btn btn-ghost" onclick="testLine()">${I.line} ทดสอบส่งเข้ากลุ่ม</button>
+      <button class="btn btn-ghost" onclick="runSummary('runDaily')">📅 ส่งสรุปวันนี้เลย</button><button class="btn btn-ghost" onclick="runSummary('runWeekly')">📊 ส่งสรุปสัปดาห์เลย</button></div>
+    <div class="hint" style="margin-top:10px">⚙️ <b>เตือนล่วงหน้า/สรุปอัตโนมัติ</b> ต้องรัน <code>setupTriggers</code> ในตัวแก้ไข Apps Script หนึ่งครั้ง (สร้าง Trigger รายชั่วโมง) • ข้อความทั้งหมดส่งเข้ากลุ่ม LINE</div>
   </div></div>`;
+}
+/* นิยามเหตุการณ์ + ตัวอย่างข้อความ (ตรงกับ backend) */
+const LINE_EVENTS=[
+  {k:'create_approval',em:'🔔',th:'มีคำขออนุมัติใหม่',sd:'เมื่อสมาชิกแจ้งลา/OT/อบรม (ที่ต้องอนุมัติ)',def:true,prev:true},
+  {k:'create_direct',em:'✅',th:'บันทึกกิจกรรมที่ไม่ต้องอนุมัติ',sd:'ลาพักร้อน / Task / admin ลงผ่าน Bulk',def:false,prev:true},
+  {k:'decide',em:'👍',th:'ผลอนุมัติ / ไม่อนุมัติ',sd:'เมื่อผู้อนุมัติกดตัดสิน',def:true,prev:true},
+  {k:'claim',em:'🙋',th:'กดรับงาน',sd:'เมื่อสมาชิกกดรับงานที่เปิดไว้',def:false,prev:true},
+  {k:'reassign_req',em:'🔄',th:'ขอเปลี่ยนผู้รับผิดชอบ',sd:'เมื่อมีคำขอเปลี่ยนผู้รับผิดชอบงาน',def:true,prev:true},
+  {k:'reassign_decide',em:'✅',th:'อนุมัติเปลี่ยนผู้รับผิดชอบ',sd:'เมื่ออนุมัติคำขอเปลี่ยน',def:true,prev:true},
+  {k:'cancel',em:'🚫',th:'ยกเลิกรายการ',sd:'เมื่อมีการยกเลิกคำขอ/รายการ',def:false,prev:true}
+];
+function evOn(k){const v=SETTINGS['ev_'+k];if(v===undefined||v===''||v==null)return LINE_EVENTS.find(e=>e.k===k).def;return String(v)!=='false';}
+function rmdCfg(cat){const v=SETTINGS['rmd_'+cat];if(!v)return{on:false,days:1,time:'08:00'};const p=String(v).split('|');return{on:true,days:Number(p[0]||1),time:p[1]||'08:00'};}
+function schWeekDow(){const v=SETTINGS.sch_weekly;if(!v)return 1;return Number(String(v).split('|')[0]||1);}
+function schWeekTime(){const v=SETTINGS.sch_weekly;if(!v)return '08:00';return String(v).split('|')[1]||'08:00';}
+/* จำลองข้อความ */
+function linePreviewText(type){
+  const L=SETTINGS.app_url||'https://add00917-hue.github.io/leave/';
+  const S={name:'สมชาย ใจดี',nick:'ชาย',cat:'ลาป่วย',title:'ลาป่วย',loc:'ARI HILLS',date:'2026-08-20',approver:'บอส',task:'ติดตั้งโต๊ะทำงาน'};
+  switch(type){
+    case 'create_approval':return `🔔 มีคำขออนุมัติใหม่\n👤 ${S.name}\n📋 ${S.cat}\n📅 ${S.date}\n\n👉 อนุมัติที่ ${L}`;
+    case 'create_direct':return `✅ บันทึกกิจกรรมใหม่\n👤 ${S.name}\n📋 ลาพักร้อน — พักผ่อนประจำปี\n📅 ${S.date} - 2026-08-22`;
+    case 'decide':return `${S.name} — ${S.cat} ได้รับการอนุมัติ ✅\n📋 ${S.title}\n📅 ${S.date}\n👍 โดย ${S.approver}`;
+    case 'claim':return `🙋 รับงานแล้ว\n👤 ${S.name} รับผิดชอบงาน\n📋 ${S.task}\n📍 ${S.loc}\n📅 ${S.date}`;
+    case 'reassign_req':return `🔄 คำขอเปลี่ยนผู้รับผิดชอบงาน\n📋 ${S.task}\n👤 จาก: สมหญิง\n➡️ เป็น: ${S.name}\n\n👉 อนุมัติที่ ${L}`;
+    case 'reassign_decide':return `✅ เปลี่ยนผู้รับผิดชอบงาน "${S.task}" เป็น ${S.name} แล้ว`;
+    case 'cancel':return `🚫 ยกเลิกรายการ\n👤 ${S.name}\n📋 ${S.cat} — ${S.title}\n📅 ${S.date}`;
+    case 'daily':return `📅 สรุปกิจกรรมวันนี้ (${S.date})\n\n🏖 การลา:\n  • ชาย — ลาป่วย\n\n🔧 งานมอบหมาย:\n  • หญิง — ${S.task}\n\n👉 ${L}`;
+    case 'weekly':return `📊 สรุปสัปดาห์นี้ (2026-08-18 ถึง 2026-08-24)\nรวม 8 รายการ\n\n• ลาป่วย: 2 รายการ\n• งานมอบหมาย: 4 รายการ\n• OT: 2 รายการ\n\n👉 ${L}`;
+    case 'remind':return `⏰ อีก 1 วันจะถึง ลาพักร้อน (${S.date})\n• ชาย — พักผ่อนประจำปี`;
+  }
+  return '';
+}
+function renderLinePreview(){const el=document.getElementById('line-preview');const t=fval('prev-type')||'create_approval';if(el)el.textContent=linePreviewText(t);}
+async function runSummary(action){
+  if(!CUR||CUR.role!=='admin'){toast('เฉพาะผู้ดูแลระบบ','warn');return;}
+  showSaving();const j=await postJSON({action});
+  if(j&&j.ok)showSaved(true,'ส่งสรุปเข้ากลุ่มแล้ว');else showSaved(false,(j&&j.error)||'ส่งไม่สำเร็จ');
 }
 async function saveLineSettings(){
   if(!CUR||CUR.role!=='admin'){toast('เฉพาะผู้ดูแลระบบ','warn');return;}
@@ -2084,6 +2173,17 @@ async function saveLineSettings(){
     {action:'setSetting',key:'line_group_id',value:grp}
   ];
   if(tokenVal && tokenVal.indexOf('•')<0) payloads.push({action:'setSetting',key:'line_channel_token',value:tokenVal});
+  // event toggles
+  document.querySelectorAll('.tg[data-ev]').forEach(t=>{const k=t.dataset.ev,v=t.classList.contains('on');payloads.push({action:'setSetting',key:'ev_'+k,value:v?'true':'false'});SETTINGS['ev_'+k]=v?'true':'false';});
+  // เตือนล่วงหน้าต่อประเภท
+  document.querySelectorAll('.rmd-row').forEach(row=>{const k=row.dataset.cat;const on=row.querySelector('.tg[data-rmd]').classList.contains('on');
+    const days=fval('rmd-d-'+k)||'1',time=fval('rmd-t-'+k)||'08:00';
+    const val=on?(days+'|'+time):'';payloads.push({action:'setSetting',key:'rmd_'+k,value:val});SETTINGS['rmd_'+k]=val;});
+  // สรุปรายวัน/สัปดาห์
+  const dailyOn=document.getElementById('sch-daily-on').classList.contains('on');
+  const dailyVal=dailyOn?fval('sch-daily-time'):''; payloads.push({action:'setSetting',key:'sch_daily',value:dailyVal});SETTINGS.sch_daily=dailyVal;
+  const weekOn=document.getElementById('sch-week-on').classList.contains('on');
+  const weekVal=weekOn?(fval('sch-week-dow')+'|'+fval('sch-week-time')):''; payloads.push({action:'setSetting',key:'sch_weekly',value:weekVal});SETTINGS.sch_weekly=weekVal;
   showSaving();
   let ok=true;
   for(const p of payloads){ const j=await postJSON(p); if(!(j&&j.ok)){ok=false;break;} }
