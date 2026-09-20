@@ -38,10 +38,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 
 /* ============ LANDING ============ */
 .landing{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(140% 120% at 50% -10%,#1A3F7A 0%,#0C2750 42%,#07182E 100%);overflow:hidden;text-align:center;padding:24px}
-.landing-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background:radial-gradient(140% 120% at 50% -10%,#1A3F7A 0%,#0C2750 42%,#07182E 100%);overflow-y:auto;text-align:center;padding:40px 24px}
+.landing-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
   background-size:54px 54px;mask-image:radial-gradient(120% 90% at 50% 30%,#000 35%,transparent 80%);-webkit-mask-image:radial-gradient(120% 90% at 50% 30%,#000 35%,transparent 80%)}
-.glow{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+.glow{position:fixed;border-radius:50%;filter:blur(70px);opacity:.55}
 .glow.y{width:420px;height:420px;background:rgba(255,197,46,.30);top:-90px;right:-60px}
 .glow.b{width:520px;height:520px;background:rgba(61,107,176,.45);bottom:-160px;left:-120px}
 .landing-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:760px;
@@ -50,7 +50,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);
   color:rgba(255,255,255,.82);font-size:12px;font-weight:500;letter-spacing:.5px;margin-bottom:28px}
 .l-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px rgba(16,185,129,.25);animation:pulse 2s infinite}
-.l-logo{width:clamp(200px,32vw,340px);height:auto;margin:0 auto 20px;display:block;filter:drop-shadow(0 16px 40px rgba(0,0,0,.5))}
+.l-logo{width:clamp(150px,22vw,240px);height:auto;margin:0 auto 16px;display:block;filter:drop-shadow(0 16px 40px rgba(0,0,0,.5))}
 .l-word{font-family:var(--mono);font-weight:600;font-size:clamp(54px,11vw,120px);line-height:.92;color:#fff;letter-spacing:2px}
 .l-word .ac{color:var(--yellow-bright)}
 .l-title{font-size:clamp(17px,2.2vw,27px);font-weight:600;color:#fff;margin-top:18px;letter-spacing:.2px;line-height:1.4}
@@ -73,7 +73,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .enter-btn:active{transform:translateY(6px);
   box-shadow:inset 0 2px 1px rgba(255,255,255,.6),inset 0 -2px 5px rgba(180,120,0,.4),0 1px 0 #B9810B,0 2px 0 #9A6C09,0 6px 14px rgba(0,0,0,.4),0 0 0 6px rgba(255,197,46,.14)}
 .enter-btn svg{width:22px;height:22px;stroke-width:2.6}
-.l-foot{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.34);font-family:var(--mono);z-index:2;padding:0 16px}
+.l-foot{margin-top:30px;text-align:center;font-size:11px;color:rgba(255,255,255,.34);font-family:var(--mono);z-index:2;padding:0 16px}
 
 /* ============ APP SHELL ============ */
 .app{display:grid;grid-template-columns:var(--sb) 1fr;height:100vh;background:var(--canvas)}
@@ -455,7 +455,11 @@ table.t tbody tr:hover{background:#F8FAFD}
   .cal-chip{display:none}
 }
 @media (max-width:380px){.kpi-rail{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){*:not(.savepop-spin){animation:none!important;transition:none!important}}
+.kpi-rail.dash6{grid-template-columns:repeat(6,1fr);gap:14px}
+@media (max-width:1180px){.kpi-rail.dash6{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:680px){.kpi-rail.dash6{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:400px){.kpi-rail.dash6{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*:not(.savepop-spin):not(.spinner12):not(.cp-spin){animation:none!important;transition:none!important}}
 /* ===== Bilingual Date/Time Picker ===== */
 .dtf-btn{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;display:flex;align-items:center;gap:11px;cursor:pointer;text-align:left;transition:.16s;font-family:inherit}
 .dtf-btn:hover{border-color:var(--navy-soft);box-shadow:0 0 0 3px rgba(44,91,160,.08)}
@@ -529,6 +533,31 @@ table.t tbody tr:hover{background:#F8FAFD}
 .savepop.conn .savepop-card{background:transparent;box-shadow:none;padding:0;animation:none}
 .spinner12{width:52px;height:52px;position:relative;animation:spin 1s steps(12) infinite;margin:0 auto}
 .spinner12 span{position:absolute;top:0;left:50%;width:5px;height:14px;margin-left:-2.5px;border-radius:3px;transform-origin:center 26px;transform:rotate(var(--r));background:var(--c)}
+.conn-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.conn-pill svg{width:15px;height:15px;flex-shrink:0}
+.conn-pill.on{background:#E6F4EA;color:#1F7A44}
+.conn-pill.wait{background:#FEF3D6;color:#92600A}
+.conn-pill.off{background:#FCEBEB;color:#A32D2D}
+.cp-spin{animation:spin .8s linear infinite;transform-origin:center}
+.tpl-block{border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:14px;background:#fff}
+.tpl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.tpl-title{font-size:14.5px;font-weight:700;color:var(--ink)}
+.tpl-desc{font-size:12px;color:var(--ink-mid);margin-top:2px}
+.tpl-toggle{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tpl-toggle span{font-size:11.5px;color:var(--ink-soft);font-weight:600}
+.tpl-body{display:grid;grid-template-columns:1fr 300px;gap:16px}
+.tpl-edit textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;line-height:1.6;font-family:inherit;color:var(--ink);resize:vertical;outline:none}
+.tpl-edit textarea:focus{border-color:var(--navy-soft)}
+.tpl-ph{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.tpl-ph span{font-family:var(--mono);font-size:11px;background:#EEF2F8;color:var(--navy);padding:4px 9px;border-radius:20px;cursor:pointer;transition:.14s}
+.tpl-ph span:hover{background:var(--navy);color:#fff}
+.tpl-act{display:flex;gap:8px;margin-top:11px}
+.line-chat{background:linear-gradient(160deg,#9DBBE0,#7FA0CE);border-radius:12px;padding:14px 13px}
+.line-oa{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:#2b4a70;margin-bottom:9px}
+.line-ava{width:22px;height:22px;border-radius:50%;background:#06C755;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.line-ava svg{width:13px;height:13px}
+.line-bubble{background:#fff;border-radius:4px 16px 16px 16px;padding:11px 13px;font-size:13px;line-height:1.55;color:#1a1a1a;white-space:pre-wrap;word-break:break-word;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+@media (max-width:820px){.tpl-body{grid-template-columns:1fr}}
 .savepop-th{font-size:18px;font-weight:700;color:var(--ink)}
 .savepop-en{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
 .savepop-sub{font-size:13px;color:var(--ink-mid);margin-top:10px;line-height:1.5}
@@ -670,8 +699,7 @@ table.t tbody tr:hover{background:#F8FAFD}
       <button class="hamb" onclick="openNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="tb-title" id="tb-title">แดชบอร์ด<small id="tb-sub">ภาพรวมแผนงานและกิจกรรมของทีม</small></div>
       <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input placeholder="ค้นหาสมาชิก, กิจกรรม..."></div>
-      <div class="tb-line wait" id="db-status"><span class="dot"></span><span>เชื่อมต่อฐานข้อมูล...</span></div>
-      <div class="tb-line"><span class="dot"></span><span>LINE เชื่อมต่อ</span></div>
+      <div class="conn-pill wait" id="db-status"><svg class="cp-spin" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg><span>Loading</span></div>
       <button class="tb-btn" onclick="go('notify')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="bdot"></span></button>
     </header>
     <div class="content"><div class="wrap" id="views"></div></div>
@@ -685,7 +713,7 @@ table.t tbody tr:hover{background:#F8FAFD}
 
 <script>
 /* ===================== Plans & Activities of the GNR3 team ===================== */
-const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://add00917-hue.github.io/leave/' };
+const CONFIG = { SHEETS_API_URL:'https://script.google.com/macros/s/AKfycbxZvs3i43dDyMg3WR4roE9bWml-PAqHVXoMCoTlfNXpEBHMeCgB-3mAcsi0zE6XiwGB/exec', SPREADSHEET_ID:'1AbC…Gnr3TeamPlansDB', MOBILE_APP_URL:'https://gnr3-planning.pages.dev/' };
 
 /* ---- categories (drive calendar dots, gantt bars, sections) ---- */
 const CAT = {
@@ -880,8 +908,13 @@ function updateBadges(){
 let DBS='connecting';
 function setDB(st){DBS=st;
   const el=document.getElementById('db-status');
-  const m={connecting:['wait','เชื่อมต่อฐานข้อมูล...'],online:['','ฐานข้อมูลเชื่อมต่อ'],offline:['off','ออฟไลน์ • เชื่อมต่อฐานข้อมูลไม่ได้']};
-  if(el){el.className='tb-line '+m[st][0];el.querySelector('span:last-child').textContent=m[st][1];}
+  if(el){
+    const chk='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+    const xx='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+    const spin='<svg class="cp-spin" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>';
+    const m={connecting:['wait',spin,'Loading'],online:['on',chk,'Connected'],offline:['off',xx,'Error']};
+    const s=m[st]||m.connecting; el.className='conn-pill '+s[0]; el.innerHTML=`${s[1]}<span>${s[2]}</span>`;
+  }
   if(currentView==='admin'){const a=document.getElementById('ap-sheets'); if(a&&a.classList.contains('on')){a.innerHTML=adminSheets();}}
 }
 async function syncDB(){
@@ -900,6 +933,7 @@ async function syncDB(){
       if(Array.isArray(d.holidays)) holidays=d.holidays.map(h=>({date:D(h.date),name:h.name,type:h.type||'public'}));
       if(Array.isArray(d.taskTypes)){const tt=d.taskTypes.filter(t=>t.active!==false&&String(t.active).toLowerCase()!=='false'&&S(t.th)).sort((a,b)=>(+a.sort||999)-(+b.sort||999)).map(t=>({id:S(t.task_id),th:S(t.th),en:S(t.en)}));if(tt.length){tt.push({th:'อื่นๆ',en:'Other'});TASKS=tt;}}
       if(Array.isArray(d.buildings)){const bd=d.buildings.filter(b=>b.active!==false&&String(b.active).toLowerCase()!=='false'&&S(b.name)).sort((a,b)=>(+a.sort||999)-(+b.sort||999)).map(b=>S(b.name));if(bd.length){bd.push('อื่นๆ');BUILDINGS=bd;}}
+      if(d.settings&&typeof d.settings==='object'&&!Array.isArray(d.settings))LINE_SETTINGS=d.settings;
       setDB('online'); updateSbUser(); updateBadges(); updateLanding(); go(currentView);
       hideConnecting(true,'เชื่อมต่อฐานข้อมูลสำเร็จ • '+employees.length+' สมาชิก, '+records.length+' รายการ');
     } else { setDB('offline'); hideConnecting(false,'เชื่อมต่อฐานข้อมูลไม่ได้'); }
@@ -951,7 +985,7 @@ function viewDashboard(){
   <div class="page-head"><div><h1>ภาพรวมกิจกรรม GNR3</h1><p>ข้อมูลล่าสุด • อัปเดตจาก ฐานข้อมูล</p></div>
     <div class="head-actions"><button class="btn btn-ghost" onclick="toast('กำลังสร้างรายงาน...','ok')">${I.dl} ส่งออกรายงาน</button>
     <button class="btn btn-primary" onclick="openRecordPicker()">${I.plus} เพิ่มรายการ</button></div></div>
-  <div class="kpi-rail">
+  <div class="kpi-rail dash6">
     ${kpi('n',I.users,employees.filter(e=>!isInactive(e)).length,'สมาชิกทีม')}
     ${kpi('y',I.cal,todayN,'กิจกรรมวันนี้')}
     ${kpi('r',I.clock,pend,'รออนุมัติ')}
@@ -2132,21 +2166,59 @@ function adminSheets(){
     </div></div></div>`;
 }
 
+let LINE_SETTINGS={};
+const LINE_TPL_DEFAULT={
+  create_approval:'🔔 มีคำขออนุมัติใหม่\n👤 {name}\n📋 {category}\n📅 {date}{location}\n\n👉 อนุมัติที่ {link}',
+  create_direct:'✅ บันทึกกิจกรรมใหม่\n👤 {name}\n📋 {category} — {title}\n📅 {date}{location}',
+  decide:'{name} — {category} {result}\n📋 {title}\n📅 {date}\n👍 โดย {approver}',
+  claim:'🙋 รับงานแล้ว\n👤 {name} รับผิดชอบงาน\n📋 {title}{location}\n📅 {date}',
+  reassign_req:'🔄 คำขอเปลี่ยนผู้รับผิดชอบงาน\n📋 {title}\n👤 จาก: {from}\n➡️ เป็น: {name}\n\n👉 อนุมัติที่ {link}',
+  reassign_decide:'✅ เปลี่ยนผู้รับผิดชอบงาน "{title}" เป็น {name} แล้ว',
+  cancel:'🚫 ยกเลิกรายการ\n👤 {name}\n📋 {category} — {title}\n📅 {date}'
+};
+const LINE_EVENTS=[
+  {key:'create_approval',label:'มีคำขออนุมัติใหม่',desc:'ส่งเมื่อมีคำขอที่ต้องอนุมัติ (ลา/อบรม/OT)',def:true,sample:{name:'สมชาย ใจดี',category:'ลาป่วย',title:'ลาป่วย',date:'12 มิ.ย. 2569',location:'\n📍 ARI HILLS'}},
+  {key:'create_direct',label:'บันทึกกิจกรรมใหม่',desc:'ส่งเมื่อบันทึกรายการที่ไม่ต้องอนุมัติ (พักร้อน/งาน)',def:false,sample:{name:'สมหญิง งามดี',category:'ลาพักร้อน',title:'พักร้อนกลางปี',date:'20 มิ.ย. 2569',location:''}},
+  {key:'decide',label:'ผลการอนุมัติ',desc:'ส่งเมื่อผู้อนุมัติอนุมัติ/ไม่อนุมัติ',def:true,sample:{name:'สมชาย ใจดี',category:'ลาป่วย',result:'ได้รับการอนุมัติ ✅',title:'ลาป่วย',date:'12 มิ.ย. 2569',approver:'หัวหน้าทีม'}},
+  {key:'claim',label:'รับงาน (Task)',desc:'ส่งเมื่อสมาชิกกดรับงานที่ว่าง',def:false,sample:{name:'มาร์ค',title:'ติดตั้งโต๊ะทำงาน',location:'\n📍 ARI HILLS',date:'15 มิ.ย. 2569'}},
+  {key:'reassign_req',label:'ขอเปลี่ยนผู้รับผิดชอบ',desc:'ส่งเมื่อมีคำขอเปลี่ยนผู้รับผิดชอบงาน',def:true,sample:{title:'งานปรับปรุงพื้นที่',from:'สมชาย ใจดี',name:'มาร์ค'}},
+  {key:'reassign_decide',label:'อนุมัติเปลี่ยนผู้รับผิดชอบ',desc:'ส่งเมื่ออนุมัติการเปลี่ยนผู้รับผิดชอบ',def:true,sample:{title:'งานปรับปรุงพื้นที่',name:'มาร์ค'}},
+  {key:'cancel',label:'ยกเลิกรายการ',desc:'ส่งเมื่อมีการยกเลิกรายการ',def:false,sample:{name:'สมชาย ใจดี',category:'ลากิจ',title:'ลากิจ',date:'18 มิ.ย. 2569'}}
+];
+function lineTplVal(key){const v=LINE_SETTINGS['tpl_'+key];return (v!==undefined&&v!==null&&v!=='')?String(v):LINE_TPL_DEFAULT[key];}
+function lineEventOn(ev){const v=LINE_SETTINGS['ev_'+ev.key];if(v===undefined||v===null||v==='')return ev.def;return String(v)!=='false';}
+function renderLineTpl(str,data){data=Object.assign({},data);data.link=data.link||CONFIG.MOBILE_APP_URL;return String(str).replace(/\{(\w+)\}/g,(m,k)=>(data[k]!=null?String(data[k]):''));}
+function refreshLinePreview(key){const ev=LINE_EVENTS.find(e=>e.key===key),pv=document.getElementById('pv-'+key),ta=document.getElementById('tpl-'+key);if(pv&&ta)pv.textContent=renderLineTpl(ta.value,ev.sample);}
+function insertPh(id,ph){const ta=document.getElementById(id);if(!ta)return;const s=ta.selectionStart||ta.value.length,e=ta.selectionEnd||ta.value.length;ta.value=ta.value.slice(0,s)+ph+ta.value.slice(e);ta.focus();ta.selectionStart=ta.selectionEnd=s+ph.length;refreshLinePreview(id.replace('tpl-',''));}
+async function _setLine(key,value){if(!CONFIG.SHEETS_API_URL)return true;try{const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'setSetting',key,value,group:'line'})});const j=await r.json();return j&&j.ok;}catch(e){return false;}}
+async function saveLineTpl(key){if(!needAuth())return;const ta=document.getElementById('tpl-'+key);const val=ta.value;LINE_SETTINGS['tpl_'+key]=val;const ok=await _setLine('tpl_'+key,val);toast(ok?'บันทึกเทมเพลตแล้ว':'บันทึกในเครื่องชั่วคราว (ออฟไลน์)',ok?'ok':'warn');}
+async function resetLineTpl(key){if(!needAuth())return;LINE_SETTINGS['tpl_'+key]='';const ta=document.getElementById('tpl-'+key);ta.value=LINE_TPL_DEFAULT[key];refreshLinePreview(key);await _setLine('tpl_'+key,'');toast('คืนค่าเริ่มต้นแล้ว','ok');}
+async function toggleLineEvent(key,el){if(!needAuth())return;const on=!el.classList.contains('on');el.classList.toggle('on',on);LINE_SETTINGS['ev_'+key]=on?'true':'false';await _setLine('ev_'+key,on?'true':'false');toast(on?'เปิดการส่งแล้ว':'ปิดการส่งแล้ว','ok');}
+async function testLineSend(){if(!needAuth())return;if(!CONFIG.SHEETS_API_URL){toast('ยังไม่ได้ตั้งค่าฐานข้อมูล','warn');return;}toast('กำลังส่งข้อความทดสอบ...','ok');try{const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'testLine'})});const j=await r.json();toast(j&&j.ok?'ส่งข้อความทดสอบไปยังกลุ่ม LINE แล้ว':'ส่งไม่สำเร็จ • '+((j&&j.error)||'ตรวจการตั้งค่า LINE'),j&&j.ok?'ok':'warn');}catch(e){toast('เชื่อมต่อไม่สำเร็จ','warn');}}
 function adminLine(){
-  const events=['มีคำขออนุมัติใหม่','อนุมัติแล้ว','ไม่อนุมัติ','ใกล้ถึงวันกิจกรรม','สรุปรายสัปดาห์'];
-  return `<div class="card"><div class="card-h"><div><h3>การแจ้งเตือน LINE</h3><div class="sub">LINE Official Account &amp; Messaging API</div></div><span class="conn-status"><span class="dot"></span>เชื่อมต่อแล้ว</span></div>
-  <div class="card-b">
-    <div class="set-row"><div><div class="si">เปิดการแจ้งเตือน LINE</div></div><div class="tg on" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-grid" style="margin-top:14px"><div class="field"><label>LINE OA ID</label><input class="mono" value="@gnr3team"></div>
-      <div class="field"><label>Channel Access Token</label><input class="mono" type="password" value="aB3kP9xQ7mZ2wL5nR8tY1uH4"></div></div>
-    <div class="field"><label>เหตุการณ์ที่แจ้งเตือน</label><div class="checklist">${events.map((f,i)=>`<label class="ck ${i<3?'on':''}" onclick="this.classList.toggle('on')"><span class="box">${I.check}</span>${f}</label>`).join('')}</div></div>
-    <div class="field"><label>เทมเพลตข้อความ</label><textarea>🔔 มีคำขออนุมัติใหม่
-สมาชิก: {{name}} ({{dept}})
-ประเภท: {{category}}
-ช่วง: {{start}} - {{end}}
-อนุมัติ: {{link}}</textarea></div>
-    <div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="toast('บันทึกการตั้งค่า LINE แล้ว','ok')">${I.check2} บันทึก</button><button class="btn btn-ghost" onclick="toast('ส่งข้อความทดสอบแล้ว','ok')">${I.line} ทดสอบส่ง</button></div>
-  </div></div>`;
+  return `<div class="card"><div class="card-h"><div><h3>เทมเพลตการแจ้งเตือน LINE</h3><div class="sub">แก้ไขข้อความแต่ละเหตุการณ์ • ดูตัวอย่างสด • เปิด/ปิดการส่งได้</div></div>
+    <button class="btn btn-ghost" onclick="testLineSend()">${I.line} ทดสอบส่ง</button></div>
+    <div class="card-b">
+      <div class="sd" style="margin-bottom:16px">ℹ️ ใส่ตัวแปรในปีกกา เช่น <b>{name} {category} {date} {title} {location} {link}</b> ระบบจะแทนค่าจริงตอนส่ง — กดชิปตัวแปรเพื่อแทรกในข้อความ</div>
+      ${LINE_EVENTS.map(ev=>{
+        const val=lineTplVal(ev.key),on=lineEventOn(ev);
+        const ph=(LINE_TPL_DEFAULT[ev.key].match(/\{\w+\}/g)||[]).filter((v,i,a)=>a.indexOf(v)===i);
+        return `<div class="tpl-block">
+          <div class="tpl-head"><div><div class="tpl-title">${ev.label}</div><div class="tpl-desc">${ev.desc}</div></div>
+            <div class="tpl-toggle"><span>${on?'ส่งอยู่':'ปิดส่ง'}</span><div class="tg ${on?'on':''}" onclick="toggleLineEvent('${ev.key}',this)"></div></div></div>
+          <div class="tpl-body">
+            <div class="tpl-edit">
+              <textarea id="tpl-${ev.key}" spellcheck="false" oninput="refreshLinePreview('${ev.key}')">${esc(val)}</textarea>
+              <div class="tpl-ph">${ph.map(p=>`<span onclick="insertPh('tpl-${ev.key}','${p}')">${p}</span>`).join('')}</div>
+              <div class="tpl-act"><button class="btn-xs ok" onclick="saveLineTpl('${ev.key}')">${I.check2} บันทึก</button><button class="btn-xs gh" onclick="resetLineTpl('${ev.key}')">คืนค่าเริ่มต้น</button></div>
+            </div>
+            <div class="tpl-prev">
+              <div class="line-chat"><div class="line-oa"><span class="line-ava">${I.line}</span>GNR3 Team • OA</div>
+                <div class="line-bubble" id="pv-${ev.key}">${esc(renderLineTpl(val,ev.sample))}</div></div>
+            </div>
+          </div></div>`;
+      }).join('')}
+    </div></div>`;
 }
 
 function adminUsers(){
