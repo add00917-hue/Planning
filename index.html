@@ -1453,6 +1453,7 @@ function openTaskForm(){if(!needAuth())return;
     <div class="field hidden" id="task-build-custom"><label>ระบุอาคาร (อื่นๆ)</label><input id="t-build-other" placeholder="ชื่ออาคาร/สถานที่"></div>
     <div class="field hidden" id="task-type-custom"><label>ระบุประเภทงาน (อื่นๆ)</label><input id="t-type-other" placeholder="ระบุงานที่มอบหมาย"></div>
     <div class="set-grid"><div class="field"><label>วันที่เริ่ม</label>${dateField('t-start',TODAY_ISO)}</div><div class="field"><label>ถึงวันที่</label>${dateField('t-end',TODAY_ISO)}</div></div>
+    <div class="set-grid"><div class="field"><label>เวลาเริ่ม <span style="color:var(--ink-soft);font-weight:400">(ไม่บังคับ)</span></label>${timeField('t-st','')}</div><div class="field"><label>เวลาสิ้นสุด <span style="color:var(--ink-soft);font-weight:400">(ไม่บังคับ)</span></label>${timeField('t-et','')}</div></div>
     <div class="field"><label>รายละเอียดเพิ่มเติม</label><textarea id="t-note" placeholder="รายละเอียดงาน / ผู้ประสานงาน / หมายเหตุ"></textarea></div>
     <div class="field hint" style="margin:0">งานมอบหมายบันทึกได้ทันที ไม่ต้องรออนุมัติ</div>
   </div>
@@ -1462,10 +1463,10 @@ async function submitTask(){
   const empId=fval('t-emp');
   let build=fval('t-build'); if(build==='อื่นๆ')build=(fval('t-build-other')||'').trim()||'อื่นๆ';
   const ti=+fval('t-type'); let title=TASKS[ti].th==='อื่นๆ'?((fval('t-type-other')||'').trim()||'อื่นๆ'):(TASKS[ti].th+' / '+TASKS[ti].en);
-  const start=fval('t-start'),end=fval('t-end'),note=fval('t-note');
+  const start=fval('t-start'),end=fval('t-end'),st=fval('t-st'),et=fval('t-et'),note=fval('t-note');
   if(!start){toast('กรุณาเลือกวันที่','warn');return;}
-  saveRecord({action:'createRecord',emp_id:empId,category:'task',title,location:build,start_date:start,end_date:end,note,actor:CUR?CUR.id:'web-admin'},
-    R(empId,'task',start,end,{title,location:build,note,status:empId?'none':'open'}));
+  saveRecord({action:'createRecord',emp_id:empId,category:'task',title,location:build,start_date:start,end_date:end,start_time:st,end_time:et,note,actor:CUR?CUR.id:'web-admin'},
+    R(empId,'task',start,end,{title,location:build,st,et,note,status:empId?'none':'open'}));
 }
 /* ---- Task workflow (เว็บ) ---- */
 async function taskPost(payload,okMsg,r,revert){
@@ -1502,15 +1503,16 @@ function openTaskEdit(id){
     <div class="set-grid"><div class="field"><label>อาคาร</label><input id="te-loc" value="${esc(r.location)}"></div>
       <div class="field"><label>สถานะ</label><select id="te-status"><option value="none" ${r.status==='none'?'selected':''}>มอบหมายแล้ว</option><option value="open" ${r.status==='open'?'selected':''}>เปิดงานไว้ (ว่าง)</option><option value="cancelled" ${r.status==='cancelled'?'selected':''}>ยกเลิก</option></select></div></div>
     <div class="set-grid"><div class="field"><label>วันที่เริ่ม</label>${dateField('te-start',r.start)}</div><div class="field"><label>ถึงวันที่</label>${dateField('te-end',r.end)}</div></div>
+    <div class="set-grid"><div class="field"><label>เวลาเริ่ม <span style="color:var(--ink-soft);font-weight:400">(ไม่บังคับ)</span></label>${timeField('te-st',r.st||'')}</div><div class="field"><label>เวลาสิ้นสุด <span style="color:var(--ink-soft);font-weight:400">(ไม่บังคับ)</span></label>${timeField('te-et',r.et||'')}</div></div>
     <div class="field"><label>รายละเอียด</label><textarea id="te-note">${esc(r.note)}</textarea></div>
   </div>
   <div class="mf"><button class="btn btn-ghost" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="submitTaskEdit('${id}')">${I.check2} บันทึก</button></div>`);
 }
 async function submitTaskEdit(id){
   const r=records.find(x=>x.id===id); if(!r)return;
-  const patch={emp:fval('te-emp'),title:fval('te-title'),location:fval('te-loc'),status:fval('te-status'),start:fval('te-start'),end:fval('te-end'),note:fval('te-note')};
+  const patch={emp:fval('te-emp'),title:fval('te-title'),location:fval('te-loc'),status:fval('te-status'),start:fval('te-start'),end:fval('te-end'),st:fval('te-st'),et:fval('te-et'),note:fval('te-note')};
   Object.assign(r,patch); closeModal(); go('task');
-  await taskPost({action:'updateTask',id,emp_id:patch.emp,title:patch.title,location:patch.location,status:patch.status,start_date:patch.start,end_date:patch.end,note:patch.note,actor:CUR?CUR.id:''},'บันทึกการแก้ไขงานแล้ว',r);
+  await taskPost({action:'updateTask',id,emp_id:patch.emp,title:patch.title,location:patch.location,status:patch.status,start_date:patch.start,end_date:patch.end,start_time:patch.st,end_time:patch.et,note:patch.note,actor:CUR?CUR.id:''},'บันทึกการแก้ไขงานแล้ว',r);
 }
 
 
@@ -1673,7 +1675,19 @@ function timeField(id,val){val=val||'';return `<input type="hidden" id="${id}" v
 function tfLabel(val){if(!val)return '<span class="dtf-th">เลือกเวลา</span><span class="dtf-en">Select time</span>';
   const[h,m]=val.split(':').map(Number);const ap=h<12?'AM':'PM';const h12=(h%12)||12;
   return `<span class="dtf-th">${val} น.</span><span class="dtf-en">${h12}:${pad(m)} ${ap}</span>`;}
-function setDF(id,val){const inp=document.getElementById(id);if(inp)inp.value=val;const btn=document.getElementById(id+'-btn');if(btn){btn.classList.toggle('empty',!val);btn.querySelector('.dtf-v').innerHTML=(id.indexOf('time')>-1||/-(st|et)$/.test(id))?tfLabel(val):dfLabel(val);}}
+function setDF(id,val,isTime){const inp=document.getElementById(id);if(inp)inp.value=val;const btn=document.getElementById(id+'-btn');if(btn){btn.classList.toggle('empty',!val);
+  if(isTime===undefined)isTime=(id.indexOf('time')>-1||/(^|-)(st|et|gst|get)$/.test(id)||/^bt-(st|et)-/.test(id)); // เดาเฉพาะเมื่อไม่ระบุ (backward compat)
+  btn.querySelector('.dtf-v').innerHTML=isTime?tfLabel(val):dfLabel(val);}
+  if(isTime)syncBulkTime(id,val); // sync กลับเข้า state ทันที กัน re-render ทำเวลาหาย
+}
+/* เขียนค่าเวลาที่เพิ่งเลือกกลับเข้า bulkSel/bulkGlobal ทันที (ปัญหา: เลือกเวลาแล้วไม่บันทึก) */
+function syncBulkTime(id,val){
+  if(typeof bulkSel==='undefined')return;
+  if(id==='bulk-gst'){bulkGlobalSt=val;Object.keys(bulkSel).forEach(ds=>{if(bulkSameTime)bulkSel[ds].st=val;});}
+  else if(id==='bulk-get'){bulkGlobalEt=val;Object.keys(bulkSel).forEach(ds=>{if(bulkSameTime)bulkSel[ds].et=val;});}
+  else if(id.indexOf('bt-st-')===0){const ds=id.slice(6);if(bulkSel[ds])bulkSel[ds].st=val;}
+  else if(id.indexOf('bt-et-')===0){const ds=id.slice(6);if(bulkSel[ds])bulkSel[ds].et=val;}
+}
 
 let _dpId=null,_dpY,_dpM,_dpSel;
 function openDP(id){_dpId=id;const cur=document.getElementById(id).value||TODAY_ISO;const d=parse(cur);_dpY=d.getFullYear();_dpM=d.getMonth();_dpSel=document.getElementById(id).value||'';renderDP();document.getElementById('pk').classList.add('open');}
@@ -1700,7 +1714,7 @@ function renderDP(){
   <div class="pk-foot"><button class="today-btn" onclick="dpPick('${TODAY_ISO}')">วันนี้<small>Today</small></button>
     <button class="ok-btn" onclick="dpConfirm()">ตกลง<small>Confirm</small></button></div>`;
 }
-function dpConfirm(){if(_dpSel)setDF(_dpId,_dpSel);closePK();}
+function dpConfirm(){if(_dpSel)setDF(_dpId,_dpSel,false);closePK();}
 
 let _tpId=null,_tpH,_tpM;
 function openTP(id){_tpId=id;const cur=document.getElementById(id).value;if(cur){const[h,m]=cur.split(':').map(Number);_tpH=h;_tpM=m;}else{_tpH=9;_tpM=0;}renderTP();document.getElementById('pk').classList.add('open');}
@@ -1733,7 +1747,7 @@ function renderTP(){
   setTimeout(()=>{try{const eh=document.getElementById('tph-'+_tpH),em=document.getElementById('tpm-'+_tpM);if(eh&&eh.scrollIntoView)eh.scrollIntoView({block:'center'});if(em&&em.scrollIntoView)em.scrollIntoView({block:'center'});}catch(e){}},0);
 }
 function tpNow(){const n=new Date();_tpH=n.getHours();_tpM=Math.round(n.getMinutes()/5)*5%60;renderTP();}
-function tpConfirm(){setDF(_tpId,pad(_tpH)+':'+pad(_tpM));closePK();}
+function tpConfirm(){setDF(_tpId,pad(_tpH)+':'+pad(_tpM),true);closePK();}
 function closePK(){document.getElementById('pk').classList.remove('open');}
 document.getElementById('pk').addEventListener('click',e=>{if(e.target.id==='pk')closePK();});
 
