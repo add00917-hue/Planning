@@ -886,6 +886,7 @@ const TITLES={
 let currentView='dashboard';
 function go(view){
   if(view==='admin'&&!CUR){toast('Admin Panel ต้องเข้าสู่ระบบก่อน','warn');openLogin();return;}
+  if(view==='admin'&&CUR&&CUR.role!=='admin'){toast('เฉพาะผู้ดูแลระบบ (admin) เท่านั้น','warn');return;}
   currentView=view;
   document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
   document.getElementById('tb-title').childNodes[0].nodeValue=TITLES[view][0];
@@ -956,6 +957,8 @@ function hideConnecting(ok,msg){
 /* การ์ดผู้ใช้: แสดงคนที่ล็อกอินจริง / ยังไม่ล็อกอิน = ผู้เยี่ยมชม (โหมดดูอย่างเดียว) */
 function updateSbUser(){
   const nm=document.getElementById('sb-uname'),rl=document.getElementById('sb-urole'),av=document.getElementById('sb-ava'),btn=document.getElementById('sb-authbtn');
+  const adminLink=document.querySelector('.nav-link[data-view="admin"]');
+  if(adminLink)adminLink.style.display=(CUR&&CUR.role==='admin')?'':'none'; // ซ่อนเมนู Admin สำหรับผู้ที่ไม่ใช่ admin
   if(!nm||!rl||!av)return;
   const RTH={admin:'ผู้ดูแลระบบ',approver:'ผู้อนุมัติ',user:'สมาชิก'};
   if(CUR){
@@ -2212,7 +2215,7 @@ function lineEventOn(ev){const v=LINE_SETTINGS['ev_'+ev.key];if(v===undefined||v
 function renderLineTpl(str,data){data=Object.assign({},data);data.link=data.link||CONFIG.MOBILE_APP_URL;return String(str).replace(/\{(\w+)\}/g,(m,k)=>(data[k]!=null?String(data[k]):''));}
 function refreshLinePreview(key){const ev=LINE_EVENTS.find(e=>e.key===key),pv=document.getElementById('pv-'+key),ta=document.getElementById('tpl-'+key);if(pv&&ta)pv.textContent=renderLineTpl(ta.value,ev.sample);}
 function insertPh(id,ph){const ta=document.getElementById(id);if(!ta)return;const s=ta.selectionStart||ta.value.length,e=ta.selectionEnd||ta.value.length;ta.value=ta.value.slice(0,s)+ph+ta.value.slice(e);ta.focus();ta.selectionStart=ta.selectionEnd=s+ph.length;refreshLinePreview(id.replace('tpl-',''));}
-async function _setLine(key,value){if(!CONFIG.SHEETS_API_URL)return true;try{const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'setSetting',key,value,group:'line'})});const j=await r.json();return j&&j.ok;}catch(e){return false;}}
+async function _setLine(key,value){if(!CONFIG.SHEETS_API_URL)return true;try{const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'setSetting',key,value,group:'line',actor:CUR?CUR.id:''})});const j=await r.json();return j&&j.ok;}catch(e){return false;}}
 async function saveLineTpl(key){if(!needAuth())return;const ta=document.getElementById('tpl-'+key);const val=ta.value;LINE_SETTINGS['tpl_'+key]=val;const ok=await _setLine('tpl_'+key,val);toast(ok?'บันทึกเทมเพลตแล้ว':'บันทึกในเครื่องชั่วคราว (ออฟไลน์)',ok?'ok':'warn');}
 async function resetLineTpl(key){if(!needAuth())return;LINE_SETTINGS['tpl_'+key]='';const ta=document.getElementById('tpl-'+key);ta.value=LINE_TPL_DEFAULT[key];refreshLinePreview(key);await _setLine('tpl_'+key,'');toast('คืนค่าเริ่มต้นแล้ว','ok');}
 async function toggleLineEvent(key,el){if(!needAuth())return;const on=!el.classList.contains('on');el.classList.toggle('on',on);LINE_SETTINGS['ev_'+key]=on?'true':'false';await _setLine('ev_'+key,on?'true':'false');toast(on?'เปิดการส่งแล้ว':'ปิดการส่งแล้ว','ok');}
@@ -2284,7 +2287,7 @@ function adminUsers(){
     ${employees.map(e=>`<tr>
       <td><div class="person">${avaHTML(e.id)}<div><div class="nm">${esc(e.name)}</div><div class="meta">${e.id}</div></div></div></td>
       <td class="mono">${esc(e.user)}</td>
-      <td><span class="mono" style="letter-spacing:2px">••••••••</span> <button class="icon-btn" style="display:inline-flex" onclick="toast('รหัส: ${esc(e.pass)}','ok')">${I.eye}</button></td>
+      <td><span class="mono" style="letter-spacing:2px">••••••••</span> <span class="meta" style="font-size:11px">ตั้งใหม่ได้ที่ปุ่มแก้ไข</span></td>
       <td><span class="role ${ROLE[e.role][0]}">${ROLE[e.role][1]}</span></td>
       <td><div class="row-act" style="justify-content:flex-end"><button class="icon-btn" onclick="openEmpForm('${e.id}')">${I.pen}</button><button class="icon-btn" onclick="toast('ส่งลิงก์รีเซ็ตรหัสผ่านแล้ว','ok')">${I.lock}</button></div></td>
     </tr>`).join('')}</tbody></table></div>
