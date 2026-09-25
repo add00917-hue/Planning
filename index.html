@@ -326,6 +326,8 @@ table.t tbody tr:hover{background:#F8FAFD}
 .field{margin-bottom:15px}
 .field label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:7px}
 .field input,.field textarea,.field select{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r-sm);font-family:inherit;font-size:13.5px;color:var(--ink);background:#fff;outline:none;transition:.16s}
+.sched-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}.sched-row:last-child{border-bottom:none}.sched-l{flex:1;min-width:180px}.sched-t{font-size:14px;font-weight:600;color:var(--ink);display:flex;align-items:center}.sched-d{font-size:12px;color:var(--ink-mid);margin-top:2px}.sched-c{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.sched-sec{font-size:13px;font-weight:700;color:var(--ink);margin:16px 0 4px}
+.locked-emp{display:flex;align-items:center;gap:8px;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--canvas,#F4F7FC);font-size:13.5px;font-weight:600;color:var(--ink)}.locked-emp .meta{font-weight:400;color:var(--ink-soft);font-size:12px}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--navy-soft);box-shadow:0 0 0 3px rgba(44,91,160,.12)}
 .field textarea{resize:vertical;min-height:84px;line-height:1.6}
 .field .hint{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
@@ -1445,7 +1447,7 @@ function taskTypeToggle(){document.getElementById('task-type-custom').classList.
 function openTaskForm(){if(!needAuth())return;
   openModal(`<div class="mh"><h3>มอบหมายงาน (Task Assignment)</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
-    <div class="field"><label>มอบหมายให้สมาชิก</label><select id="t-emp"><option value="">— เปิดงานไว้ (ยังไม่มีผู้รับผิดชอบ ให้กดรับเอง) —</option>${empOptions()}</select></div>
+    <div class="field"><label>มอบหมายให้สมาชิก</label><select id="t-emp"><option value="">— เปิดงานไว้ (ยังไม่มีผู้รับผิดชอบ ให้กดรับเอง) —</option>${empOptions('',false)}</select></div>
     <div class="set-grid">
       <div class="field"><label>อาคาร</label><select id="t-build" onchange="taskBuildToggle()">${taskBuildingOptions()}</select></div>
       <div class="field"><label>ประเภทงาน</label><select id="t-type" onchange="taskTypeToggle()">${taskTypeOptions()}</select></div>
@@ -1571,14 +1573,20 @@ function showRec(id){
 }
 
 /* ===================== FORMS (insert real records) ===================== */
-function empOptions(sel){return employees.filter(e=>!isInactive(e)).map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(e.name)} (${e.id})</option>`).join('');}
+function empOptions(sel,ph){const p=(ph===false)?'':`<option value="" ${!sel?'selected':''}>— เลือกสมาชิก —</option>`;return p+employees.filter(e=>!isInactive(e)).map(e=>`<option value="${e.id}" ${e.id===sel?'selected':''}>${esc(e.name)} (${e.id})</option>`).join('');}
+/* ช่องเลือกสมาชิก: admin เลือกได้ทุกคน • สมาชิกทั่วไป/ผู้อนุมัติ ล็อกเป็นตัวเอง (ตาม login) */
+function empField(){
+  if(CUR&&CUR.role==='admin')return `<select id="f-emp">${empOptions()}</select>`;
+  const me=CUR?emp(CUR.id):null; const nm=(me&&me.name)?me.name:(CUR?CUR.id:'—');
+  return `<input type="hidden" id="f-emp" value="${CUR?CUR.id:''}"><div class="locked-emp">${esc(nm)}${CUR&&CUR.id?` <span class="meta">(${CUR.id})</span>`:''}</div>`;
+}
 function fval(id){const el=document.getElementById(id);return el?el.value:'';}
 function addRecord(rec){records.unshift(rec);}
 
 function openLeaveForm(){if(!needAuth())return;
   openModal(`<div class="mh"><h3>แจ้งลา</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
-    <div class="set-grid"><div class="field"><label>สมาชิก</label><select id="f-emp">${empOptions()}</select></div>
+    <div class="set-grid"><div class="field"><label>สมาชิก${CUR&&CUR.role!=="admin"?" (คุณ)":""}</label>${empField()}</div>
       <div class="field"><label>ประเภทการลา</label><select id="f-cat" onchange="leaveHint()"><option value="sick">ลาป่วย (ขออนุมัติ)</option><option value="personal">ลากิจ (ขออนุมัติ)</option><option value="other">ลาอื่นๆ (ขออนุมัติ)</option><option value="vacation">ลาพักร้อน (ไม่ต้องอนุมัติ)</option></select></div></div>
     <div class="set-grid"><div class="field"><label>วันที่เริ่ม</label>${dateField('f-start',TODAY_ISO)}</div><div class="field"><label>ถึงวันที่</label>${dateField('f-end',TODAY_ISO)}</div></div>
     <div class="field"><label>เหตุผล</label><textarea id="f-note" placeholder="ระบุเหตุผลการลา"></textarea></div>
@@ -1599,7 +1607,7 @@ function submitLeave(){
 function openTrainForm(){if(!needAuth())return;
   openModal(`<div class="mh"><h3>บันทึกอบรม / กิจกรรม</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
-    <div class="set-grid"><div class="field"><label>สมาชิก</label><select id="f-emp">${empOptions()}</select></div>
+    <div class="set-grid"><div class="field"><label>สมาชิก${CUR&&CUR.role!=="admin"?" (คุณ)":""}</label>${empField()}</div>
       <div class="field"><label>ประเภท</label><select id="f-cat"><option value="internal">อบรมภายใน</option><option value="esv">อบรม ศูนย์ ESV</option><option value="event">กิจกรรม</option></select></div></div>
     <div class="field"><label>ชื่อหัวข้อ / กิจกรรม</label><input id="f-title" placeholder="เช่น อบรม Security ภายใน"></div>
     <div class="set-grid"><div class="field"><label>สถานที่</label><input id="f-loc" placeholder="เช่น ห้องประชุม A / ศูนย์ ESV"></div>
@@ -1621,7 +1629,7 @@ function submitTrain(){
 function openOTForm(kind){if(!needAuth())return;kind=kind||'overtime';
   openModal(`<div class="mh"><h3>${kind==='overtime'?'ทำงานล่วงเวลา (OT)':'ทำงานนอกสถานที่'}</h3><button class="x" onclick="closeModal()">${I.x}</button></div>
   <div class="mb">
-    <div class="set-grid"><div class="field"><label>สมาชิก</label><select id="f-emp">${empOptions()}</select></div>
+    <div class="set-grid"><div class="field"><label>สมาชิก${CUR&&CUR.role!=="admin"?" (คุณ)":""}</label>${empField()}</div>
       <div class="field"><label>ประเภท</label><select id="f-cat" onchange="otToggle()"><option value="overtime" ${kind==='overtime'?'selected':''}>ทำล่วงเวลา OT</option><option value="offsite" ${kind==='offsite'?'selected':''}>นอกสถานที่</option></select></div></div>
     <div class="field"><label>ชื่องาน</label><input id="f-title" placeholder="เช่น ปิดยอดสิ้นเดือน / ติดตั้งระบบลูกค้า"></div>
     <div class="field"><label>สถานที่</label><input id="f-loc" placeholder="เช่น สำนักงาน / ชลบุรี"></div>
@@ -2182,22 +2190,22 @@ function adminSheets(){
 
 let LINE_SETTINGS={};
 const LINE_TPL_DEFAULT={
-  create_approval:'🔔 มีคำขออนุมัติใหม่\n👤 {name}\n📋 {category}\n📅 {date}{location}\n\n👉 อนุมัติที่ {link}',
-  create_direct:'✅ บันทึกกิจกรรมใหม่\n👤 {name}\n📋 {category} — {title}\n📅 {date}{location}',
-  decide:'{name} — {category} {result}\n📋 {title}\n📅 {date}\n👍 โดย {approver}',
-  claim:'🙋 รับงานแล้ว\n👤 {name} รับผิดชอบงาน\n📋 {title}{location}\n📅 {date}',
+  create_approval:'🔔 มีคำขออนุมัติใหม่\n👤 {name}\n📋 {category}{detail}\n📅 {date}\n\n👉 อนุมัติที่ {link}',
+  create_direct:'✅ บันทึกกิจกรรมใหม่\n👤 {name}\n📋 {category}{detail}\n📅 {date}',
+  decide:'{name} — {category} {result}{detail}\n📅 {date}\n👍 โดย {approver}',
+  claim:'🙋 รับงานแล้ว\n👤 {name} รับผิดชอบงาน\n📋 {title}{detail}\n📅 {date}',
   reassign_req:'🔄 คำขอเปลี่ยนผู้รับผิดชอบงาน\n📋 {title}\n👤 จาก: {from}\n➡️ เป็น: {name}\n\n👉 อนุมัติที่ {link}',
   reassign_decide:'✅ เปลี่ยนผู้รับผิดชอบงาน "{title}" เป็น {name} แล้ว',
-  cancel:'🚫 ยกเลิกรายการ\n👤 {name}\n📋 {category} — {title}\n📅 {date}'
+  cancel:'🚫 ยกเลิกรายการ\n👤 {name}\n📋 {category}{detail}\n📅 {date}'
 };
 const LINE_EVENTS=[
-  {key:'create_approval',label:'มีคำขออนุมัติใหม่',desc:'ส่งเมื่อมีคำขอที่ต้องอนุมัติ (ลา/อบรม/OT)',def:true,sample:{name:'สมชาย ใจดี',category:'ลาป่วย',title:'ลาป่วย',date:'12 มิ.ย. 2569',location:'\n📍 ARI HILLS'}},
-  {key:'create_direct',label:'บันทึกกิจกรรมใหม่',desc:'ส่งเมื่อบันทึกรายการที่ไม่ต้องอนุมัติ (พักร้อน/งาน)',def:false,sample:{name:'สมหญิง งามดี',category:'ลาพักร้อน',title:'พักร้อนกลางปี',date:'20 มิ.ย. 2569',location:''}},
-  {key:'decide',label:'ผลการอนุมัติ',desc:'ส่งเมื่อผู้อนุมัติอนุมัติ/ไม่อนุมัติ',def:true,sample:{name:'สมชาย ใจดี',category:'ลาป่วย',result:'ได้รับการอนุมัติ ✅',title:'ลาป่วย',date:'12 มิ.ย. 2569',approver:'หัวหน้าทีม'}},
-  {key:'claim',label:'รับงาน (Task)',desc:'ส่งเมื่อสมาชิกกดรับงานที่ว่าง',def:false,sample:{name:'มาร์ค',title:'ติดตั้งโต๊ะทำงาน',location:'\n📍 ARI HILLS',date:'15 มิ.ย. 2569'}},
+  {key:'create_approval',label:'มีคำขออนุมัติใหม่',desc:'ส่งเมื่อมีคำขอที่ต้องอนุมัติ (ลา/อบรม/OT)',def:true,sample:{name:'สมชาย ใจดี',category:'ลาป่วย',title:'ลาป่วย',date:'12 มิ.ย. 2569',location:'\n📍 ARI HILLS',detail:'\n🕐 09:00-17:00\n📝 มีไข้ พบแพทย์'}},
+  {key:'create_direct',label:'บันทึกกิจกรรมใหม่',desc:'ส่งเมื่อบันทึกรายการที่ไม่ต้องอนุมัติ (พักร้อน/งาน)',def:false,sample:{name:'สมหญิง งามดี',category:'อบรมภายใน',title:'อบรม',date:'20 มิ.ย. 2569',location:'',detail:'\n• อบรม Security Awareness\n📍 ESV Tower\n🕐 13:00-16:00'}},
+  {key:'decide',label:'ผลการอนุมัติ',desc:'ส่งเมื่อผู้อนุมัติอนุมัติ/ไม่อนุมัติ',def:true,sample:{name:'สมชาย ใจดี',category:'ลาป่วย',result:'ได้รับการอนุมัติ ✅',title:'ลาป่วย',date:'12 มิ.ย. 2569',approver:'หัวหน้าทีม',detail:'\n🕐 09:00-17:00\n📝 มีไข้ พบแพทย์'}},
+  {key:'claim',label:'รับงาน (Task)',desc:'ส่งเมื่อสมาชิกกดรับงานที่ว่าง',def:false,sample:{name:'มาร์ค',title:'ติดตั้งโต๊ะทำงาน',location:'\n📍 ARI HILLS',date:'15 มิ.ย. 2569',detail:'\n📍 ARI HILLS\n🕐 09:00-12:00'}},
   {key:'reassign_req',label:'ขอเปลี่ยนผู้รับผิดชอบ',desc:'ส่งเมื่อมีคำขอเปลี่ยนผู้รับผิดชอบงาน',def:true,sample:{title:'งานปรับปรุงพื้นที่',from:'สมชาย ใจดี',name:'มาร์ค'}},
   {key:'reassign_decide',label:'อนุมัติเปลี่ยนผู้รับผิดชอบ',desc:'ส่งเมื่ออนุมัติการเปลี่ยนผู้รับผิดชอบ',def:true,sample:{title:'งานปรับปรุงพื้นที่',name:'มาร์ค'}},
-  {key:'cancel',label:'ยกเลิกรายการ',desc:'ส่งเมื่อมีการยกเลิกรายการ',def:false,sample:{name:'สมชาย ใจดี',category:'ลากิจ',title:'ลากิจ',date:'18 มิ.ย. 2569'}}
+  {key:'cancel',label:'ยกเลิกรายการ',desc:'ส่งเมื่อมีการยกเลิกรายการ',def:false,sample:{name:'สมชาย ใจดี',category:'ลากิจ',title:'ลากิจ',date:'18 มิ.ย. 2569',detail:'\n📝 ธุระครอบครัว'}}
 ];
 function lineTplVal(key){const v=LINE_SETTINGS['tpl_'+key];return (v!==undefined&&v!==null&&v!=='')?String(v):LINE_TPL_DEFAULT[key];}
 function lineEventOn(ev){const v=LINE_SETTINGS['ev_'+ev.key];if(v===undefined||v===null||v==='')return ev.def;return String(v)!=='false';}
@@ -2209,8 +2217,42 @@ async function saveLineTpl(key){if(!needAuth())return;const ta=document.getEleme
 async function resetLineTpl(key){if(!needAuth())return;LINE_SETTINGS['tpl_'+key]='';const ta=document.getElementById('tpl-'+key);ta.value=LINE_TPL_DEFAULT[key];refreshLinePreview(key);await _setLine('tpl_'+key,'');toast('คืนค่าเริ่มต้นแล้ว','ok');}
 async function toggleLineEvent(key,el){if(!needAuth())return;const on=!el.classList.contains('on');el.classList.toggle('on',on);LINE_SETTINGS['ev_'+key]=on?'true':'false';await _setLine('ev_'+key,on?'true':'false');toast(on?'เปิดการส่งแล้ว':'ปิดการส่งแล้ว','ok');}
 async function testLineSend(){if(!needAuth())return;if(!CONFIG.SHEETS_API_URL){toast('ยังไม่ได้ตั้งค่าฐานข้อมูล','warn');return;}toast('กำลังส่งข้อความทดสอบ...','ok');try{const r=await fetch(CONFIG.SHEETS_API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'testLine'})});const j=await r.json();toast(j&&j.ok?'ส่งข้อความทดสอบไปยังกลุ่ม LINE แล้ว':'ส่งไม่สำเร็จ • '+((j&&j.error)||'ตรวจการตั้งค่า LINE'),j&&j.ok?'ok':'warn');}catch(e){toast('เชื่อมต่อไม่สำเร็จ','warn');}}
+/* ===== ตั้งเวลาแจ้งเตือน LINE (สรุปรายวัน/รายสัปดาห์/เตือนล่วงหน้า) ===== */
+const DOW_FULL=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+function hourOptions(sel){let o='';for(let h=0;h<24;h++)o+=`<option value="${pad(h)}:00" ${sel===pad(h)+':00'?'selected':''}>${pad(h)}:00 น.</option>`;return o;}
+function schGet(k){return LINE_SETTINGS[k]||'';}
+function schDailyOn(){const v=schGet('sch_daily');return v&&v!=='off';}
+function schWeeklyOn(){const v=schGet('sch_weekly');return v&&v!=='off';}
+function schDailyTime(){const v=schGet('sch_daily');return (v&&v!=='off')?v:'08:00';}
+function schWeeklyParts(){const v=schGet('sch_weekly');if(!v||v==='off')return{dow:1,t:'08:00'};const p=String(v).split('|');return{dow:Number(p[0]||1),t:p[1]||'08:00'};}
+function rmdOn(cat){const v=schGet('rmd_'+cat);return v&&v!=='off';}
+function rmdParts(cat){const v=schGet('rmd_'+cat);if(!v||v==='off')return{days:1,t:'08:00'};const p=String(v).split('|');return{days:Number(p[0]||1),t:p[1]||'08:00'};}
+async function saveDaily(){const on=document.getElementById('sch-daily-on').classList.contains('on');const t=document.getElementById('sch-daily-t').value;const val=on?t:'off';LINE_SETTINGS.sch_daily=val;const ok=await _setLine('sch_daily',val);toast(ok?(on?'ตั้งสรุปรายวัน '+t+' น. แล้ว':'ปิดสรุปรายวันแล้ว'):'บันทึกชั่วคราว (ออฟไลน์)',ok?'ok':'warn');}
+async function saveWeekly(){const on=document.getElementById('sch-weekly-on').classList.contains('on');const dow=document.getElementById('sch-weekly-dow').value;const t=document.getElementById('sch-weekly-t').value;const val=on?(dow+'|'+t):'off';LINE_SETTINGS.sch_weekly=val;const ok=await _setLine('sch_weekly',val);toast(ok?(on?'ตั้งสรุปราย'+DOW_FULL[+dow]+' '+t+' น. แล้ว':'ปิดสรุปรายสัปดาห์แล้ว'):'บันทึกชั่วคราว','ok');}
+async function saveRmd(cat){const on=document.getElementById('rmd-on-'+cat).classList.contains('on');const days=document.getElementById('rmd-days-'+cat).value;const t=document.getElementById('rmd-t-'+cat).value;const val=on?(days+'|'+t):'off';LINE_SETTINGS['rmd_'+cat]=val;const ok=await _setLine('rmd_'+cat,val);toast(ok?(on?'ตั้งเตือนล่วงหน้า '+CAT[cat].th+' แล้ว':'ปิดเตือน '+CAT[cat].th):'บันทึกชั่วคราว','ok');}
+function adminLineSchedule(){
+  const dp=schWeeklyParts();
+  const rmdCats=['sick','internal','overtime','offsite','event','task'].filter(c=>CAT[c]);
+  return `<div class="card" style="margin-bottom:16px"><div class="card-h"><div><h3>ตั้งเวลาแจ้งเตือนอัตโนมัติ</h3><div class="sub">สรุปกิจกรรมรายวัน/รายสัปดาห์ และเตือนล่วงหน้า ส่งเข้ากลุ่ม LINE</div></div></div>
+    <div class="card-b">
+      <div class="sched-row">
+        <div class="sched-l"><div class="sched-t">📅 สรุปกิจกรรมรายวัน</div><div class="sched-d">ส่งรายการกิจกรรมของวันนั้นทุกวันตามเวลาที่ตั้ง</div></div>
+        <div class="sched-c"><select class="select" id="sch-daily-t">${hourOptions(schDailyTime())}</select><div class="tg ${schDailyOn()?'on':''}" id="sch-daily-on" onclick="this.classList.toggle('on');saveDaily()"></div></div>
+      </div>
+      <div class="sched-row">
+        <div class="sched-l"><div class="sched-t">📊 สรุปกิจกรรมรายสัปดาห์</div><div class="sched-d">ส่งสรุปจำนวนรายการทั้งสัปดาห์ ตามวัน/เวลาที่ตั้ง</div></div>
+        <div class="sched-c"><select class="select" id="sch-weekly-dow" onchange="if(document.getElementById('sch-weekly-on').classList.contains('on'))saveWeekly()">${DOW_FULL.map((d,i)=>`<option value="${i}" ${i===dp.dow?'selected':''}>ทุกวัน${d}</option>`).join('')}</select><select class="select" id="sch-weekly-t">${hourOptions(dp.t)}</select><div class="tg ${schWeeklyOn()?'on':''}" id="sch-weekly-on" onclick="this.classList.toggle('on');saveWeekly()"></div></div>
+      </div>
+      <div class="sched-sec">⏰ เตือนล่วงหน้าก่อนถึงกิจกรรม</div>
+      ${rmdCats.map(cat=>{const rp=rmdParts(cat);return `<div class="sched-row">
+        <div class="sched-l"><div class="sched-t"><span class="sw" style="background:${CAT[cat].c};width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:6px"></span>${CAT[cat].th}</div></div>
+        <div class="sched-c"><select class="select" id="rmd-days-${cat}"><option value="0" ${rp.days===0?'selected':''}>วันเดียวกัน</option>${[1,2,3,7].map(d=>`<option value="${d}" ${rp.days===d?'selected':''}>ล่วงหน้า ${d} วัน</option>`).join('')}</select><select class="select" id="rmd-t-${cat}">${hourOptions(rp.t)}</select><div class="tg ${rmdOn(cat)?'on':''}" id="rmd-on-${cat}" onclick="this.classList.toggle('on');saveRmd('${cat}')"></div></div>
+      </div>`;}).join('')}
+      <div class="sd" style="margin-top:14px">ℹ️ ระบบตรวจทุกชั่วโมง จึงส่งตาม<b>ชั่วโมง</b>ที่ตั้ง (นาทีจะปัดเป็นต้นชั่วโมง) • ต้องรัน <b>setupTriggers()</b> ใน Apps Script หนึ่งครั้งเพื่อเปิดตัวจับเวลา • เปลี่ยนค่าแล้วบันทึกอัตโนมัติ</div>
+    </div></div>`;
+}
 function adminLine(){
-  return `<div class="card"><div class="card-h"><div><h3>เทมเพลตการแจ้งเตือน LINE</h3><div class="sub">แก้ไขข้อความแต่ละเหตุการณ์ • ดูตัวอย่างสด • เปิด/ปิดการส่งได้</div></div>
+  return adminLineSchedule()+`<div class="card"><div class="card-h"><div><h3>เทมเพลตการแจ้งเตือน LINE</h3><div class="sub">แก้ไขข้อความแต่ละเหตุการณ์ • ดูตัวอย่างสด • เปิด/ปิดการส่งได้</div></div>
     <button class="btn btn-ghost" onclick="testLineSend()">${I.line} ทดสอบส่ง</button></div>
     <div class="card-b">
       <div class="sd" style="margin-bottom:16px">ℹ️ ใส่ตัวแปรในปีกกา เช่น <b>{name} {category} {date} {title} {location} {link}</b> ระบบจะแทนค่าจริงตอนส่ง — กดชิปตัวแปรเพื่อแทรกในข้อความ</div>
